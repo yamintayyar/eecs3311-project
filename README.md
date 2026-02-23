@@ -2,4 +2,4 @@
 
 ## Contributions
 
-Yamin - Use Case Diagram
+Yamin - Use Case Diagram, Class Diagram
