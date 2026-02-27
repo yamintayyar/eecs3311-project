@@ -19,6 +19,6 @@ cd backend/servicebooking
 
 ## Contributions
 
-Yamin - Use Case Diagram, Class Diagram
-Emmanuel - SpringBoot initialization
+- Yamin: Use Case Diagram, Class Diagram
+- Emmanuel: SpringBoot initialization
 
