@@ -15,7 +15,7 @@ cd backend/servicebooking
 ./mvnw spring-boot:run
 ```
 
-Test if the backend endpoints are working correctly by running the project that got to the url `http://localhost:8080/hello` in your browser.
+Test if the backend endpoints are working correctly by running the project then go to the url `http://localhost:8080/hello` in your browser.
 
 --- 
 
