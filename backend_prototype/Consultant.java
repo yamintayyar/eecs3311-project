@@ -1,12 +1,13 @@
 import java.util.List;
 
-public class Consultant implements User {
+public class Consultant extends User {
     private List<Service> services;
     private List<Availability>  availabilitySlots;
     private List<Booking> bookings;
 
-    Consultant() {
-
+    public Consultant(UUID user_id, String name, String email, String password) {
+    	super(user_id, name, email, password);
+    	
     }
 
     void addAvailability() {
@@ -45,14 +46,6 @@ public class Consultant implements User {
 
     }
 
-    @Override
-    public boolean login() {
-        return false;
-    }
-
-    @Override
-    public boolean logout() {
-        return false;
-    }
+    
 }
 

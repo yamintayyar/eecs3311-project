@@ -1,13 +1,15 @@
 import java.util.List;
 
-public class Client implements User {
+
+public class Client extends User {
     private List<PaymentMethodStrategy> paymentMethods;
     private List<Payment> payments;
     private List<Booking> bookings;
     private DatabaseSingleton database;
 
-    Client() {
-
+    Public Client(UUID user_id, String name, String email, String password) {
+    	super(user_id, name, email, password);
+    	
     }
 
     void addPaymentMethod(PaymentMethodStrategy paymentMethod) {
@@ -43,13 +45,5 @@ public class Client implements User {
     }
 
 
-    @Override
-    public boolean login() {
-        return false;
-    }
-
-    @Override
-    public boolean logout() {
-        return false;
-    }
+   
 }
