@@ -1,7 +1,8 @@
-public class Admin implements User {
+public class Admin extends User {
 
-    Admin() {
-
+    public Admin(UUID user_id, String name, String email, String password) {
+    	super(user_id, name, email, password);
+    	
     }
 
     void approveConsultant(Consultant consultant) {
@@ -12,13 +13,5 @@ public class Admin implements User {
 
     }
 
-    @Override
-    public boolean login() {
-        return false;
-    }
-
-    @Override
-    public boolean logout() {
-        return false;
-    }
+    
 }
