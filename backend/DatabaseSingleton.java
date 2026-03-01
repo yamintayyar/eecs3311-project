@@ -15,4 +15,8 @@ public class DatabaseSingleton {
     List<Consultant> getConsultants() {
         return null;
     }
+
+    void addConsultant(Consultant consultant) {
+
+    }
 }

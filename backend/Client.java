@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.UUID;
 
 
 public class Client extends User {
@@ -7,7 +8,7 @@ public class Client extends User {
     private List<Booking> bookings;
     private DatabaseSingleton database;
 
-    Public Client(UUID user_id, String name, String email, String password) {
+    public Client(UUID user_id, String name, String email, String password) {
     	super(user_id, name, email, password);
     	
     }
