@@ -8,8 +8,20 @@ public class Booking {
     private BookingState bookingState;
     private Payment payment;
 
+    public java.util.UUID getID() {
+        return booking_id;
+    }
+
     boolean changeState() {
         return false;
+    }
+
+    void cancel() {
+
+    }
+
+    void reject() {
+
     }
 
 }

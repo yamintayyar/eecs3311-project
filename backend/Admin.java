@@ -14,7 +14,7 @@ public class Admin extends User {
     }
 
     void createPolicy() {
-
+        //TODO: modify UML + classes so that changes in database attributes (priceMultiplier, refundRule, etc.) are reflected in other classes
     }
 
     

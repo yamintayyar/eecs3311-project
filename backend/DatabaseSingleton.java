@@ -8,7 +8,7 @@ public class DatabaseSingleton {
 
     }
 
-    DatabaseSingleton getInstance() {
+    static DatabaseSingleton getInstance() {
         return null;
     }
 
