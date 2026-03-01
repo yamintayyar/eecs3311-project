@@ -1,12 +1,27 @@
 import java.util.UUID;
 
-public interface User {
-    UUID user_id = null;
-    String name = "";
-    String email = "";
-    String password = "";
+public abstract class User {
+    protected UUID user_id;
+    protected String name;
+    protected String email;
+    protected String password;
+    
+    public User(UUID user_id, String name, String email, String password) {
+    	this.user_id = UUID.randomUUID();
+    	this.name = "";
+    	this.email = "";
+    	this.password = "";
+    
+    }
 
-    boolean login();
-    boolean logout();
+    public boolean login() {
+    	
+    	return false;
+    }
+    
+    public boolean logout() {
+    	
+    	return false;
+    }
 }
 
