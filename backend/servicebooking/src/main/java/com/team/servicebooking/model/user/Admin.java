@@ -1,6 +1,9 @@
-public class Admin implements User {
+package com.team.servicebooking.model.user;
 
-    Admin() {
+public class Admin implements User {
+    DatabaseSingleton database;
+
+    public Admin() {
 
     }
 

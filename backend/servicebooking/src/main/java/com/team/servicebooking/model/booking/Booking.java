@@ -1,3 +1,5 @@
+package com.team.servicebooking.model.booking;
+
 import java.security.Provider;
 
 public class Booking {

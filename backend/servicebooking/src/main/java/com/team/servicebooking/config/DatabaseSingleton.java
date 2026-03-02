@@ -1,3 +1,5 @@
+package com.team.servicebooking.config;
+
 import java.util.List;
 
 public class DatabaseSingleton {

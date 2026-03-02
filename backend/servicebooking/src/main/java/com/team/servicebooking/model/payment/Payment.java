@@ -1,3 +1,5 @@
+package com.team.servicebooking.model.payment;
+
 public class Payment {
 
     private java.util.UUID payment_id;

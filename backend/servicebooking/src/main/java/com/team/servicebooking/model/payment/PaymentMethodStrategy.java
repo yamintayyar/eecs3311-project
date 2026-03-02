@@ -1,3 +1,5 @@
+package com.team.servicebooking.model.payment;
+
 import java.time.LocalDate;
 import java.util.UUID;
 

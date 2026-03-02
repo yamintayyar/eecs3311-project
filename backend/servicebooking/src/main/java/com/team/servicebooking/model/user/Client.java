@@ -1,3 +1,5 @@
+package com.team.servicebooking.model.user;
+
 import java.util.List;
 
 public class Client implements User {
@@ -41,7 +43,6 @@ public class Client implements User {
     List<Booking> browseBookings() {
         return null;
     }
-
 
     @Override
     public boolean login() {

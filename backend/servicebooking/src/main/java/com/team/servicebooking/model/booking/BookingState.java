@@ -1,13 +1,17 @@
+package com.team.servicebooking.model.booking;
+
 public abstract class BookingState {
     Booking booking;
 
     void request() {
 
     }
-    void confirm(){
+
+    void confirm() {
 
     }
-    void reject(){
+
+    void reject() {
 
     }
 

@@ -1,8 +1,10 @@
+package com.team.servicebooking.model.user;
+
 import java.util.List;
 
 public class Consultant implements User {
     private List<Service> services;
-    private List<Availability>  availabilitySlots;
+    private List<Availability> availabilitySlots;
     private List<Booking> bookings;
 
     Consultant() {
@@ -41,7 +43,7 @@ public class Consultant implements User {
         return null;
     }
 
-    void notify(Booking booking) { //do we need this?
+    void notify(Booking booking) { // do we need this?
 
     }
 
@@ -55,4 +57,3 @@ public class Consultant implements User {
         return false;
     }
 }
-
