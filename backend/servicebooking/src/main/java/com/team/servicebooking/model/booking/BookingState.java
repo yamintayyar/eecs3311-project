@@ -1,28 +1,41 @@
 package servicebooking.src.main.java.com.team.servicebooking.model.booking;
 
+
 public abstract class BookingState {
     Booking booking;
-
-    void request() {
-
-    }
-    void confirm(){
-
-    }
-    void reject(){
-
+    
+    public BookingState(Booking booking) {
+    	this.booking = booking;
     }
 
-    void cancel() {
+    public void request() {
 
     }
+    public void confirm(){
 
-    void markPaid() {
+    }
+    public void reject(){
 
     }
 
-    void complete() {
+    public void cancel() {
+    	// Can be edited depend on Admin's policy
+    }
 
+    public void markPaid() {
+
+    }
+
+    public void complete() {
+
+    }
+    
+    public void pending() {
+    	
+    }
+    
+    public boolean payable() {
+    	return false;
     }
 
 }

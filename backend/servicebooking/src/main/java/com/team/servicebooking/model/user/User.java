@@ -37,5 +37,9 @@ public abstract class User {
             return false;
         }
     }
+    
+    public String getName() {
+    	return this.name;
+    }
 }
 
