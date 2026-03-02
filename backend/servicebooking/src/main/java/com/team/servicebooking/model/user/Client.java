@@ -60,7 +60,7 @@ public class Client extends User {
 
         bookings.add(b);
 
-        consultant.notify(b); //notify consultant of new booking
+        consultant.notify( String.format("Booking %s has been requested by user %s", b.getID().toString(), this.name) ); //notify consultant of new booking
     }
 
     void processPayment(Booking booking, PaymentMethodStrategy paymentMethod) {
@@ -94,10 +94,6 @@ public class Client extends User {
 
         return serviceList;
 
-    }
-
-    void notify(Booking booking) {
-        //TODO: implement alert; maybe create inbox for all users and add a string to that inbox that is printed and cleared when user logs in?
     }
    
 }

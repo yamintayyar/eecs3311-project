@@ -20,11 +20,11 @@ public class Booking {
         return booking_id;
     }
 
-    boolean changeState() {
+    public boolean changeState() {
         return false;
     }
 
-    boolean payable() {
+    public boolean payable() {
         return false;
     }
 
@@ -32,7 +32,7 @@ public class Booking {
 
     }
 
-    void reject() {
+    public void reject() {
 
     }
 
@@ -40,4 +40,12 @@ public class Booking {
         return 0;
     }
 
+    void pay(Payment payment)
+    {
+
+    }
+
+    public boolean paid() {
+        return false;
+    }
 }
