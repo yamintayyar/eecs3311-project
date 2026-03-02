@@ -16,12 +16,20 @@ public class Booking {
         return false;
     }
 
+    boolean payable() {
+        return false;
+    }
+
     void cancel() {
 
     }
 
     void reject() {
 
+    }
+
+    double getPrice() {
+        return 0;
     }
 
 }

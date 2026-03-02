@@ -48,17 +48,48 @@ public class Client extends User {
     }
 
     void requestBooking(Consultant consultant, Availability availability, Service service) {
+        Booking b = new Booking(this, consultant, service, availability);
 
+        bookings.add(b);
+
+        consultant.notify(b); //notify consultant of new booking
     }
 
     void processPayment(Booking booking, PaymentMethodStrategy paymentMethod) {
 
+        //check if payment method is valid, and then ask booking class if it can be paid (if status is confirmed)
+        //finally, create payment and add it to payment history
+
+        if (! paymentMethod.validate()){
+            System.out.println("Error: Invalid payment method");
+            return;
+        }
+
+        if (!booking.payable()) {
+            System.out.println("Error: Booking has not been confirmed yet by consultant. Please await their response.");
+            return;
+        }
+
+        Payment p = new Payment(booking, paymentMethod);
+        payments.add(p);
+
     }
 
-    List<Booking> browseBookings() {
-        return null;
+    List<Service> browseServices() {
+
+        List<Consultant> consultantList = database.getConsultants();
+
+        List<Service> serviceList = new ArrayList<>(); //go through list of consultants, gather all services
+        for (Consultant c : consultantList) {
+            serviceList.addAll(c.getServices());
+        }
+
+        return serviceList;
+
     }
 
-
+    void notify(Booking booking) {
+        //TODO: implement alert; maybe create inbox for all users and add a string to that inbox that is printed and cleared when user logs in?
+    }
    
 }
