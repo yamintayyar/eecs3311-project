@@ -10,7 +10,7 @@ public abstract class User {
     protected String email;
     protected String password;
     protected List<String> notifications;
-    
+
     public User(UUID user_id, String name, String email, String password) {
     	this.user_id = user_id;
     	this.name = name;
@@ -48,6 +48,10 @@ public abstract class User {
             System.out.println("ERROR: Unable to fulfill request");
             return false;
         }
+    }
+
+    public String getName() {
+    	return this.name;
     }
 
     public void notify(String notification) {
