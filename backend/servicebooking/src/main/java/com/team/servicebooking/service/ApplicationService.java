@@ -1,4 +1,7 @@
-package com.team.servicebooking.service;
+package servicebooking.src.main.java.com.team.servicebooking.service;
+
+import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
+import servicebooking.src.main.java.com.team.servicebooking.model.user.User;
 
 import java.util.List;
 

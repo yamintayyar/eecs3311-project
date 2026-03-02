@@ -1,4 +1,4 @@
-package com.team.servicebooking.model.payment;
+package servicebooking.src.main.java.com.team.servicebooking.model.payment;
 
 public class BankTransfer implements PaymentMethodStrategy {
 

@@ -1,4 +1,6 @@
-package com.team.servicebooking.model.payment;
+package servicebooking.src.main.java.com.team.servicebooking.model.payment;
+
+import servicebooking.src.main.java.com.team.servicebooking.model.booking.Booking;
 
 public class Payment {
 

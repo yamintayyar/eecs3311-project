@@ -1,4 +1,4 @@
-package com.team.servicebooking.model.service;
+package servicebooking.src.main.java.com.team.servicebooking.model.service;
 
 public class Service {
     private java.util.UUID service_id;
