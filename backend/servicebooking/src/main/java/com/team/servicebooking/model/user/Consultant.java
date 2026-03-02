@@ -1,14 +1,19 @@
-package com.team.servicebooking.model.user;
+package servicebooking.src.main.java.com.team.servicebooking.model.user;
 
+import servicebooking.src.main.java.com.team.servicebooking.model.availability.Availability;
+import servicebooking.src.main.java.com.team.servicebooking.model.booking.Booking;
+import servicebooking.src.main.java.com.team.servicebooking.model.service.Service;
 import java.util.List;
+import java.util.UUID;
 
-public class Consultant implements User {
+public class Consultant extends User {
     private List<Service> services;
-    private List<Availability> availabilitySlots;
+    private List<Availability>  availabilitySlots;
     private List<Booking> bookings;
 
-    Consultant() {
-
+    public Consultant(UUID user_id, String name, String email, String password) {
+    	super(user_id, name, email, password);
+    	
     }
 
     void addAvailability() {
@@ -43,17 +48,10 @@ public class Consultant implements User {
         return null;
     }
 
-    void notify(Booking booking) { // do we need this?
+    void notify(Booking booking) { //do we need this?
 
     }
 
-    @Override
-    public boolean login() {
-        return false;
-    }
-
-    @Override
-    public boolean logout() {
-        return false;
-    }
+    
 }
+

@@ -1,4 +1,4 @@
-package com.team.servicebooking.model.booking;
+package servicebooking.src.main.java.com.team.servicebooking.model.booking;
 
 public abstract class BookingState {
     Booking booking;
@@ -6,12 +6,10 @@ public abstract class BookingState {
     void request() {
 
     }
-
-    void confirm() {
+    void confirm(){
 
     }
-
-    void reject() {
+    void reject(){
 
     }
 

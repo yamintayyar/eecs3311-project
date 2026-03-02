@@ -1,4 +1,6 @@
-package com.team.servicebooking.config;
+package servicebooking.src.main.java.com.team.servicebooking.config;
+
+import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
 
 import java.util.List;
 
@@ -10,11 +12,15 @@ public class DatabaseSingleton {
 
     }
 
-    DatabaseSingleton getInstance() {
+    static DatabaseSingleton getInstance() {
         return null;
     }
 
-    List<Consultant> getConsultants() {
+    public List<Consultant> getConsultants() {
         return null;
+    }
+
+    public void addConsultant(Consultant consultant) {
+
     }
 }
