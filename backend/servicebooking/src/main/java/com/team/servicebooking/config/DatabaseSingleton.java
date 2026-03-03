@@ -12,7 +12,7 @@ public class DatabaseSingleton {
 
     }
 
-    static DatabaseSingleton getInstance() {
+    public static DatabaseSingleton getInstance() {
         return null;
     }
 

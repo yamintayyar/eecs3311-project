@@ -63,23 +63,10 @@ public class Client extends User {
         consultant.notify( String.format("Booking %s has been requested by user %s", b.getID().toString(), this.name) ); //notify consultant of new booking
     }
 
-    void processPayment(Booking booking, PaymentMethodStrategy paymentMethod) {
+    void processPayment(Booking booking, PaymentMethodStrategy paymentMethod) throws InterruptedException {
 
-        //check if payment method is valid, and then ask booking class if it can be paid (if status is confirmed)
-        //finally, create payment and add it to payment history
-
-        if (! paymentMethod.validate()){
-            System.out.println("Error: Invalid payment method");
-            return;
-        }
-
-        if (!booking.payable()) {
-            System.out.println("Error: servicebooking.src.main.java.com.team.servicebooking.model.booking.Booking has not been confirmed yet by consultant. Please await their response.");
-            return;
-        }
-
-        Payment p = new Payment(booking, paymentMethod);
-        payments.add(p);
+        Payment p = Payment.processPayment(booking, paymentMethod);
+        if (p != null) payments.add(p);
 
     }
 
