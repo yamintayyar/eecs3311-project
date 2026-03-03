@@ -1,12 +1,15 @@
 package servicebooking.src.main.java.com.team.servicebooking.model.availability;
 
-public class Availability {
-    private java.util.UUID slot_id;
-    private java.time.LocalDateTime startTime;
-    private java.time.LocalDateTime endTime;
-    private boolean isBooked;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-    Availability() {
+public class Availability {
+    private UUID slot_id;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private boolean isBooked = false;
+
+    Availability(LocalDateTime startTime, LocalDateTime endTime) {
 
     }
 
