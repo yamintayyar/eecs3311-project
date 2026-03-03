@@ -34,7 +34,7 @@ public class Consultant extends User {
 
     void acceptBooking(Booking booking) {
 
-        if (!booking.paid()) booking.changeState(); //if at requestedstate, goes to confirmedstate.
+        if (!booking.paid()) booking.confirm(); //if at requestedstate, goes to confirmedstate.
         //if at confirmedstate, goes to pendingpaymentstate (basically equivalent)
         //otherwise, will not proceed because there is no payment yet
     }
@@ -46,7 +46,7 @@ public class Consultant extends User {
     }
 
     void completeBooking(Booking booking) {
-        if (booking.paid()) booking.changeState(); //if booking already was paid for, we can move to final confirmed state
+        if (booking.paid()) booking.complete(); //if booking already was paid for, we can move to final confirmed state
     }
 
     List<Service> getServices() {

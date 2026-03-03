@@ -7,7 +7,7 @@ public class Service {
     private double price;
     private int duration;
 
-    double getPrice() {
+    public double getPrice() {
         return price;
     }
 

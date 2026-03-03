@@ -6,8 +6,8 @@ import servicebooking.src.main.java.com.team.servicebooking.model.service.Servic
 import servicebooking.src.main.java.com.team.servicebooking.model.user.Client;
 import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
 
+import java.time.LocalDate;
 import java.util.UUID;
-import java.util.Date;
 
 
 public class Booking {
@@ -16,7 +16,7 @@ public class Booking {
     private Consultant consultant;
     private Service service;
     private Availability availability;
-    private Date bookingDate;
+    private LocalDate bookingDate;
     private BookingState bookingState;
     private Payment payment;
 
@@ -28,12 +28,11 @@ public class Booking {
     	this.service = service;
     	this.availability = availabilty;
 
-    	//this.bookingDate = bookingDate;
-    	//this.payment = payment;
+    	this.bookingDate = LocalDate.now();
 
     	this.bookingState = new RequestState(this);
 
-    	System.out.println("Booking requested for " + client.getName() + ".");   //TODO: edit with date info.
+    	System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + ".");   //TODO: test to make sure that formatting is correct
 
     }
 
@@ -41,7 +40,7 @@ public class Booking {
         return booking_id;
     }
 
-    public void changeState(BookingState bookingState) { //TODO: I dont think we should explicitly pass the new state; the logic should work so that it knows what state to use next on its own
+    public void changeState(BookingState bookingState) {
     	//Changed return type from boolean to void.
     	this.bookingState = bookingState;
     }
@@ -59,16 +58,24 @@ public class Booking {
     	this.bookingState.reject();
     }
 
-    public double getPrice() {
-        return 0;
+    public double getPrice(){
+        return service.getPrice();
     }
 
     public void pay(Payment payment)
     {
-
+        this.payment = payment;
     }
 
-    public boolean paid() {
-        return false;
+    public boolean paid(){
+        return payment!=null; //returns true if payment has been set, and thus pay() was called
+    }
+
+    public void confirm() {
+        this.bookingState.confirm();
+    }
+
+    public void complete() {
+        this.bookingState.complete();
     }
 }
