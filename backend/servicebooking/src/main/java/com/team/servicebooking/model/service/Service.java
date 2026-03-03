@@ -10,4 +10,16 @@ public class Service {
     double getPrice() {
         return price;
     }
+
+    double getDuration() {
+        return duration;
+    }
+
+    String getName() {
+        return serviceName;
+    }
+
+    String getDescription() {
+        return service_description;
+    }
 }
