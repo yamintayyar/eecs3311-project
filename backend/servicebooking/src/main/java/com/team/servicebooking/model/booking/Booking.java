@@ -1,14 +1,15 @@
 package servicebooking.src.main.java.com.team.servicebooking.model.booking;
 
+import servicebooking.src.main.java.com.team.servicebooking.config.DatabaseSingleton;
 import servicebooking.src.main.java.com.team.servicebooking.model.availability.Availability;
 import servicebooking.src.main.java.com.team.servicebooking.model.payment.Payment;
 import servicebooking.src.main.java.com.team.servicebooking.model.service.Service;
 import servicebooking.src.main.java.com.team.servicebooking.model.user.Client;
 import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -21,6 +22,8 @@ public class Booking {
     private LocalDate bookingDate;
     private BookingState bookingState;
     private Payment payment;
+
+    private DatabaseSingleton database = DatabaseSingleton.getInstance();
 
 
     public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilty) {
@@ -51,6 +54,15 @@ public class Booking {
     }
 
     public void cancel() {
+
+        int min_notice = database.getMinNotice();
+
+        LocalDateTime cancel_deadline = availability.get(0).getStartTime().plusHours(-min_notice); //get start time of beginning of session
+
+        if (cancel_deadline.compareTo( LocalDateTime.now() ) < 0 ) {
+            System.out.println("Error: Can not cancel booking because deadline has passed.");
+        }
+
     	this.bookingState.cancel();
     }
 

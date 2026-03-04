@@ -23,4 +23,8 @@ public class Availability {
         isBooked= false;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
 }

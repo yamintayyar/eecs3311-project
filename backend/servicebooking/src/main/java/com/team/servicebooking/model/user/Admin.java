@@ -18,8 +18,12 @@ public class Admin extends User {
         database.addConsultant(consultant);
     }
 
-    void createPolicy() {
-        //TODO: modify UML + classes so that changes in database attributes (priceMultiplier, refundRule, etc.) are reflected in other classes
+    void setCancellationDeadline(int hours_prior) {
+        database.setMinNotice(hours_prior);
+    }
+
+    void setDiscount(double new_rate) {
+        database.setDiscount(new_rate);
     }
 
 
