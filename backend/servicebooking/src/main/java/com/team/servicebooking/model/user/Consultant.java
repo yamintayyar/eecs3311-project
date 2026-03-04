@@ -16,52 +16,56 @@ public class Consultant extends User {
     public Consultant(UUID user_id, String name, String email, String password) {
     	super(user_id, name, email, password);
     	
+    	this.services = new ArrayList<Service>();
+    	this.availabilitySlots = new ArrayList<Availability>();
+    	this.bookings = new ArrayList<Booking>();
+    	
     }
 
-    void addAvailability(Availability availability) {
+    public void addAvailability(Availability availability) {
         if (availability != null) availabilitySlots.add(availability);
     }
 
-    void removeAvailability(Availability availability) {
+    public void removeAvailability(Availability availability) {
         availabilitySlots.remove(availability);
     }
 
-    List<Booking> viewBookings() {
+    public List<Booking> viewBookings() {
         List<Booking> t = new ArrayList<Booking>();
         t.addAll(bookings); //deep copy of list, shallow copy of all bookings within the list
         return t;
     }
 
-    void acceptBooking(Booking booking) {
+    public void acceptBooking(Booking booking) {
 
         if (!booking.paid()) booking.confirm(); //if at requestedstate, goes to confirmedstate.
         //if at confirmedstate, goes to pendingpaymentstate (basically equivalent)
         //otherwise, will not proceed because there is no payment yet
     }
 
-    void rejectBooking(Booking booking) {
+    public void rejectBooking(Booking booking) {
         if (!booking.payable()) { //if booking is not payable (and therefore not yet confirmed or pending payment), consultant can reject it
             booking.reject();
         }
     }
 
-    void completeBooking(Booking booking) {
+    public void completeBooking(Booking booking) {
         if (booking.paid()) booking.complete(); //if booking already was paid for, we can move to final confirmed state
     }
 
-    List<Service> getServices() {
+    public List<Service> getServices() {
         List<Service> t = new ArrayList<>();
         t.addAll(services); //deep copy of list, shallow copy of all bookings within the list
         return t;
     }
 
-    List<Availability> getAvailabilities() {
+    public List<Availability> getAvailabilities() {
         List<Availability> t = new ArrayList<>();
         t.addAll(availabilitySlots); //deep copy of list, shallow copy of all bookings within the list
         return t;
     }
 
-    void notify(String notification, Booking booking) {
+    public void notify(String notification, Booking booking) {
         bookings.add(booking);
 
         this.notify(notification);
