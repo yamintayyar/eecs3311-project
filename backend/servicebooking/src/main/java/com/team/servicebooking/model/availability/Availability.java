@@ -10,15 +10,17 @@ public class Availability {
     private boolean isBooked = false;
 
     Availability(LocalDateTime startTime, LocalDateTime endTime) {
-
+        this.slot_id = UUID.randomUUID();
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     void markBooked() {
-
+        isBooked = true;
     }
 
     void markAvailable() {
-
+        isBooked= false;
     }
 
 }
