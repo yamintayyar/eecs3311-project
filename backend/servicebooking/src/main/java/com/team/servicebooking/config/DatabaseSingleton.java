@@ -11,6 +11,7 @@ public class DatabaseSingleton {
     private int min_notice = 24;
     private double discount = 1.0;
     private boolean refund = false;
+    private boolean verbose = false;
 
     private DatabaseSingleton() {
     	consultants = new ArrayList<Consultant>();
@@ -51,5 +52,13 @@ public class DatabaseSingleton {
 
     public void addConsultant(Consultant consultant) {
     	consultants.add(consultant);
+    }
+
+    public void setVerboseNotifications(boolean setting) {
+        verbose = setting;
+    }
+
+    public boolean getVerboseNotification() {
+        return verbose;
     }
 }

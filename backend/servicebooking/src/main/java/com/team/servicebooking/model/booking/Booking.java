@@ -37,6 +37,10 @@ public class Booking {
 
     	System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + ".");   //TODO: test to make sure that formatting is correct
 
+        if (database.getVerboseNotification()) {
+            client.notify("Booking created for " + bookingDate.toString() + ".");
+        }
+
     }
 
     public java.util.UUID getID() {
@@ -61,12 +65,21 @@ public class Booking {
 
         if (cancel_deadline.compareTo( LocalDateTime.now() ) < 0 ) {
             System.out.println("Error: Can not cancel booking because deadline has passed.");
+
+            if (database.getVerboseNotification()) {
+                client.notify("Error: Can not cancel booking because deadline has passed.");
+            }
+
             return;
         }
 
         if (bookingState.isRefundable() && database.getRefundPolicy()) { //if booking is in a refundable state (paid) and the application has a refund policy active
             payment.markRefunded();
             System.out.println("Successfully refunded payment for booking " + booking_id);
+
+            if (database.getVerboseNotification()) {
+                client.notify("Successfully refunded payment for booking " + booking_id);
+            }
         }
 
     	this.bookingState.cancel();
@@ -74,6 +87,8 @@ public class Booking {
 
     public void reject() {
     	this.bookingState.reject();
+
+        client.notify("Booking " + booking_id + " has been rejected by consultant " + consultant.getName());
     }
 
     public double getPrice(){
@@ -83,6 +98,12 @@ public class Booking {
     public void pay(Payment payment)
     {
         this.payment = payment;
+
+        if (database.getVerboseNotification()) {
+            String notification = "Booking " + booking_id + " has been paid for";
+            client.notify(notification);
+            consultant.notify(notification);
+        }
     }
 
     public boolean paid(){
