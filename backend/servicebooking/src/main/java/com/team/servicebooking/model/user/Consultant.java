@@ -72,6 +72,9 @@ public class Consultant extends User {
 
     }
 
+    public void addService(Service service) {
+        services.add(service);
+    }
     
 }
 
