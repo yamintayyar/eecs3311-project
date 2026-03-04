@@ -55,7 +55,7 @@ public class Client extends User {
         }
     }
 
-    void requestBooking(Consultant consultant, Availability availability, Service service) {
+    void requestBooking(Consultant consultant, List<Availability> availability, Service service) {
         Booking b = new Booking(this, consultant, service, availability);
 
         bookings.add(b);

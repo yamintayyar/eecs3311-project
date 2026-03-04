@@ -7,7 +7,7 @@ public class Service {
     private String serviceName;
     private String service_description;
     private double price;
-    private int duration;  //duration in minutes? 
+    private int duration;  //slot quantity? 
     
     public Service(String serviceName, String service_description, double price, int duration) {
     	this.service_id = UUID.randomUUID();
