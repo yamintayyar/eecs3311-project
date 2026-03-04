@@ -27,9 +27,7 @@ public class Booking {
     	this.consultant = consultant;
     	this.service = service;
     	this.availability = availabilty;
-
     	this.bookingDate = LocalDate.now();
-
     	this.bookingState = new RequestState(this);
 
     	System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + ".");   //TODO: test to make sure that formatting is correct
