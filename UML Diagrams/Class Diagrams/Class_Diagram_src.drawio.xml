@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.6.0">
   <diagram name="Page-1" id="qYxn1eTe0OqTBUvL4TkI">
-    <mxGraphModel dx="1708" dy="2322" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1548" dy="2093" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -115,10 +115,10 @@
           <mxGeometry height="44" width="160" y="26" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-37" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="ConfirmedState" vertex="1">
-          <mxGeometry height="90" width="160" x="-41.54" y="760" as="geometry" />
+          <mxGeometry height="100" width="160" x="-41.54" y="760" as="geometry" />
         </mxCell>
-        <mxCell id="8g1fMWvN-QU8HGfWxgcL-38" parent="8g1fMWvN-QU8HGfWxgcL-37" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="+ markPaid(): void&amp;nbsp;&lt;div&gt;+ cancel(): void&lt;/div&gt;&lt;div&gt;+ pending()&lt;/div&gt;&lt;div&gt;+payable()&lt;/div&gt;" vertex="1">
-          <mxGeometry height="64" width="160" y="26" as="geometry" />
+        <mxCell id="8g1fMWvN-QU8HGfWxgcL-38" parent="8g1fMWvN-QU8HGfWxgcL-37" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="+ markPaid(): void&amp;nbsp;&lt;div&gt;+ cancel(): void&lt;/div&gt;&lt;div&gt;+ pending()&lt;/div&gt;&lt;div&gt;+ payable()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="74" width="160" y="26" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-39" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="RejectedState" vertex="1">
           <mxGeometry height="40" width="160" x="-41.54" y="870" as="geometry" />
@@ -127,7 +127,7 @@
           <mxGeometry height="40" width="160" x="-41.54" y="925" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-43" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="CompletedState" vertex="1">
-          <mxGeometry height="50" width="160" x="-41.54" y="1060" as="geometry" />
+          <mxGeometry height="50" width="160" x="-41.54" y="1070" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-44" edge="1" parent="1" style="endArrow=block;endFill=0;endSize=12;html=1;rounded=0;" value="">
           <mxGeometry relative="1" width="160" as="geometry">
@@ -177,8 +177,8 @@
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-52" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="118.46000000000004" y="1128" as="sourcePoint" />
-            <mxPoint x="158.46" y="1030" as="targetPoint" />
+            <mxPoint x="118.46000000000004" y="1100" as="sourcePoint" />
+            <mxPoint x="158.46" y="1002" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-56" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="0..*" vertex="1">
@@ -307,8 +307,8 @@
             <mxPoint x="-20" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="8g1fMWvN-QU8HGfWxgcL-90" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Payment&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- payment_ID: UUID&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- amount: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- booking: Booking&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- paymentMethod: PaymentMethodStrategy&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ processPayment(): void&lt;/p&gt;" vertex="1">
-          <mxGeometry height="130" width="260" x="70" y="490" as="geometry" />
+        <mxCell id="8g1fMWvN-QU8HGfWxgcL-90" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Payment&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- payment_ID: UUID&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- amount: double&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- booking: Booking&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- paymentMethod: PaymentMethodStrategy&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- refunded&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ processPayment(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ markRefunded()&lt;/p&gt;" vertex="1">
+          <mxGeometry height="150" width="260" x="70" y="490" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-91" edge="1" parent="1" source="8g1fMWvN-QU8HGfWxgcL-90" style="endArrow=diamondThin;html=1;endSize=12;startArrow=diamond;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=0.993;exitY=0.367;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;endFill=0;" target="8g1fMWvN-QU8HGfWxgcL-78" value="">
           <mxGeometry relative="1" as="geometry">
@@ -361,7 +361,7 @@
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-102" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Credit&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div style=&quot;height:2px;&quot;&gt;&amp;nbsp;+ validate(): bool&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="140" x="-310" y="221.25" as="geometry" />
         </mxCell>
-        <mxCell id="8g1fMWvN-QU8HGfWxgcL-103" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;BookingState&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ booking: Booking&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ request(): void&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ confirm(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ reject(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ cancel(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ markPaid(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ complete() : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ payable()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ pending()&lt;/p&gt;" vertex="1">
+        <mxCell id="8g1fMWvN-QU8HGfWxgcL-103" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;BookingState&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ booking: Booking&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;+ request(): void&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ confirm(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ reject(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ cancel(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ markPaid(): void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ complete() : void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ payable()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ pending()&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ isRefundable()&lt;/p&gt;" vertex="1">
           <mxGeometry height="200" width="190" x="200" y="700" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-108" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="RejectedState" vertex="1">
@@ -415,10 +415,10 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-122" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="PendingPaymentState" vertex="1">
-          <mxGeometry height="60" width="160" x="-41.54" y="1130" as="geometry" />
+          <mxGeometry height="80" width="160" x="-41.54" y="1150" as="geometry" />
         </mxCell>
-        <mxCell id="8g1fMWvN-QU8HGfWxgcL-123" parent="8g1fMWvN-QU8HGfWxgcL-122" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="+ markPaid(): void&lt;div&gt;+ cancel(): void&lt;/div&gt;" vertex="1">
-          <mxGeometry height="34" width="160" y="26" as="geometry" />
+        <mxCell id="8g1fMWvN-QU8HGfWxgcL-123" parent="8g1fMWvN-QU8HGfWxgcL-122" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="+ markPaid(): void&lt;div&gt;+ cancel(): void&lt;/div&gt;&lt;div&gt;+ payable()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="54" width="160" y="26" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-124" edge="1" parent="1" source="8g1fMWvN-QU8HGfWxgcL-74" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.988;entryY=0.6;entryDx=0;entryDy=0;entryPerimeter=0;endArrow=none;endFill=0;startArrow=diamondThin;startFill=0;startSize=18;" target="8g1fMWvN-QU8HGfWxgcL-94">
           <mxGeometry relative="1" as="geometry" />
@@ -483,10 +483,10 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="8g1fMWvN-QU8HGfWxgcL-40" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="PaidState" vertex="1">
-          <mxGeometry height="60" width="160" x="-41.53999999999999" y="980" as="geometry" />
+          <mxGeometry height="70" width="160" x="-41.54" y="980" as="geometry" />
         </mxCell>
-        <mxCell id="8g1fMWvN-QU8HGfWxgcL-41" parent="8g1fMWvN-QU8HGfWxgcL-40" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="+ complete(): void&lt;div&gt;+ cancel(): void&lt;/div&gt;" vertex="1">
-          <mxGeometry height="34" width="160" y="26" as="geometry" />
+        <mxCell id="8g1fMWvN-QU8HGfWxgcL-41" parent="8g1fMWvN-QU8HGfWxgcL-40" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;" value="+ complete(): void&lt;div&gt;+ cancel(): void&lt;/div&gt;&lt;div&gt;+ isRefundable()&lt;/div&gt;" vertex="1">
+          <mxGeometry height="44" width="160" y="26" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
