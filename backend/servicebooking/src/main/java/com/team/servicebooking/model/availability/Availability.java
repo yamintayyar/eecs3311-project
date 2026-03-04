@@ -9,17 +9,17 @@ public class Availability {
     private LocalDateTime endTime;
     private boolean isBooked = false;
 
-    Availability(LocalDateTime startTime, LocalDateTime endTime) {
+    public Availability(LocalDateTime startTime, LocalDateTime endTime) {
         this.slot_id = UUID.randomUUID();
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    void markBooked() {
+    public void markBooked() {
         isBooked = true;
     }
 
-    void markAvailable() {
+    public void markAvailable() {
         isBooked= false;
     }
 
