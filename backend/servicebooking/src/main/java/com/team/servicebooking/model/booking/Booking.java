@@ -61,6 +61,12 @@ public class Booking {
 
         if (cancel_deadline.compareTo( LocalDateTime.now() ) < 0 ) {
             System.out.println("Error: Can not cancel booking because deadline has passed.");
+            return;
+        }
+
+        if (bookingState.isRefundable() && database.getRefundPolicy()) { //if booking is in a refundable state (paid) and the application has a refund policy active
+            payment.markRefunded();
+            System.out.println("Successfully refunded payment for booking " + booking_id);
         }
 
     	this.bookingState.cancel();

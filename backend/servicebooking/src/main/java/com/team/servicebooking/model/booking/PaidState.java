@@ -17,4 +17,9 @@ public class PaidState extends BookingState{
 		this.booking.changeState(cancelledState);
 		System.out.println("Booking cancelled.");
     }
+
+	@Override
+	public boolean isRefundable() {
+		return true;
+	}
 }

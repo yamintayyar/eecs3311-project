@@ -38,4 +38,8 @@ public abstract class BookingState {
     	return false;
     }
 
+    public boolean isRefundable() {
+        return false;
+    }
+
 }

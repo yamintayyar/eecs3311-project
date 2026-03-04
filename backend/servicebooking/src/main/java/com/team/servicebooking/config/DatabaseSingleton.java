@@ -10,6 +10,7 @@ public class DatabaseSingleton {
     private List<Consultant> consultants;
     private int min_notice = 24;
     private double discount = 1.0;
+    private boolean refund = false;
 
     private DatabaseSingleton() {
     	consultants = new ArrayList<Consultant>();
@@ -38,6 +39,14 @@ public class DatabaseSingleton {
 
     public void setDiscount(double discount) {
         this.discount = discount;
+    }
+
+    public boolean getRefundPolicy() {
+        return refund;
+    }
+
+    public void setRefundPolicy(boolean policy) {
+        refund = policy;
     }
 
     public void addConsultant(Consultant consultant) {

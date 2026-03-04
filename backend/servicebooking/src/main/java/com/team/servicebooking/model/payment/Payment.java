@@ -10,6 +10,7 @@ public class Payment {
     private double amount;
     private Booking booking;
     private PaymentMethodStrategy paymentMethod;
+    private boolean refunded = false;
 
     private Payment(Booking booking, PaymentMethodStrategy paymentMethod) {
         this.payment_id = UUID.randomUUID();
@@ -49,6 +50,10 @@ public class Payment {
             return null;
         }
 
+    }
+
+    public void markRefunded() {
+        this.refunded = true;
     }
 
 }
