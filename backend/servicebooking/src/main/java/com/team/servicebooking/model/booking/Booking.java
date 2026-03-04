@@ -6,6 +6,8 @@ import servicebooking.src.main.java.com.team.servicebooking.model.service.Servic
 import servicebooking.src.main.java.com.team.servicebooking.model.user.Client;
 import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -15,13 +17,13 @@ public class Booking {
     private Client client;
     private Consultant consultant;
     private Service service;
-    private Availability availability;
+    private List<Availability> availability;
     private LocalDate bookingDate;
     private BookingState bookingState;
     private Payment payment;
 
 
-    public Booking(Client client, Consultant consultant, Service service, Availability availabilty) {
+    public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilty) {
     	this.booking_id = UUID.randomUUID();
     	this.client = client;
     	this.consultant = consultant;
