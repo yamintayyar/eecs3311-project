@@ -18,6 +18,15 @@ public class Payment {
         this.amount = booking.getPrice();
     }
 
+    public UUID getPaymentId() {
+        return payment_id;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+
     public static Payment processPayment(Booking booking, PaymentMethodStrategy paymentMethod)
             throws InterruptedException {
 
