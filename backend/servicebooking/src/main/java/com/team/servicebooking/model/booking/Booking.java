@@ -1,16 +1,15 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.booking;
-
-import servicebooking.src.main.java.com.team.servicebooking.model.availability.Availability;
-import servicebooking.src.main.java.com.team.servicebooking.model.payment.Payment;
-import servicebooking.src.main.java.com.team.servicebooking.model.service.Service;
-import servicebooking.src.main.java.com.team.servicebooking.model.user.Client;
-import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
+package com.team.servicebooking.model.booking;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.team.servicebooking.model.availability.Availability;
+import com.team.servicebooking.model.payment.Payment;
+import com.team.servicebooking.model.service.Service;
+import com.team.servicebooking.model.user.Client;
+import com.team.servicebooking.model.user.Consultant;
 
 public class Booking {
     private UUID booking_id;
@@ -22,17 +21,24 @@ public class Booking {
     private BookingState bookingState;
     private Payment payment;
 
-
     public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilty) {
-    	this.booking_id = UUID.randomUUID();
-    	this.client = client;
-    	this.consultant = consultant;
-    	this.service = service;
-    	this.availability = availabilty;
-    	this.bookingDate = LocalDate.now();
-    	this.bookingState = new RequestState(this);
+        this.booking_id = UUID.randomUUID();
+        this.client = client;
+        this.consultant = consultant;
+        this.service = service;
+        this.availability = availabilty;
+        this.bookingDate = LocalDate.now();
+        this.bookingState = new RequestState(this);
 
-    	System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + ".");   //TODO: test to make sure that formatting is correct
+        System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + "."); // TODO:
+                                                                                                                // test
+                                                                                                                // to
+                                                                                                                // make
+                                                                                                                // sure
+                                                                                                                // that
+                                                                                                                // formatting
+                                                                                                                // is
+                                                                                                                // correct
 
     }
 
@@ -41,34 +47,32 @@ public class Booking {
     }
 
     public void changeState(BookingState bookingState) {
-    	//Changed return type from boolean to void.
-    	this.bookingState = bookingState;
+        // Changed return type from boolean to void.
+        this.bookingState = bookingState;
     }
-
 
     public boolean payable() {
         return this.bookingState.payable();
     }
 
     public void cancel() {
-    	this.bookingState.cancel();
+        this.bookingState.cancel();
     }
 
     public void reject() {
-    	this.bookingState.reject();
+        this.bookingState.reject();
     }
 
-    public double getPrice(){
+    public double getPrice() {
         return service.getPrice();
     }
 
-    public void pay(Payment payment)
-    {
+    public void pay(Payment payment) {
         this.payment = payment;
     }
 
-    public boolean paid(){
-        return payment!=null; //returns true if payment has been set, and thus pay() was called
+    public boolean paid() {
+        return payment != null; // returns true if payment has been set, and thus pay() was called
     }
 
     public void confirm() {

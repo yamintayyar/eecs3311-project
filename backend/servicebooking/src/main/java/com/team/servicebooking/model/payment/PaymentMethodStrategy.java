@@ -1,4 +1,4 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.payment;
+package com.team.servicebooking.model.payment;
 
 import java.time.LocalDate;
 import java.util.UUID;

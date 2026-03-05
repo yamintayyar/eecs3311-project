@@ -1,9 +1,9 @@
-package servicebooking.src.main.java.com.team.servicebooking.service;
-
-import servicebooking.src.main.java.com.team.servicebooking.model.user.Consultant;
-import servicebooking.src.main.java.com.team.servicebooking.model.user.User;
+package com.team.servicebooking.service;
 
 import java.util.List;
+
+import com.team.servicebooking.model.user.Consultant;
+import com.team.servicebooking.model.user.User;
 
 public class ApplicationService {
     private List<User> users;

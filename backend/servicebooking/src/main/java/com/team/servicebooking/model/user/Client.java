@@ -1,15 +1,15 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.user;
-
-import servicebooking.src.main.java.com.team.servicebooking.config.DatabaseSingleton;
-import servicebooking.src.main.java.com.team.servicebooking.model.availability.Availability;
-import servicebooking.src.main.java.com.team.servicebooking.model.booking.Booking;
-import servicebooking.src.main.java.com.team.servicebooking.model.payment.Payment;
-import servicebooking.src.main.java.com.team.servicebooking.model.payment.PaymentMethodStrategy;
-import servicebooking.src.main.java.com.team.servicebooking.model.service.Service;
+package com.team.servicebooking.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.team.servicebooking.config.DatabaseSingleton;
+import com.team.servicebooking.model.availability.Availability;
+import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.payment.Payment;
+import com.team.servicebooking.model.payment.PaymentMethodStrategy;
+import com.team.servicebooking.model.service.Service;
 
 public class Client extends User {
     private List<PaymentMethodStrategy> paymentMethods;
@@ -18,13 +18,13 @@ public class Client extends User {
     private DatabaseSingleton database;
 
     public Client(UUID user_id, String name, String email, String password) {
-    	super(user_id, name, email, password);
+        super(user_id, name, email, password);
 
         paymentMethods = new ArrayList<>();
         payments = new ArrayList<>();
         bookings = new ArrayList<>();
         database = DatabaseSingleton.getInstance();
-    	
+
     }
 
     void addPaymentMethod(PaymentMethodStrategy paymentMethod) {
@@ -35,15 +35,15 @@ public class Client extends User {
         paymentMethods.remove(paymentMethod);
     }
 
-    List<Booking> getBookingHistory(){
+    List<Booking> getBookingHistory() {
         List<Booking> t = new ArrayList<Booking>();
-        t.addAll(bookings); //deep copy of list, shallow copy of all bookings within the list
+        t.addAll(bookings); // deep copy of list, shallow copy of all bookings within the list
         return t;
     }
 
     List<Payment> getPaymentHistory() {
         List<Payment> t = new ArrayList<Payment>();
-        t.addAll(payments); //deep copy of list, shallow copy of all payments within the list
+        t.addAll(payments); // deep copy of list, shallow copy of all payments within the list
         return t;
     }
 
@@ -60,13 +60,18 @@ public class Client extends User {
 
         bookings.add(b);
 
-        consultant.notify( String.format("Booking %s has been requested by user %s", b.getID().toString(), this.name) ); //notify consultant of new booking
+        consultant.notify(String.format("Booking %s has been requested by user %s", b.getID().toString(), this.name)); // notify
+                                                                                                                       // consultant
+                                                                                                                       // of
+                                                                                                                       // new
+                                                                                                                       // booking
     }
 
     void processPayment(Booking booking, PaymentMethodStrategy paymentMethod) throws InterruptedException {
 
         Payment p = Payment.processPayment(booking, paymentMethod);
-        if (p != null) payments.add(p);
+        if (p != null)
+            payments.add(p);
 
     }
 
@@ -74,7 +79,7 @@ public class Client extends User {
 
         List<Consultant> consultantList = database.getConsultants();
 
-        List<Service> serviceList = new ArrayList<>(); //go through list of consultants, gather all services
+        List<Service> serviceList = new ArrayList<>(); // go through list of consultants, gather all services
         for (Consultant c : consultantList) {
             serviceList.addAll(c.getServices());
         }
@@ -82,5 +87,5 @@ public class Client extends User {
         return serviceList;
 
     }
-   
+
 }

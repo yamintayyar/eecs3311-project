@@ -1,8 +1,8 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.payment;
-
-import servicebooking.src.main.java.com.team.servicebooking.model.booking.Booking;
+package com.team.servicebooking.model.payment;
 
 import java.util.UUID;
+
+import com.team.servicebooking.model.booking.Booking;
 
 public class Payment {
 
@@ -18,11 +18,13 @@ public class Payment {
         this.amount = booking.getPrice();
     }
 
-    public static Payment processPayment(Booking booking, PaymentMethodStrategy paymentMethod) throws InterruptedException {
+    public static Payment processPayment(Booking booking, PaymentMethodStrategy paymentMethod)
+            throws InterruptedException {
 
         try {
-            //check if payment method is valid, and then ask booking class if it can be paid (if status is confirmed)
-            //finally, create payment
+            // check if payment method is valid, and then ask booking class if it can be
+            // paid (if status is confirmed)
+            // finally, create payment
 
             if (!paymentMethod.validate()) {
                 System.out.println("Error: Invalid payment method");
@@ -30,7 +32,8 @@ public class Payment {
             }
 
             if (!booking.payable()) {
-                System.out.println("Error: Booking has not been confirmed yet by consultant. Please await their response.");
+                System.out.println(
+                        "Error: Booking has not been confirmed yet by consultant. Please await their response.");
                 return null;
             }
 
