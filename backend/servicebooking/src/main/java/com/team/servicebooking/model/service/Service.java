@@ -1,5 +1,7 @@
 package com.team.servicebooking.model.service;
 
+import servicebooking.src.main.java.com.team.servicebooking.config.DatabaseSingleton;
+
 import java.util.UUID;
 
 public class Service {
@@ -7,18 +9,20 @@ public class Service {
     private String serviceName;
     private String service_description;
     private double price;
-    private int duration; // slot quantity?
+    private int duration;  //slot quantity?
 
+    private DatabaseSingleton database = DatabaseSingleton.getInstance();
+    
     public Service(String serviceName, String service_description, double price, int duration) {
-        this.service_id = UUID.randomUUID();
-        this.serviceName = serviceName;
-        this.service_description = service_description;
-        this.price = price;
-        this.duration = duration;
+    	this.service_id = UUID.randomUUID();
+    	this.serviceName = serviceName;
+    	this.service_description = service_description;
+    	this.price = price;
+    	this.duration = duration;
     }
 
     public double getPrice() {
-        return this.price * this.duration;
+        return this.price * this.duration * database.applyDiscount(); //applies discounts if any are registered by admin
     }
 
     public double getDuration() {

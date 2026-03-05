@@ -1,8 +1,8 @@
 package com.team.servicebooking.model.booking;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import com.team.servicebooking.model.availability.Availability;
@@ -23,6 +23,9 @@ public class Booking {
     private BookingState bookingState;
     private Payment payment;
 
+    private DatabaseSingleton database = DatabaseSingleton.getInstance();
+
+
     public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilty) {
         this.booking_id = UUID.randomUUID();
         this.client = client;
@@ -42,6 +45,10 @@ public class Booking {
                                                                                                                 // is
                                                                                                                 // correct
 
+        if (database.getVerboseNotification()) {
+            client.notify("Booking created for " + bookingDate.toString() + ".");
+        }
+
     }
 
     public java.util.UUID getID() {
@@ -58,11 +65,37 @@ public class Booking {
     }
 
     public void cancel() {
-        this.bookingState.cancel();
+
+        int min_notice = database.getMinNotice();
+
+        LocalDateTime cancel_deadline = availability.get(0).getStartTime().plusHours(-min_notice); //get start time of beginning of session
+
+        if (cancel_deadline.compareTo( LocalDateTime.now() ) < 0 ) {
+            System.out.println("Error: Can not cancel booking because deadline has passed.");
+
+            if (database.getVerboseNotification()) {
+                client.notify("Error: Can not cancel booking because deadline has passed.");
+            }
+
+            return;
+        }
+
+        if (bookingState.isRefundable() && database.getRefundPolicy()) { //if booking is in a refundable state (paid) and the application has a refund policy active
+            payment.markRefunded();
+            System.out.println("Successfully refunded payment for booking " + booking_id);
+
+            if (database.getVerboseNotification()) {
+                client.notify("Successfully refunded payment for booking " + booking_id);
+            }
+        }
+
+    	this.bookingState.cancel();
     }
 
     public void reject() {
-        this.bookingState.reject();
+    	this.bookingState.reject();
+
+        client.notify("Booking " + booking_id + " has been rejected by consultant " + consultant.getName());
     }
 
     public double getPrice() {
@@ -71,6 +104,12 @@ public class Booking {
 
     public void pay(Payment payment) {
         this.payment = payment;
+
+        if (database.getVerboseNotification()) {
+            String notification = "Booking " + booking_id + " has been paid for";
+            client.notify(notification);
+            consultant.notify(notification);
+        }
     }
 
     public boolean paid() {
