@@ -1,8 +1,8 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.user;
-
-import servicebooking.src.main.java.com.team.servicebooking.config.DatabaseSingleton;
+package com.team.servicebooking.model.user;
 
 import java.util.UUID;
+
+import com.team.servicebooking.config.DatabaseSingleton;
 
 public class Admin extends User {
 
@@ -11,7 +11,7 @@ public class Admin extends User {
     public Admin(UUID user_id, String name, String email, String password) {
         super(user_id, name, email, password);
         database = DatabaseSingleton.getInstance();
-        
+
     }
 
     void approveConsultant(Consultant consultant) {
@@ -19,8 +19,8 @@ public class Admin extends User {
     }
 
     void createPolicy() {
-        //TODO: modify UML + classes so that changes in database attributes (priceMultiplier, refundRule, etc.) are reflected in other classes
+        // TODO: modify UML + classes so that changes in database attributes
+        // (priceMultiplier, refundRule, etc.) are reflected in other classes
     }
-
 
 }

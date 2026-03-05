@@ -1,11 +1,13 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.payment;
+package com.team.servicebooking.model.payment;
 
 public class BankTransfer extends PaymentMethodStrategy {
 
     public boolean validate() {
-        if (!number.matches("\\d{5}-\\d{3}-\\d{7,12}")  ) return false; // ensures format XXXXX-YYY-ZZZZZZZ(...) for bank account number
+        if (!number.matches("\\d{5}-\\d{3}-\\d{7,12}"))
+            return false; // ensures format XXXXX-YYY-ZZZZZZZ(...) for bank account number
 
-        if (! number2.matches("0\\d{3}-\\d{5}")) return false; //ensures format 0YYY-XXXXX for routing number
+        if (!number2.matches("0\\d{3}-\\d{5}"))
+            return false; // ensures format 0YYY-XXXXX for routing number
 
         return true;
     }

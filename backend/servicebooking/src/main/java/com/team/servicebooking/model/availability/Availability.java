@@ -1,4 +1,4 @@
-package servicebooking.src.main.java.com.team.servicebooking.model.availability;
+package com.team.servicebooking.model.availability;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class Availability {
     }
 
     public void markAvailable() {
-        isBooked= false;
+        isBooked = false;
     }
 
 }
