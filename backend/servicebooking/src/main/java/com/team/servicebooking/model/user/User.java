@@ -1,3 +1,5 @@
+package com.team.servicebooking.model.user;
+
 import java.util.UUID;
 
 public interface User {
@@ -7,6 +9,6 @@ public interface User {
     String password = "";
 
     boolean login();
+
     boolean logout();
 }
-

@@ -2,6 +2,13 @@ package com.team.servicebooking.model.user;
 
 import java.util.List;
 
+import com.team.servicebooking.config.DatabaseSingleton;
+import com.team.servicebooking.model.availability.Availability;
+import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.payment.Payment;
+import com.team.servicebooking.model.payment.PaymentMethodStrategy;
+import com.team.servicebooking.model.service.Service;
+
 public class Client implements User {
     private List<PaymentMethodStrategy> paymentMethods;
     private List<Payment> payments;

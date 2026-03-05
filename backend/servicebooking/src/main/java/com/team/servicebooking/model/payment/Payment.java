@@ -1,5 +1,7 @@
 package com.team.servicebooking.model.payment;
 
+import com.team.servicebooking.model.booking.Booking;
+
 public class Payment {
 
     private java.util.UUID payment_id;

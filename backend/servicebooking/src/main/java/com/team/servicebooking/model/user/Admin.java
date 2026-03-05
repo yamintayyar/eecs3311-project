@@ -1,5 +1,7 @@
 package com.team.servicebooking.model.user;
 
+import com.team.servicebooking.config.DatabaseSingleton;
+
 public class Admin implements User {
     DatabaseSingleton database;
 

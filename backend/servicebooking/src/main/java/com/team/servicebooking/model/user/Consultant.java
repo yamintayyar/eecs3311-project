@@ -2,6 +2,10 @@ package com.team.servicebooking.model.user;
 
 import java.util.List;
 
+import com.team.servicebooking.model.availability.Availability;
+import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.service.Service;
+
 public class Consultant implements User {
     private List<Service> services;
     private List<Availability> availabilitySlots;
