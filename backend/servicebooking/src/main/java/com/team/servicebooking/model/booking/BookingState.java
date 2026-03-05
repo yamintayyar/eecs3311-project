@@ -3,28 +3,40 @@ package com.team.servicebooking.model.booking;
 public abstract class BookingState {
     Booking booking;
 
-    void request() {
+    public BookingState(Booking booking) {
+        this.booking = booking;
+    }
+
+    public void request() {
 
     }
 
-    void confirm() {
+    public void confirm() {
 
     }
 
-    void reject() {
+    public void reject() {
 
     }
 
-    void cancel() {
+    public void cancel() {
+        // Can be edited depend on Admin's policy
+    }
+
+    public void markPaid() {
 
     }
 
-    void markPaid() {
+    public void complete() {
 
     }
 
-    void complete() {
+    public void pending() {
 
+    }
+
+    public boolean payable() {
+        return false;
     }
 
 }

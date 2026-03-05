@@ -1,21 +1,26 @@
 package com.team.servicebooking.model.availability;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 public class Availability {
-    private java.util.UUID slot_id;
-    private java.time.LocalDateTime startTime;
-    private java.time.LocalDateTime endTime;
-    private boolean isBooked;
+    private UUID slot_id;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private boolean isBooked = false;
 
-    Availability() {
-
+    public Availability(LocalDateTime startTime, LocalDateTime endTime) {
+        this.slot_id = UUID.randomUUID();
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    void markBooked() {
-
+    public void markBooked() {
+        isBooked = true;
     }
 
-    void markAvailable() {
-
+    public void markAvailable() {
+        isBooked = false;
     }
 
 }

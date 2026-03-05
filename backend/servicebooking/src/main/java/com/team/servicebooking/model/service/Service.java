@@ -1,13 +1,36 @@
 package com.team.servicebooking.model.service;
 
+import java.util.UUID;
+
 public class Service {
-    private java.util.UUID service_id;
+    private UUID service_id;
     private String serviceName;
     private String service_description;
     private double price;
-    private int duration;
+    private int duration; // slot quantity?
 
-    double getPrice() {
-        return price;
+    public Service(String serviceName, String service_description, double price, int duration) {
+        this.service_id = UUID.randomUUID();
+        this.serviceName = serviceName;
+        this.service_description = service_description;
+        this.price = price;
+        this.duration = duration;
     }
+
+    public double getPrice() {
+        return this.price * this.duration;
+    }
+
+    public double getDuration() {
+        return this.duration;
+    }
+
+    public String getName() {
+        return this.serviceName;
+    }
+
+    public String getDescription() {
+        return this.service_description;
+    }
+
 }
