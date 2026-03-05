@@ -50,8 +50,16 @@ public abstract class User {
         }
     }
 
+    public UUID getID() {
+        return this.user_id;
+    }
+
     public String getName() {
         return this.name;
+    }
+
+    public String getEmail() {
+        return this.email;
     }
 
     public void notify(String notification) {
