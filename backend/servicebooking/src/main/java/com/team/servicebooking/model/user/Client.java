@@ -1,15 +1,15 @@
 package com.team.servicebooking.model.user;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.payment.PaymentMethodStrategy;
 import com.team.servicebooking.model.service.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Client extends User {
     private List<PaymentMethodStrategy> paymentMethods;
