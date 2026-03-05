@@ -2,7 +2,7 @@ package com.team.servicebooking.model.payment;
 
 public class PayPal extends PaymentMethodStrategy {
 
-    PayPal(String email) {
+    public PayPal(String email) {
         this.email = email;
     }
 
