@@ -3,6 +3,7 @@ package com.team.servicebooking.model.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import jakarta.persistence.*;
 
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.availability.Availability;
@@ -11,14 +12,26 @@ import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.payment.PaymentMethodStrategy;
 import com.team.servicebooking.model.service.Service;
 
+@Entity
+@Table(name = "clients")
 public class Client extends User {
+    @Id
+    @GeneratedValue
+    private UUID userId;
+
     private List<PaymentMethodStrategy> paymentMethods;
     private List<Payment> payments;
     private List<Booking> bookings;
     private DatabaseSingleton database;
 
-    public Client(UUID user_id, String name, String email, String password) {
-        super(user_id, name, email, password);
+    public Client() {
+        // JPA requires empty constructor
+    }
+
+    public Client(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
 
         paymentMethods = new ArrayList<>();
         payments = new ArrayList<>();

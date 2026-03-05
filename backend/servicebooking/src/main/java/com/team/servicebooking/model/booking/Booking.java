@@ -11,12 +11,6 @@ import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.model.user.Consultant;
 
-import com.team.servicebooking.model.availability.Availability;
-import com.team.servicebooking.model.payment.Payment;
-import com.team.servicebooking.model.service.Service;
-import com.team.servicebooking.model.user.Client;
-import com.team.servicebooking.model.user.Consultant;
-
 public class Booking {
     private UUID booking_id;
     private Client client;
@@ -42,8 +36,8 @@ public class Booking {
                                                                                                                 // make
                                                                                                                 // sure
                                                                                                                 // that
-                                                                                                                // formatting
-                                                                                                                // is
+                                                                                                                // formatti
+                                                                                                                // // is
                                                                                                                 // correct
 
     }

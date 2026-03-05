@@ -3,13 +3,24 @@ package com.team.servicebooking.model.user;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import jakarta.persistence.*;
 
+@MappedSuperclass
 public abstract class User {
+    @Id
+    @GeneratedValue
     protected UUID user_id;
+
     protected String name;
     protected String email;
     protected String password;
+
+    @ElementCollection
     protected List<String> notifications;
+
+    public User() {
+
+    }
 
     public User(UUID user_id, String name, String email, String password) {
         this.user_id = user_id;

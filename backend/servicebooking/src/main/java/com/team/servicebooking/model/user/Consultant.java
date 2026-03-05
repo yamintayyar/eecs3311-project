@@ -8,13 +8,19 @@ import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.service.Service;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "consultants")
 public class Consultant extends User {
     private List<Service> services;
     private List<Availability> availabilitySlots;
     private List<Booking> bookings;
 
     public Consultant(UUID user_id, String name, String email, String password) {
-        super(user_id, name, email, password);
+        this.name = name;
+        this.email = email;
+        this.password = password;
 
         this.services = new ArrayList<Service>();
         this.availabilitySlots = new ArrayList<Availability>();

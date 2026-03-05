@@ -4,12 +4,22 @@ import java.util.UUID;
 
 import com.team.servicebooking.config.DatabaseSingleton;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "admins")
 public class Admin extends User {
+
+    @Id
+    @GeneratedValue
+    private UUID userId;
 
     DatabaseSingleton database;
 
     public Admin(UUID user_id, String name, String email, String password) {
-        super(user_id, name, email, password);
+        this.name = name;
+        this.email = email;
+        this.password = password;
         database = DatabaseSingleton.getInstance();
 
     }
