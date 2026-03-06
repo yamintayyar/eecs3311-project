@@ -1,15 +1,16 @@
 package com.team.servicebooking.model.booking;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-
+import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.model.user.Consultant;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 
 
