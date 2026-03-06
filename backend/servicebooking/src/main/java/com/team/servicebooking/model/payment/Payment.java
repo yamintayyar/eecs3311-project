@@ -14,7 +14,8 @@ public class Payment {
 
     @ManyToOne
     private Booking booking;
-    private PaymentMethodStrategy paymentMethod;
+    // private PaymentMethodStrategy paymentMethod;
+    private String paymentMethodType;
 
     private Payment(Booking booking, PaymentMethodStrategy paymentMethod) {
         this.payment_id = UUID.randomUUID();
