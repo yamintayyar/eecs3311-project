@@ -1,13 +1,18 @@
 package com.team.servicebooking.model.payment;
 
-import java.util.UUID;
+import java.util.*;
+import jakarta.persistence.*;
 
 import com.team.servicebooking.model.booking.Booking;
 
+@Entity
 public class Payment {
 
-    private java.util.UUID payment_id;
+    @Id
+    private UUID payment_id;
     private double amount;
+
+    @ManyToOne
     private Booking booking;
     private PaymentMethodStrategy paymentMethod;
 

@@ -9,7 +9,8 @@ import jakarta.persistence.*;
 public abstract class User {
     @Id
     @GeneratedValue
-    protected UUID user_id;
+    @Column(name = "user_id")
+    protected UUID userId;
 
     protected String name;
     protected String email;
@@ -22,8 +23,8 @@ public abstract class User {
 
     }
 
-    public User(UUID user_id, String name, String email, String password) {
-        this.user_id = user_id;
+    public User(UUID userId, String name, String email, String password) {
+        this.userId = userId;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -62,7 +63,7 @@ public abstract class User {
     }
 
     public UUID getID() {
-        return this.user_id;
+        return this.userId;
     }
 
     public String getName() {

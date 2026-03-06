@@ -2,7 +2,6 @@ package com.team.servicebooking.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import jakarta.persistence.*;
 
 import com.team.servicebooking.config.DatabaseSingleton;
@@ -15,13 +14,16 @@ import com.team.servicebooking.model.service.Service;
 @Entity
 @Table(name = "clients")
 public class Client extends User {
-    @Id
-    @GeneratedValue
-    private UUID userId;
-
+    @ElementCollection
     private List<PaymentMethodStrategy> paymentMethods;
+
+    @ElementCollection
     private List<Payment> payments;
+
+    @ElementCollection
     private List<Booking> bookings;
+
+    @Transient
     private DatabaseSingleton database;
 
     public Client() {
@@ -36,6 +38,7 @@ public class Client extends User {
         paymentMethods = new ArrayList<>();
         payments = new ArrayList<>();
         bookings = new ArrayList<>();
+
         database = DatabaseSingleton.getInstance();
 
     }

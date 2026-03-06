@@ -2,7 +2,6 @@ package com.team.servicebooking.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
@@ -17,7 +16,7 @@ public class Consultant extends User {
     private List<Availability> availabilitySlots;
     private List<Booking> bookings;
 
-    public Consultant(UUID user_id, String name, String email, String password) {
+    public Consultant(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
