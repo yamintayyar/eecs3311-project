@@ -1,6 +1,7 @@
 package com.team.servicebooking.model.service;
 
-import servicebooking.src.main.java.com.team.servicebooking.config.DatabaseSingleton;
+
+import com.team.servicebooking.config.DatabaseSingleton;
 
 import java.util.UUID;
 
