@@ -23,6 +23,7 @@ Test if the backend endpoints are working correctly by running the project then 
 
 - Yamin: Use Case Diagram, Class Diagram
 - Emmanuel: SpringBoot initialization
+- Fahmid: Class Diagram, Controllers(Payment, Booking)
 
 ---
 
