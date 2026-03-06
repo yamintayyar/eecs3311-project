@@ -21,7 +21,7 @@ Test if the backend endpoints are working correctly by running the project then 
 
 ## Contributions
 
-- Yamin: Use Case Diagram, Class Diagram
+- Yamin: Use Case Diagram, Class Diagram, Model(all classes)
 - Emmanuel: SpringBoot initialization
 - Fahmid: Class Diagram, Controllers(Payment, Booking)
 - Hasan: Class Diagram, Model(Booking, Service)
