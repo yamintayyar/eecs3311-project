@@ -22,6 +22,10 @@ public class Service {
     	this.duration = duration;
     }
 
+    public UUID getServiceId() {
+        return service_id;
+    }
+
     public double getPrice() {
         return this.price * this.duration * database.applyDiscount(); //applies discounts if any are registered by admin
     }

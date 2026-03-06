@@ -15,6 +15,22 @@ public class Availability {
         this.endTime = endTime;
     }
 
+    public UUID getSlotId() {
+        return slot_id;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public boolean isBooked() {
+        return isBooked;
+    }
+
     public void markBooked() {
         isBooked = true;
     }

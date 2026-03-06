@@ -56,6 +56,26 @@ public class Booking {
         return booking_id;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+    public Consultant getConsultant() {
+        return consultant;
+    }
+
+    public Service getService() {
+        return service;
+    }
+
+    public LocalDate getBookingDate() {
+        return bookingDate;
+    }
+
+    public BookingState getBookingState() {
+        return bookingState;
+    }
+
     public void changeState(BookingState bookingState) {
         // Changed return type from boolean to void.
         this.bookingState = bookingState;
