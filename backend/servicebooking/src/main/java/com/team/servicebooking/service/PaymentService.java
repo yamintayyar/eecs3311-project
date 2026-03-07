@@ -20,7 +20,8 @@ public class PaymentService {
             throw new RuntimeException("Booking not confirmed");
         }
 
-        Payment payment = new Payment(booking, strategy.getClass().getSimpleName());
+//        Payment payment = new Payment(booking, strategy.getClass().getSimpleName());
+        Payment payment = Payment.processPayment(booking, strategy);
 
         return payment;
     }
