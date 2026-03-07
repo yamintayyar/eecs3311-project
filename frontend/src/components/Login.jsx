@@ -27,7 +27,7 @@ export default function Login({ setAuthUser }) {
 
             if (user) {
                 // Success
-                const userId = role === 'CLIENT' ? user.clientId : user.consultantId;
+                const userId = user.id;
                 const authData = { id: userId, name: user.name, role: role };
 
                 // Save to elevated state

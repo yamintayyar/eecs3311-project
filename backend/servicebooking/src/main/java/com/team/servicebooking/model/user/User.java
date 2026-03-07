@@ -20,18 +20,14 @@ public abstract class User {
     }
 
     public boolean login() {
-
         try {
             System.out.println("Success! Welcome, " + this.name);
-
-            if (!notifications.isEmpty()) { // if there are notifications, it is printed as user logs in
-
+            if (!notifications.isEmpty()) {
                 System.out.println("Notifications:");
                 for (String s : notifications) {
                     System.out.println(s);
                 }
             }
-
             return true;
         } catch (Exception e) {
             System.out.println("ERROR: Unable to fulfill request");
@@ -40,7 +36,6 @@ public abstract class User {
     }
 
     public boolean logout() {
-
         try {
             System.out.println("Goodbye, " + this.name);
             return true;
@@ -60,6 +55,10 @@ public abstract class User {
 
     public String getEmail() {
         return this.email;
+    }
+
+    public String getPassword() {
+        return this.password;
     }
 
     public void notify(String notification) {

@@ -5,6 +5,11 @@ public class PendingPaymentState extends BookingState {
 		super(booking);
 	}
 
+	@Override
+	public String getStatus() {
+		return "PENDING_PAYMENT";
+	}
+
 	public void markPaid() {
 		PaidState paidState = new PaidState(this.booking);
 		this.booking.changeState(paidState);
@@ -12,7 +17,6 @@ public class PendingPaymentState extends BookingState {
 	}
 
 	public void cancel() {
-
 		CancelledState cancelledState = new CancelledState(this.booking);
 		this.booking.changeState(cancelledState);
 		System.out.println("Booking cancelled.");

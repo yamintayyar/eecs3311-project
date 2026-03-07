@@ -34,12 +34,27 @@ export default function ClientView({ authUser }) {
         setLoading(true);
         setError(null);
         try {
-            const svc = services.find(s => s.id === Number(selectedService));
+            // Dynamic fetch of consultant/service for demo
+            const consultantsRes = await axios.get(`${API_URL}/consultants`);
+            const firstConsultant = consultantsRes.data[0];
+
+            if (!firstConsultant) {
+                throw new Error("No consultants found. Please register a consultant first!");
+            }
+
+            const consultantId = firstConsultant.id;
+            const serviceId = firstConsultant.services[0]?.id;
+            const slotId = firstConsultant.availabilities[0]?.id;
+
+            if (!serviceId || !slotId) {
+                throw new Error("Consultant has no services or slots. This shouldn't happen with demo seeding!");
+            }
+
             const payload = {
                 clientId: authUser.id,
-                serviceId: svc.id.toString(), // DTO expects String
-                consultantId: "00000000-0000-0000-0000-000000000002", // Mocked base consultant 
-                slotIds: ["slot1", "slot2"] // Mocked slots
+                serviceId: serviceId.toString(),
+                consultantId: consultantId,
+                slotIds: [slotId]
             };
             await axios.post(`${API_URL}/bookings`, payload);
             alert('Booking request sent to consultant!');

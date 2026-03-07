@@ -26,7 +26,7 @@ export default function Register({ setAuthUser }) {
             const user = response.data;
 
             // Auto-login upon successful registration
-            const userId = role === 'CLIENT' ? user.clientId : user.consultantId;
+            const userId = user.id;
             const authData = { id: userId, name: user.name, role: role };
 
             setAuthUser(authData);

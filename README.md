@@ -19,6 +19,24 @@ Test if the backend endpoints are working correctly by running the project then 
 
 --- 
 
+### To run the Frontend
+
+Make sure to install the dependencies first by running the following command:
+
+```bash (in the frontend directory)
+npm install
+```
+
+Then run the following command:
+
+```bash (in the frontend directory)
+npm run dev
+```
+
+Test if the frontend works by going to `http://localhost:5173/`.
+
+--- 
+
 ## Contributions
 
 - Yamin: Use Case Diagram, Class Diagram, Model(all classes)
