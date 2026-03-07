@@ -5,6 +5,11 @@ public class ConfirmedState extends BookingState {
 		super(booking);
 	}
 
+	@Override
+	public String getStatus() {
+		return "CONFIRMED";
+	}
+
 	public void pending() {
 		PendingPaymentState pendingPaymentState = new PendingPaymentState(this.booking);
 		this.booking.changeState(pendingPaymentState);
@@ -20,5 +25,4 @@ public class ConfirmedState extends BookingState {
 	public boolean payable() {
 		return true;
 	}
-
 }

@@ -5,6 +5,11 @@ public class PaidState extends BookingState {
 		super(booking);
 	}
 
+	@Override
+	public String getStatus() {
+		return "PAID";
+	}
+
 	public void complete() {
 		CompletedState completedState = new CompletedState(this.booking);
 		this.booking.changeState(completedState);
