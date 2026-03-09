@@ -2,7 +2,7 @@ package com.team.servicebooking.model.payment;
 
 import java.time.LocalDate;
 
-public class Credit implements PaymentMethodStrategy {
+public class Credit extends PaymentMethodStrategy {
     private String number;
     private LocalDate expiry;
     private String cvv;

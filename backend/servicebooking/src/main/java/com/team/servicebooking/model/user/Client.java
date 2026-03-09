@@ -2,6 +2,9 @@ package com.team.servicebooking.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import jakarta.persistence.*;
 
 import com.team.servicebooking.config.DatabaseSingleton;
@@ -14,14 +17,14 @@ import com.team.servicebooking.model.service.Service;
 @Entity
 @Table(name = "clients")
 public class Client extends User {
-    @ElementCollection
-    private List<PaymentMethodStrategy> paymentMethods;
+    @Transient
+    private List<PaymentMethodStrategy> paymentMethods = new ArrayList<>();
 
-    @ElementCollection
-    private List<Payment> payments;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Payment> payments = new ArrayList<>();
 
-    @ElementCollection
-    private List<Booking> bookings;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
 
     @Transient
     private DatabaseSingleton database;

@@ -5,4 +5,9 @@ public class CancelledState extends BookingState {
 		super(booking);
 	}
 
+	@Override
+	public String getStatus() {
+		return "CANCELLED";
+	}
+
 }

@@ -3,16 +3,16 @@ package com.team.servicebooking.model.payment;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public interface PaymentMethodStrategy {
+public abstract class PaymentMethodStrategy {
 
-    /*
-     * UUID method_id;
-     * String number;
-     * String number2;
-     * LocalDate expiry;
-     * String email;
-     */
+    UUID method_id;
+    String number;
+    String number2;
+    LocalDate expiry;
+    String email;
 
-    boolean validate();
+    public boolean validate() {
+        return false;
+    }
 
 }

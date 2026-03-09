@@ -5,6 +5,11 @@ public class RequestState extends BookingState {
 		super(booking);
 	}
 
+	@Override
+	public String getStatus() {
+		return "PENDING";
+	}
+
 	public void confirm() {
 		ConfirmedState confirmedState = new ConfirmedState(this.booking);
 		this.booking.changeState(confirmedState);

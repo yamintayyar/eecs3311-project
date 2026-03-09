@@ -12,18 +12,23 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "consultants")
 public class Consultant extends User {
-    private List<Service> services;
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Availability> availabilitySlots;
-    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "consultant")
+    private List<Service> services = new ArrayList<>();
+
+    @OneToMany(mappedBy = "consultant")
+    private List<Booking> bookings = new ArrayList<>();
+
+    public Consultant() {
+        // JPA requires empty constructor
+    }
 
     public Consultant(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-
-        this.services = new ArrayList<Service>();
-        this.availabilitySlots = new ArrayList<Availability>();
-        this.bookings = new ArrayList<Booking>();
 
     }
 

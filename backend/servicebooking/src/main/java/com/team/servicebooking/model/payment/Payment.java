@@ -4,24 +4,40 @@ import java.util.*;
 import jakarta.persistence.*;
 
 import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.user.Client;
 
 @Entity
 public class Payment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID payment_id;
     private double amount;
 
     @ManyToOne
     private Booking booking;
-    // private PaymentMethodStrategy paymentMethod;
-    private String paymentMethodType;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    @Transient
+    private PaymentMethodStrategy paymentMethod;
+
+    private boolean refunded = false;
 
     private Payment(Booking booking, PaymentMethodStrategy paymentMethod) {
-        this.payment_id = UUID.randomUUID();
         this.booking = booking;
         this.paymentMethod = paymentMethod;
         this.amount = booking.getPrice();
+    }
+
+    public UUID getPaymentId() {
+        return payment_id;
+    }
+
+    public double getAmount() {
+        return amount;
     }
 
     public static Payment processPayment(Booking booking, PaymentMethodStrategy paymentMethod)
@@ -58,6 +74,10 @@ public class Payment {
             return null;
         }
 
+    }
+
+    public void markRefunded() {
+        this.refunded = true;
     }
 
 }
