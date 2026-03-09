@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-
-
 public class Booking {
     private UUID booking_id;
     private Client client;
@@ -25,7 +23,6 @@ public class Booking {
     private Payment payment;
 
     private DatabaseSingleton database = DatabaseSingleton.getInstance();
-
 
     public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilty) {
         this.booking_id = UUID.randomUUID();
@@ -52,7 +49,7 @@ public class Booking {
 
     }
 
-    public java.util.UUID getID() {
+    public UUID getID() {
         return booking_id;
     }
 
@@ -89,9 +86,11 @@ public class Booking {
 
         int min_notice = database.getMinNotice();
 
-        LocalDateTime cancel_deadline = availability.get(0).getStartTime().plusHours(-min_notice); //get start time of beginning of session
+        LocalDateTime cancel_deadline = availability.get(0).getStartTime().plusHours(-min_notice); // get start time of
+                                                                                                   // beginning of
+                                                                                                   // session
 
-        if (cancel_deadline.compareTo( LocalDateTime.now() ) < 0 ) {
+        if (cancel_deadline.compareTo(LocalDateTime.now()) < 0) {
             System.out.println("Error: Can not cancel booking because deadline has passed.");
 
             if (database.getVerboseNotification()) {
@@ -101,7 +100,9 @@ public class Booking {
             return;
         }
 
-        if (bookingState.isRefundable() && database.getRefundPolicy()) { //if booking is in a refundable state (paid) and the application has a refund policy active
+        if (bookingState.isRefundable() && database.getRefundPolicy()) { // if booking is in a refundable state (paid)
+                                                                         // and the application has a refund policy
+                                                                         // active
             payment.markRefunded();
             System.out.println("Successfully refunded payment for booking " + booking_id);
 
@@ -110,11 +111,11 @@ public class Booking {
             }
         }
 
-    	this.bookingState.cancel();
+        this.bookingState.cancel();
     }
 
     public void reject() {
-    	this.bookingState.reject();
+        this.bookingState.reject();
 
         client.notify("Booking " + booking_id + " has been rejected by consultant " + consultant.getName());
     }
