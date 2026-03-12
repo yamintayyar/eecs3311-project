@@ -1,5 +1,6 @@
 package com.team.servicebooking.model.service;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.user.Consultant;
 
@@ -7,58 +8,49 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 @Entity
 @Table(name = "services")
 public class Service {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID service_id;
+    @GeneratedValue
+    private UUID id;
 
-    private String serviceName;
-    private String service_description;
+    private String name;
+
     private double price;
-    private int duration; // slot quantity?
 
-    @Transient
-    private DatabaseSingleton database;
+    private String description;
+
+    private int durationHours;
 
     @ManyToOne
     @JoinColumn(name = "consultant_id")
+    @JsonBackReference
     private Consultant consultant;
 
-    public Service() {
-        // JPA requires empty constructor
+    protected Service() {
     }
 
-    public Service(String serviceName, String service_description, double price, int duration) {
-        this.serviceName = serviceName;
-        this.service_description = service_description;
+    public Service(String name, double price, String description) {
+        this.name = name;
         this.price = price;
-        this.duration = duration;
+        this.description = description;
     }
 
-    public UUID getServiceId() {
-        return service_id;
-    }
-
-    public double getPrice() {
-        return this.price * this.duration * database.applyDiscount(); // applies discounts if any are registered by
-                                                                      // admin
-    }
-
-    public double getDuration() {
-        return this.duration;
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {
-        return this.serviceName;
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
     }
 
     public String getDescription() {
-        return this.service_description;
+        return description;
     }
-
 }
