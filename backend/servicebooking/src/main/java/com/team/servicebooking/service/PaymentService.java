@@ -1,53 +1,75 @@
 package com.team.servicebooking.service;
 
+import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.dto.PaymentRequestDTO;
 import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.payment.*;
+import com.team.servicebooking.repository.BookingRepository;
+import com.team.servicebooking.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PaymentService {
 
-    private final Map<UUID, Payment> payments = new HashMap<>();
-    private final Map<UUID, Booking> bookings = new HashMap<>();
+    private final PaymentRepository paymentRepository;
+    private final BookingRepository bookingRepository;
 
-    /**
-     * Register a booking so it can be referenced when processing payments.
-     * This is a temporary solution until a proper BookingService is created.
-     */
-    public void registerBooking(Booking booking) {
-        bookings.put(booking.getID(), booking);
+    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository) {
+        this.paymentRepository = paymentRepository;
+        this.bookingRepository = bookingRepository;
     }
 
+    /**
+     * Process a payment for a booking.
+     * This persists both the Payment and updates the Booking status.
+     */
+    @Transactional
     public Payment processPayment(PaymentRequestDTO request) throws InterruptedException {
         UUID bookingId = UUID.fromString(request.getBookingId());
-        Booking booking = bookings.get(bookingId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
 
-        if (booking == null) {
-            throw new RuntimeException("Booking not found with id: " + bookingId);
+        if (!booking.getState().payable()) {
+            throw new RuntimeException("Booking is not payable");
         }
 
         PaymentMethodStrategy paymentMethod = buildPaymentMethod(request);
 
-        Payment payment = Payment.processPayment(booking, paymentMethod);
+        DatabaseSingleton config = DatabaseSingleton.getInstance();
+        double price = booking.getService().getPrice();
+        double finalPrice = price * config.getDiscount();
 
-        if (payment == null) {
-            throw new RuntimeException("Payment processing failed. Check payment method validity and booking status.");
+        boolean success = paymentMethod.pay(finalPrice);
+        if (!success) {
+            throw new RuntimeException("Payment failed");
         }
 
-        payments.put(payment.getPaymentId(), payment);
-        return payment;
+        Payment payment = new Payment(
+                booking,
+                request.getPaymentMethodType(),
+                booking.getService().getPrice());
+
+        booking.addPayment(payment);
+
+        booking.markPaid();
+
+        bookingRepository.save(booking);
+
+        return paymentRepository.save(payment);
     }
 
     public List<Payment> getAllPayments() {
-        return new ArrayList<>(payments.values());
+        return paymentRepository.findAll();
     }
 
     public Optional<Payment> getPaymentById(UUID id) {
-        return Optional.ofNullable(payments.get(id));
+        return paymentRepository.findById(id);
     }
 
     private PaymentMethodStrategy buildPaymentMethod(PaymentRequestDTO request) {
