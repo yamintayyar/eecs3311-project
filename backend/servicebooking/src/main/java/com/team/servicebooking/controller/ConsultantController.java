@@ -3,6 +3,7 @@ package com.team.servicebooking.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +30,7 @@ public class ConsultantController {
         return consultantService.createConsultant(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
-        );
+                request.getPassword());
     }
 
     @GetMapping
@@ -42,6 +42,11 @@ public class ConsultantController {
     public Consultant getConsultant(@PathVariable UUID id) {
         return consultantService.getConsultantById(id)
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteConsultant(@PathVariable UUID id) {
+        consultantService.deleteConsultant(id);
     }
 
 }
