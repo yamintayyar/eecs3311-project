@@ -5,14 +5,14 @@ import java.util.UUID;
 
 public abstract class PaymentMethodStrategy {
 
-    UUID method_id;
-    String number;
-    String number2;
-    LocalDate expiry;
-    String email;
+    protected UUID method_id;
+    protected String number;
+    protected String number2;
+    protected LocalDate expiry;
+    protected String email;
 
-    public boolean validate() {
-        return false;
-    }
+    public abstract boolean validate();
+
+    public abstract boolean pay(double amount) throws InterruptedException;
 
 }
