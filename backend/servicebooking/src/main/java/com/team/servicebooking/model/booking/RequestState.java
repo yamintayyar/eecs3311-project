@@ -7,7 +7,7 @@ public class RequestState extends BookingState {
 
 	@Override
 	public String getStatus() {
-		return "PENDING";
+		return "REQUESTED";
 	}
 
 	public void confirm() {

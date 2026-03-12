@@ -10,16 +10,22 @@ public class ConfirmedState extends BookingState {
 		return "CONFIRMED";
 	}
 
-	public void pending() {
-		PendingPaymentState pendingPaymentState = new PendingPaymentState(this.booking);
-		this.booking.changeState(pendingPaymentState);
-		System.out.println("Payment in process.");
+	@Override
+	public void complete() {
+		CompletedState completed = new CompletedState(this.booking);
+		this.booking.changeState(completed);
+		System.out.println("Booking completed successfully.");
 	}
 
 	public void cancel() {
 		CancelledState cancelledState = new CancelledState(this.booking);
 		this.booking.changeState(cancelledState);
 		System.out.println("Booking cancelled.");
+	}
+
+	@Override
+	public void markPaid() {
+		System.out.println("Payment marked for confirmed booking.");
 	}
 
 	public boolean payable() {
