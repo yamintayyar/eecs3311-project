@@ -1,5 +1,14 @@
 package com.team.servicebooking.model.user;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import jakarta.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
@@ -7,26 +16,27 @@ import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.payment.PaymentMethodStrategy;
 import com.team.servicebooking.model.service.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
+@Entity
+@Table(name = "clients")
 public class Client extends User {
-    private List<PaymentMethodStrategy> paymentMethods;
-    private List<Payment> payments;
-    private List<Booking> bookings;
+
     private DatabaseSingleton database;
 
-    public Client(UUID user_id, String name, String email, String password) {
-        super(user_id, name, email, password);
+    /*
+     * @OneToMany(mappedBy = "client")
+     *
+     * @JsonManagedReference
+     * private List<Booking> bookings = new ArrayList<>();
+     */
 
-        paymentMethods = new ArrayList<>();
-        payments = new ArrayList<>();
-        bookings = new ArrayList<>();
-        database = DatabaseSingleton.getInstance();
-
+    protected Client() {
     }
 
+    public Client(String name, String email, String password) {
+        super(name, email, password);
+    }
+
+    //TODO: recreate paymentMethod addition/removal with databases
     void addPaymentMethod(PaymentMethodStrategy paymentMethod) {
         paymentMethods.add(paymentMethod);
     }
@@ -60,11 +70,7 @@ public class Client extends User {
 
         bookings.add(b);
 
-        consultant.notify(String.format("Booking %s has been requested by user %s", b.getID().toString(), this.name)); // notify
-                                                                                                                       // consultant
-                                                                                                                       // of
-                                                                                                                       // new
-                                                                                                                       // booking
+        consultant.notify(String.format("Booking %s has been requested by user %s", b.getID().toString(), this.name)); //TODO: use standardized notification method instead, if that is our new approach
     }
 
     void processPayment(Booking booking, PaymentMethodStrategy paymentMethod) throws InterruptedException {

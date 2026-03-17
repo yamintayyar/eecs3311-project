@@ -33,4 +33,9 @@ public class BookingController {
         return bookingService.getBookingById(id)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteBooking(@PathVariable UUID id) {
+        bookingService.deleteBooking(id);
+    }
 }

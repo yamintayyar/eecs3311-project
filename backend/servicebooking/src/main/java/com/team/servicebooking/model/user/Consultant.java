@@ -2,82 +2,60 @@ package com.team.servicebooking.model.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.service.Service;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "consultants")
 public class Consultant extends User {
-    private List<Service> services;
-    private List<Availability> availabilitySlots;
-    private List<Booking> bookings;
 
-    public Consultant(UUID user_id, String name, String email, String password) {
-        super(user_id, name, email, password);
+    @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Service> services = new ArrayList<>();
 
-        this.services = new ArrayList<Service>();
-        this.availabilitySlots = new ArrayList<Availability>();
-        this.bookings = new ArrayList<Booking>();
+    /*
+     * @OneToMany(mappedBy = "consultant")
+     * 
+     * @JsonManagedReference
+     * private List<Booking> bookings = new ArrayList<>();
+     */
 
+    @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Availability> availabilities = new ArrayList<>();
+
+    protected Consultant() {
     }
 
-    public void addAvailability(Availability availability) {
-        if (availability != null)
-            availabilitySlots.add(availability);
-    }
-
-    public void removeAvailability(Availability availability) {
-        availabilitySlots.remove(availability);
-    }
-
-    public List<Booking> viewBookings() {
-        List<Booking> t = new ArrayList<Booking>();
-        t.addAll(bookings); // deep copy of list, shallow copy of all bookings within the list
-        return t;
-    }
-
-    public void acceptBooking(Booking booking) {
-
-        if (!booking.paid())
-            booking.confirm(); // if at requestedstate, goes to confirmedstate.
-        // if at confirmedstate, goes to pendingpaymentstate (basically equivalent)
-        // otherwise, will not proceed because there is no payment yet
-    }
-
-    public void rejectBooking(Booking booking) {
-        if (!booking.payable()) { // if booking is not payable (and therefore not yet confirmed or pending
-                                  // payment), consultant can reject it
-            booking.reject();
-        }
-    }
-
-    public void completeBooking(Booking booking) {
-        if (booking.paid())
-            booking.complete(); // if booking already was paid for, we can move to final confirmed state
+    public Consultant(String name, String email, String password) {
+        super(name, email, password);
     }
 
     public List<Service> getServices() {
-        List<Service> t = new ArrayList<>();
-        t.addAll(services); // deep copy of list, shallow copy of all bookings within the list
-        return t;
+        return services;
     }
+
+    /*
+     * public List<Booking> getBookings() {
+     * return bookings;
+     * }
+     */
 
     public List<Availability> getAvailabilities() {
-        List<Availability> t = new ArrayList<>();
-        t.addAll(availabilitySlots); // deep copy of list, shallow copy of all bookings within the list
-        return t;
-    }
-
-    public void notify(String notification, Booking booking) {
-        bookings.add(booking);
-
-        this.notify(notification);
-
+        return availabilities;
     }
 
     public void addService(Service service) {
         services.add(service);
     }
 
+    public void addAvailability(Availability availability) {
+        availability.setConsultant(this);
+        availabilities.add(availability);
+    }
 }

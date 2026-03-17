@@ -22,6 +22,17 @@ public class PendingPaymentState extends BookingState {
 		System.out.println("Booking cancelled.");
 	}
 
+	// prevent invalid operations
+	@Override
+	public void confirm() {
+		throw new IllegalStateException("Cannot confirm payment while pending.");
+	}
+
+	@Override
+	public void complete() {
+		throw new IllegalStateException("Cannot complete booking while payment is pending.");
+	}
+
 	public boolean payable() {
 		return true;
 	}

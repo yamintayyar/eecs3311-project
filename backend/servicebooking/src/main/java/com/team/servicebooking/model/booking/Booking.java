@@ -1,5 +1,7 @@
 package com.team.servicebooking.model.booking;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.payment.Payment;
@@ -11,37 +13,63 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import jakarta.persistence.*;
 
+import java.util.*;
+
+@Entity
+@Table(name = "bookings")
 public class Booking {
-    private UUID booking_id;
+
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    @ManyToOne
+    @JsonBackReference
     private Client client;
+
+    @ManyToOne
+    @JsonBackReference
     private Consultant consultant;
+
+    @ManyToOne
     private Service service;
-    private List<Availability> availability;
+
+    @ManyToMany
+    @JoinTable(name = "booking_availability", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "availability_id"))
+    private List<Availability> availabilities = new ArrayList<>();
+
     private LocalDate bookingDate;
     private BookingState bookingState;
     private Payment payment;
 
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Payment> payments = new ArrayList<>();
+
+    private String status;
+
+    @Transient
+    private BookingState state;
+
+    //do we need this?
     private DatabaseSingleton database = DatabaseSingleton.getInstance();
 
-    public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilty) {
-        this.booking_id = UUID.randomUUID();
+    public Booking() {
+    }
+
+    public Booking(Client client, Consultant consultant, Service service, List<Availability> availabilities) {
         this.client = client;
         this.consultant = consultant;
         this.service = service;
-        this.availability = availabilty;
+        this.availability = availabilties;
         this.bookingDate = LocalDate.now();
         this.bookingState = new RequestState(this);
 
-        System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + "."); // TODO:
-                                                                                                                // test
-                                                                                                                // to
-                                                                                                                // make
-                                                                                                                // sure
-                                                                                                                // that
-                                                                                                                // formatting
-                                                                                                                // is
-                                                                                                                // correct
+        System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + ".");
+
+        changeState(new RequestState(this));
 
         if (database.getVerboseNotification()) {
             client.notify("Booking created for " + bookingDate.toString() + ".");
@@ -49,11 +77,11 @@ public class Booking {
 
     }
 
-    public UUID getID() {
-        return booking_id;
+    public UUID getId() {
+        return id;
     }
 
-    public Client getClient() {
+    public Client getClient() { //TODO: update these getter methods to use IDs instead of passing objects, to function more properly with database
         return client;
     }
 
@@ -73,16 +101,19 @@ public class Booking {
         return bookingState;
     }
 
-    public void changeState(BookingState bookingState) {
-        // Changed return type from boolean to void.
-        this.bookingState = bookingState;
+    public String getStatus() {
+        return status;
+    }
+
+    public BookingState getState() {
+        return state;
     }
 
     public boolean payable() {
         return this.bookingState.payable();
     }
 
-    public void cancel() {
+    public void cancel() { //TODO: we need to standardize the method of changing states, following the examples given in class. either we use changeState, or we don't
 
         int min_notice = database.getMinNotice();
 
@@ -120,10 +151,18 @@ public class Booking {
         client.notify("Booking " + booking_id + " has been rejected by consultant " + consultant.getName());
     }
 
+    public Iterable<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
     public double getPrice() {
         return service.getPrice();
     }
 
+    public void changeState(BookingState newState) { //TODO: see above todo
+        this.state = newState;
+        this.status = newState.getStatus();
+    }
     public void pay(Payment payment) {
         this.payment = payment;
 
@@ -134,8 +173,16 @@ public class Booking {
         }
     }
 
+    public void markPaid() {
+        state.markPaid();
+    }
+
     public boolean paid() {
         return payment != null; // returns true if payment has been set, and thus pay() was called
+    }
+
+    public void addPayment(Payment payment) {
+        payments.add(payment);
     }
 
     public void confirm() {

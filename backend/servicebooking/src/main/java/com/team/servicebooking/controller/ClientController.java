@@ -24,8 +24,7 @@ public class ClientController {
         return clientService.createClient(
                 request.getName(),
                 request.getEmail(),
-                request.getPassword()
-        );
+                request.getPassword());
     }
 
     @GetMapping
@@ -37,5 +36,10 @@ public class ClientController {
     public Client getClient(@PathVariable UUID id) {
         return clientService.getClientById(id)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteClient(@PathVariable UUID id) {
+        clientService.deleteClient(id);
     }
 }

@@ -17,12 +17,14 @@ public class DatabaseSingleton {
         consultants = new ArrayList<Consultant>();
     }
 
-    public static DatabaseSingleton getInstance() {
-        if (DatabaseSingleton.databaseSingleton == null) {
-            DatabaseSingleton.databaseSingleton = new DatabaseSingleton();
+    public static synchronized DatabaseSingleton getInstance() {
+        if (databaseSingleton == null) {
+            databaseSingleton = new DatabaseSingleton();
         }
-        return DatabaseSingleton.databaseSingleton;
+        return databaseSingleton;
     }
+
+    //TODO: change so that the values are saved in the database
 
     public List<Consultant> getConsultants() {
         List<Consultant> t = new ArrayList<Consultant>();
@@ -30,13 +32,17 @@ public class DatabaseSingleton {
         return t;
     }
 
-    public int getMinNotice() {return min_notice;}
+    public int getMinNotice() {
+        return min_notice;
+    }
 
-    public void setMinNotice(int min_notice){
+    public void setMinNotice(int min_notice) {
         this.min_notice = min_notice;
     }
 
-    public double applyDiscount() {return discount;}
+    public double getDiscount() {
+        return discount;
+    }
 
     public void setDiscount(double discount) {
         this.discount = discount;

@@ -1,22 +1,40 @@
 package com.team.servicebooking.model.payment;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.team.servicebooking.model.booking.Booking;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.team.servicebooking.model.booking.Booking;
-
+@Entity
+@Table(name = "payments")
 public class Payment {
 
-    private java.util.UUID payment_id;
+    @Id
+    @GeneratedValue
+    private UUID paymentId;
+
     private double amount;
+
+    private String paymentMethodType;
+
+    private LocalDateTime timestamp;
+
+    @OneToOne
     private Booking booking;
-    private PaymentMethodStrategy paymentMethod;
+//    private PaymentMethodStrategy paymentMethod; //do we need to keep a record of the payment method? we might, in order to allow for refunds. if not, we can remove this field
     private boolean refunded = false;
 
-    private Payment(Booking booking, PaymentMethodStrategy paymentMethod) {
-        this.payment_id = UUID.randomUUID();
+    public Payment() {
+        // JPA constructor
+    }
+
+    public Payment(Booking booking, String paymentMethodType, double amount) {
         this.booking = booking;
-        this.paymentMethod = paymentMethod;
-        this.amount = booking.getPrice();
+        this.paymentMethodType = paymentMethodType;
+        this.amount = amount;
+        this.timestamp = LocalDateTime.now();
     }
 
     public UUID getPaymentId() {
@@ -66,6 +84,18 @@ public class Payment {
 
     public void markRefunded() {
         this.refunded = true;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public String getPaymentMethodType() {
+        return paymentMethodType;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
 }

@@ -17,4 +17,18 @@ public class BankTransfer extends PaymentMethodStrategy {
 
         return true;
     }
+
+    @Override
+    public boolean pay(double amount) throws InterruptedException {
+
+        if (!validate()) {
+            return false;
+        }
+
+        System.out.println("Processing BANK_TRANSFER payment of $" + amount);
+
+        Thread.sleep(500);
+
+        return true;
+    }
 }

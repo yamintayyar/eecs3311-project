@@ -1,6 +1,10 @@
 package com.team.servicebooking.service;
 
 import com.team.servicebooking.model.user.Client;
+import com.team.servicebooking.repository.ClientRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -8,20 +12,38 @@ import java.util.*;
 @Service
 public class ClientService {
 
-    private final Map<UUID, Client> clients = new HashMap<>();
+    private final ClientRepository clientRepository;
 
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
+    @Transactional
     public Client createClient(String name, String email, String password) {
-        UUID id = UUID.randomUUID();
-        Client client = new Client(id, name, email, password);
-        clients.put(id, client);
-        return client;
+        Client client = new Client(name, email, password);
+        return clientRepository.save(client);
     }
 
     public List<Client> getAllClients() {
-        return new ArrayList<>(clients.values());
+        return clientRepository.findAll();
     }
 
     public Optional<Client> getClientById(UUID id) {
-        return Optional.ofNullable(clients.get(id));
+        return clientRepository.findById(id);
+    }
+
+    @Transactional
+    public void deleteClient(UUID id) {
+        clientRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Client updateClient(UUID id, String name, String email, String password) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Client not found: " + id));
+        client.setName(name);
+        client.setEmail(email);
+        client.setPassword(password);
+        return clientRepository.save(client);
     }
 }

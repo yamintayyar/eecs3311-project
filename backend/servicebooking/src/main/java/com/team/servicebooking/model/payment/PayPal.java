@@ -13,4 +13,18 @@ public class PayPal extends PaymentMethodStrategy {
                                                                    // which matches with any domain
 
     }
+
+    @Override
+    public boolean pay(double amount) throws InterruptedException {
+
+        if (!validate()) {
+            return false;
+        }
+
+        System.out.println("Processing PAYPAL payment of $" + amount);
+
+        Thread.sleep(500);
+
+        return true;
+    }
 }

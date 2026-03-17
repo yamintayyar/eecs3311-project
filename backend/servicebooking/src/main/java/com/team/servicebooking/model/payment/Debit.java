@@ -26,4 +26,18 @@ public class Debit extends PaymentMethodStrategy {
 
         return true;
     }
+
+    @Override
+    public boolean pay(double amount) throws InterruptedException {
+
+        if (!validate()) {
+            return false;
+        }
+
+        System.out.println("Processing CREDIT payment of $" + amount);
+
+        Thread.sleep(500); // simulate gateway processing
+
+        return true;
+    }
 }

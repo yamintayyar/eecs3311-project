@@ -1,40 +1,63 @@
 package com.team.servicebooking.service;
 
+import com.team.servicebooking.model.availability.Availability;
+import com.team.servicebooking.model.service.Service;
 import java.util.*;
 import org.springframework.stereotype.Service;
 import com.team.servicebooking.model.user.Consultant;
+import com.team.servicebooking.repository.ConsultantRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ConsultantService {
-    
-    private final Map<UUID, Consultant> consultants = new HashMap<>();
 
+    private final ConsultantRepository consultantRepository;
+
+    public ConsultantService(ConsultantRepository consultantRepository) {
+        this.consultantRepository = consultantRepository;
+    }
+
+    /**
+     * Creates a new Consultant and seeds a demo service and availability.
+     */
+    @Transactional
     public Consultant createConsultant(String name, String email, String password) {
-        UUID id = UUID.randomUUID();
-        Consultant consultant = new Consultant(id, name, email, password);
+        Consultant consultant = new Consultant(name, email, password);
 
         // --- PHASE 1 DEMO SEEDING ---
-        // Create a default Service and Availability slot so this consultant is instantly bookable!
-        com.team.servicebooking.model.service.Service demoService = new com.team.servicebooking.model.service.Service(
-                "Demo Consultation", "A default service for testing.", 150.0, 1);
+        Service demoService = new Service(
+                "Demo Consultation",
+                150.0,
+                "A default service for testing.");
         consultant.addService(demoService);
 
-        com.team.servicebooking.model.availability.Availability demoSlot = new com.team.servicebooking.model.availability.Availability(
-                java.time.LocalDateTime.now().plusDays(1), java.time.LocalDateTime.now().plusDays(1).plusHours(1));
+        Availability demoSlot = new Availability(
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(1).plusHours(1));
         consultant.addAvailability(demoSlot);
-        
+
         com.team.servicebooking.config.DatabaseSingleton.getInstance().addConsultant(consultant);
         // -----------------------------
 
-        consultants.put(id, consultant);
-        return consultant;
+        return consultantRepository.save(consultant); // persist consultant
     }
 
     public List<Consultant> getAllConsultants() {
-        return new ArrayList<>(consultants.values());
+        return consultantRepository.findAll();
     }
 
     public Optional<Consultant> getConsultantById(UUID id) {
-        return Optional.ofNullable(consultants.get(id));
+        return consultantRepository.findById(id);
     }
-}
+
+    @Transactional
+    public void deleteConsultant(UUID id) {
+        consultantRepository.deleteById(id);
+    }
