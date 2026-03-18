@@ -23,7 +23,7 @@ import java.util.UUID;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final ClientService clientService; //TODO: do we need all of these?
+    private final ClientService clientService;
     private final ConsultantRepository consultantRepository;
     private final ServiceRepository serviceRepository;
     private final AvailabilityRepository availabilityRepository;
@@ -105,5 +105,13 @@ public class BookingService {
                 "A booking has been cancelled.");
 
         bookingRepository.delete(booking);
+    }
+
+    public List<Booking> getBookingsByClient(UUID clientId) {
+        return null;//TODO
+    }
+
+    public void cancelBooking(UUID bookingId) {
+        //TODO
     }
 }

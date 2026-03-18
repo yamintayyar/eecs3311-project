@@ -28,7 +28,7 @@ public class PaymentService {
      * This persists both the Payment and updates the Booking status.
      */
     @Transactional
-    public Payment processPayment(PaymentRequestDTO request) throws InterruptedException {
+    public Payment processPayment(PaymentRequestDTO request) throws InterruptedException { //TODO: use database and service layer instead of model class for payment method
         UUID bookingId = UUID.fromString(request.getBookingId());
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
@@ -38,6 +38,8 @@ public class PaymentService {
         }
 
         PaymentMethodStrategy paymentMethod = buildPaymentMethod(request);
+
+        //TODO; add method validation step
 
         DatabaseSingleton config = DatabaseSingleton.getInstance();
         double price = booking.getService().getPrice();
@@ -91,5 +93,9 @@ public class PaymentService {
             default:
                 throw new RuntimeException("Unknown payment method type: " + type);
         }
+    }
+
+    public List<Payment> getPaymentsByClient(UUID clientId) {
+        return null; //TODO
     }
 }
