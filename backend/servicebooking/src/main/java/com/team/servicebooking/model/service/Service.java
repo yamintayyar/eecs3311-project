@@ -1,13 +1,8 @@
 package com.team.servicebooking.model.service;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.user.Consultant;
-
 import jakarta.persistence.*;
-
-
-import com.team.servicebooking.config.DatabaseSingleton;
 
 import java.util.UUID;
 
@@ -45,9 +40,9 @@ public class Service {
         return id;
     }
 
-    public double getDuration() {
-        return this.duration;
-    }
+//    public double getDuration() {
+//        return this.duration;
+//    }
 
     public String getName() {
         return name;

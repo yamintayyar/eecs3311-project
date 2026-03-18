@@ -3,7 +3,7 @@ package com.team.servicebooking.service;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.service.Service;
 import java.util.*;
-import org.springframework.stereotype.Service;
+//import org.springframework.stereotype.Service;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.repository.ConsultantRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
+@org.springframework.stereotype.Service
 public class ConsultantService {
 
     private final ConsultantRepository consultantRepository;
@@ -61,3 +61,5 @@ public class ConsultantService {
     public void deleteConsultant(UUID id) {
         consultantRepository.deleteById(id);
     }
+
+}

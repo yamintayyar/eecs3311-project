@@ -46,8 +46,4 @@ public class PaidState extends BookingState {
 	public void reject() {
 		throw new IllegalStateException("Cannot reject a paid booking.");
 	}
-
-	public boolean isRefundable() {
-		return true;
-	}
 }

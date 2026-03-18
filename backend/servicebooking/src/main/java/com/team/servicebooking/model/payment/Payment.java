@@ -38,7 +38,7 @@ public class Payment {
     }
 
     public UUID getPaymentId() {
-        return payment_id;
+        return paymentId;
     }
 
     public double getAmount() {
@@ -72,7 +72,7 @@ public class Payment {
             System.out.println("Communicating payment...");
             Thread.sleep(1000);
 
-            System.out.println("Payment #" + payment.payment_id + " has been successfully processed.");
+            System.out.println("Payment #" + payment.paymentId + " has been successfully processed.");
 
             return payment;
         } catch (InterruptedException e) {

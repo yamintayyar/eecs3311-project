@@ -7,19 +7,17 @@ import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.model.user.Consultant;
+import com.team.servicebooking.repository.AvailabilityRepository;
 import com.team.servicebooking.repository.BookingRepository;
-import com.team.servicebooking.repository.ClientRepository;
 import com.team.servicebooking.repository.ConsultantRepository;
 import com.team.servicebooking.repository.ServiceRepository;
-import com.team.servicebooking.repository.AvailabilityRepository;
-
 import jakarta.transaction.Transactional;
 
-import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 import java.time.Duration;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @org.springframework.stereotype.Service
 public class BookingService {
@@ -58,8 +56,8 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
         List<Availability> slots = availabilityRepository.findAllById(
-                request.getSlotIds().stream().map(UUID::fromString).toList())
-                .orElseThrow(() -> new RuntimeException("Invalid availability slot not found; please try again."));;
+                request.getSlotIds().stream().map(UUID::fromString).toList());
+//                .orElseThrow(() -> new RuntimeException("Invalid availability slot not found; please try again."));; //TODO: perhaps it is better to use an iterative approach instead, to facilitate error handling
 
         int minNotice = DatabaseSingleton.getInstance().getMinNotice();
 
