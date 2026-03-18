@@ -111,6 +111,10 @@ public class BookingService {
         return null;//TODO
     }
 
+    public List<Booking> getBookingsByConsultant(UUID consultantId) {
+        return null;//TODO
+    }
+
     public void cancelBooking(UUID bookingId) {
         //TODO
     }

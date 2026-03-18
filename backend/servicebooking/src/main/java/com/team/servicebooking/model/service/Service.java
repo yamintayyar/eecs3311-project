@@ -30,30 +30,11 @@ public class Service {
     protected Service() {
     }
 
-    public Service(String name, double price, String description) {
+    public Service(String name, double price, String description, Consultant consultant) { //can we pass an entire object, instead of just an ID?
         this.name = name;
         this.price = price;
         this.description = description;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-//    public double getDuration() {
-//        return this.duration;
-//    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public String getDescription() {
-        return description;
+        this.consultant = consultant;
     }
 
 }

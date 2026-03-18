@@ -1,14 +1,15 @@
 package com.team.servicebooking.model.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.servicebooking.model.availability.Availability;
-import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.service.Service;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
-import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "consultants")
@@ -36,22 +37,8 @@ public class Consultant extends User {
         super(name, email, password);
     }
 
-    public List<Service> getServices() {
-        return services;
-    }
-
-    /*
-     * public List<Booking> getBookings() {
-     * return bookings;
-     * }
-     */
-
     public List<Availability> getAvailabilities() {
         return availabilities;
-    }
-
-    public void addService(Service service) {
-        services.add(service);
     }
 
     public void addAvailability(Availability availability) {
