@@ -12,7 +12,7 @@ import com.team.servicebooking.config.DatabaseSingleton;
 @RequestMapping("/config")
 public class ConfigController {
 
-    private final DatabaseSingleton config = DatabaseSingleton.getInstance();
+    private final DatabaseSingleton config = DatabaseSingleton.getInstance(); //TODO: See TODOs in ConfigService and DatabaseSingleton
 
     @GetMapping
     public DatabaseSingleton getConfig() {

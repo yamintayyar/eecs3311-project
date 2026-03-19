@@ -27,10 +27,6 @@ public class Admin extends User {
 
 
 //
-//    void setCancellationDeadline(int hours_prior) {
-//        database.setMinNotice(hours_prior);
-//    }
-//
 //    void setDiscount(double new_rate) {
 //        database.setDiscount(new_rate);
 //    }
