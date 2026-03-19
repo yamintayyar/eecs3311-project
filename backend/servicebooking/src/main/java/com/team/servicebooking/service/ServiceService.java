@@ -1,6 +1,6 @@
 package com.team.servicebooking.service;
 
-import com.team.servicebooking.dto.ServiceDTO;
+import com.team.servicebooking.dto.ServiceRequestDTO;
 import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.repository.ServiceRepository;
@@ -38,7 +38,7 @@ public class ServiceService {
     }
 
     @Transactional
-    public void addService(ServiceDTO request) {
+    public void addService(ServiceRequestDTO request) {
         Consultant consultant = consultantService.getConsultantById(
                         UUID.fromString(request.getConsultantId()))
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));

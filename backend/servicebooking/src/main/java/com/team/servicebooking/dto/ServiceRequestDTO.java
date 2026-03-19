@@ -1,6 +1,6 @@
 package com.team.servicebooking.dto;
 
-public class ServiceDTO {
+public class ServiceRequestDTO {
     private double price;
     private String name;
     private String description;

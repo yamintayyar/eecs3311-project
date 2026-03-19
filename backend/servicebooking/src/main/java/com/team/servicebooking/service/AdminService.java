@@ -2,19 +2,19 @@ package com.team.servicebooking.service;
 
 import com.team.servicebooking.model.user.Admin;
 import com.team.servicebooking.repository.AdminRepository;
-
 import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.UUID;
 
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
+    private final ConsultantService consultantService;
 
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository, ConsultantService consultantService) {
         this.adminRepository = adminRepository;
+        this.consultantService = consultantService;
     }
 
     @Transactional

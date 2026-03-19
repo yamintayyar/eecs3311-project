@@ -1,11 +1,7 @@
 package com.team.servicebooking.model.user;
 
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.team.servicebooking.config.DatabaseSingleton;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "admins")
@@ -30,9 +26,6 @@ public class Admin extends User {
     }
 
 
-//    void approveConsultant(Consultant consultant) {
-//        database.addConsultant(consultant);
-//    }
 //
 //    void setCancellationDeadline(int hours_prior) {
 //        database.setMinNotice(hours_prior);
