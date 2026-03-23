@@ -30,8 +30,7 @@ public class BookingController {
 
     @GetMapping("/{id}")
     public Booking getBooking(@PathVariable UUID id) {
-        return bookingService.getBookingById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        return bookingService.getBookingById(id);
     }
 
     @DeleteMapping("/{id}")

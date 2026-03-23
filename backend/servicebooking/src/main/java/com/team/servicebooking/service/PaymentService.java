@@ -41,7 +41,7 @@ public class PaymentService {
 
         PaymentMethodStrategy paymentMethod = buildPaymentMethod(request);
 
-        //TODO; add method validation step
+        //TODO; add payment method validation step
 
         DatabaseSingleton config = configService.getConfiguration();
         double price = booking.getService().getPrice();

@@ -25,23 +25,6 @@ public class ConsultantService {
     @Transactional
     public Consultant addConsultant(Consultant consultant) {
 
-//        ServiceRequestDTO demoService = new ServiceRequestDTO();
-//        demoService.setConsultantId(consultant.getId().toString());
-//        demoService.setDescription("A default service for testing.");
-//        demoService.setName("Demo Consultation");
-//        demoService.setPrice(150.0);
-//        demoService.setDurationHours(1);
-//
-//        serviceService.addService(demoService);
-
-//        Availability demoSlot = new Availability( //TODO: fix so that it uses database for demo
-//                LocalDateTime.now().plusDays(1),
-//                LocalDateTime.now().plusDays(1).plusHours(1));
-//        consultant.addAvailability(demoSlot);
-
-//        com.team.servicebooking.config.DatabaseSingleton.getInstance().addConsultant(consultant);
-        // -----------------------------
-
         return consultantRepository.save(consultant); // persist consultant
     }
 
