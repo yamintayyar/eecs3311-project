@@ -1,5 +1,9 @@
 package com.team.servicebooking.model.payment;
 
+import jakarta.persistence.Entity;
+
+@Entity
+//@Table(name = "bank_transfer")
 public class BankTransfer extends PaymentMethodStrategy {
 
 

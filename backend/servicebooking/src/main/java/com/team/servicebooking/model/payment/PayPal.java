@@ -1,5 +1,9 @@
 package com.team.servicebooking.model.payment;
 
+import jakarta.persistence.Entity;
+
+@Entity
+//@Table(name = "paypal")
 public class PayPal extends PaymentMethodStrategy {
 
     public PayPal(String email) {
