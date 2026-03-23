@@ -17,10 +17,12 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
+    private final ConfigService configService;
 
-    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository) {
+    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository, ConfigService configService) {
         this.paymentRepository = paymentRepository;
         this.bookingRepository = bookingRepository;
+        this.configService = configService;
     }
 
     /**
@@ -41,7 +43,7 @@ public class PaymentService {
 
         //TODO; add method validation step
 
-        DatabaseSingleton config = DatabaseSingleton.getInstance();
+        DatabaseSingleton config = configService.getConfiguration();
         double price = booking.getService().getPrice();
         double finalPrice = price * config.getDiscount();
 

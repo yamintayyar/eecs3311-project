@@ -37,4 +37,19 @@ public class Service {
         this.consultant = consultant;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getDuration() {
+        return durationHours;
+    }
 }
