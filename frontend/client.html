@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client Dashboard</title>
+</head>
+<body>
+
+<h1>Client Dashboard</h1>
+<p id="welcome"></p>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const role = localStorage.getItem("role");
+
+    if (role !== "client") {
+        window.location.href = "index.html";
+    }
+
+    if (!user) {
+        window.location.href = "index.html";
+    }
+
+    document.getElementById("welcome").innerText =
+        "Welcome " + user.name;
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+</script>
+
+</body>
+</html>

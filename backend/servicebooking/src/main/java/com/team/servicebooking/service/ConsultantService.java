@@ -28,7 +28,15 @@ public class ConsultantService {
         return consultantRepository.save(consultant); // persist consultant
     }
 
-    @Transactional
+    public Consultant login(String email, String password) {
+
+        return consultantRepository.findAll().stream()
+                .filter(c -> c.getEmail().equals(email)
+                        && c.getPassword().equals(password))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+    }
+
     public List<Consultant> getAllConsultants() {
         return consultantRepository.findAll();
     }

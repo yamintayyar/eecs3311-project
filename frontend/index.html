@@ -1,13 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Service Booking App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>Service Booking</h1>
+
+    <!-- Role Selection -->
+    <div class="section">
+        <label>Select Role:</label>
+        <select id="role">
+            <option value="client">Client</option>
+            <option value="consultant">Consultant</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+    <!-- NEW WRAPPER -->
+    <div class="auth-wrapper">
+
+        <!-- Register -->
+        <div class="auth-box left">
+            <h2>Register</h2>
+            <input type="text" id="regName" placeholder="Name">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Password">
+            <button onclick="register()">Register</button>
+        </div>
+
+        <!-- Login -->
+        <form onsubmit="login(event)" class="auth-box right">
+            <h2>Login</h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button type="submit">Login</button>
+        </form>
+
+    </div>
+
+    <p id="response"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
 </html>

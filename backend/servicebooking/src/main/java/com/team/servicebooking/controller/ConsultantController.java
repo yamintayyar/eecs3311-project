@@ -1,6 +1,7 @@
 package com.team.servicebooking.controller;
 
 import com.team.servicebooking.dto.ConsultantRequestDTO;
+import com.team.servicebooking.dto.LoginRequestDTO;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.service.ConsultantService;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class ConsultantController {
     public Consultant createConsultant(@RequestBody ConsultantRequestDTO request) {
         Consultant consultant = new Consultant(request.getName(), request.getEmail(), request.getPassword());
         return consultantService.addConsultant(consultant);
+    }
+
+    @PostMapping("/login")
+    public Consultant login(@RequestBody LoginRequestDTO request) {
+        return consultantService.login(request.getEmail(), request.getPassword());
     }
 
     @GetMapping
