@@ -1,7 +1,11 @@
 package com.team.servicebooking.model.payment;
 
+import jakarta.persistence.Entity;
+
 import java.time.LocalDate;
 
+@Entity
+//@Table(name = "Credit")
 public class Credit extends PaymentMethodStrategy {
     private String number;
     private LocalDate expiry;

@@ -5,16 +5,22 @@ public class ConfirmedState extends BookingState {
 		super(booking);
 	}
 
-	@Override
-	public String getStatus() {
-		return "CONFIRMED";
-	}
+    @Override
+    public String getStatus() {
+        return "CONFIRMED";
+    }
 
-	@Override
-	public void complete() {
-		CompletedState completed = new CompletedState(this.booking);
-		this.booking.changeState(completed);
-		System.out.println("Booking completed successfully.");
+    @Override
+    public void complete() {
+        CompletedState completed = new CompletedState(this.booking);
+        this.booking.changeState(completed);
+        System.out.println("Booking completed successfully.");
+    }
+
+	public void pending() {
+		PendingPaymentState pendingPaymentState = new PendingPaymentState(this.booking);
+		this.booking.changeState(pendingPaymentState);
+		System.out.println("Payment in process.");
 	}
 
 	public void cancel() {
@@ -31,4 +37,5 @@ public class ConfirmedState extends BookingState {
 	public boolean payable() {
 		return true;
 	}
+
 }

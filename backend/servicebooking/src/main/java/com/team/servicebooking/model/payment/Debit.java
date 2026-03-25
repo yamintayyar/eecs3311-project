@@ -1,7 +1,11 @@
 package com.team.servicebooking.model.payment;
 
+import jakarta.persistence.Entity;
+
 import java.time.LocalDate;
 
+@Entity
+//@Table(name = "debit")
 public class Debit extends PaymentMethodStrategy {
 
     public Debit(String number, LocalDate expiry, String cvv) {

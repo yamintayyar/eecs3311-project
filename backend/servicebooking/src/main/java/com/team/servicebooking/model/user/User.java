@@ -31,6 +31,10 @@ public abstract class User {
         return id;
     }
 
+    public UUID getID() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -54,4 +58,5 @@ public abstract class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

@@ -1,9 +1,7 @@
 package com.team.servicebooking.model.service;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.model.user.Consultant;
-
 import jakarta.persistence.*;
 
 import java.util.UUID;
@@ -22,7 +20,7 @@ public class Service {
 
     private String description;
 
-    private int durationHours;
+    private int durationHours; //TODO: implement; currently not set or accounted for by price
 
     @ManyToOne
     @JoinColumn(name = "consultant_id")
@@ -32,14 +30,11 @@ public class Service {
     protected Service() {
     }
 
-    public Service(String name, double price, String description) {
+    public Service(String name, double price, String description, Consultant consultant) { //can we pass an entire object, instead of just an ID?
         this.name = name;
         this.price = price;
         this.description = description;
-    }
-
-    public UUID getId() {
-        return id;
+        this.consultant = consultant;
     }
 
     public String getName() {
@@ -52,5 +47,9 @@ public class Service {
 
     public String getDescription() {
         return description;
+    }
+
+    public int getDuration() {
+        return durationHours;
     }
 }

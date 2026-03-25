@@ -1,34 +1,17 @@
 package com.team.servicebooking.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.team.servicebooking.model.user.Consultant;
-
 public class DatabaseSingleton {
-    private static DatabaseSingleton databaseSingleton;
-    private List<Consultant> consultants;
     private int min_notice = 24;
     private double discount = 1.0;
     private boolean refund = false;
     private boolean verbose = false;
 
-    private DatabaseSingleton() {
-        consultants = new ArrayList<Consultant>();
+    public DatabaseSingleton() {
     }
 
-    public static synchronized DatabaseSingleton getInstance() {
-        if (databaseSingleton == null) {
-            databaseSingleton = new DatabaseSingleton();
-        }
-        return databaseSingleton;
-    }
 
-    public List<Consultant> getConsultants() {
-        List<Consultant> t = new ArrayList<Consultant>();
-        t.addAll(consultants);
-        return t;
-    }
+
+    //TODO: Is this even a singleton anymore, if we are getting objects via the database?
 
     public int getMinNotice() {
         return min_notice;
@@ -52,10 +35,6 @@ public class DatabaseSingleton {
 
     public void setRefundPolicy(boolean policy) {
         refund = policy;
-    }
-
-    public void addConsultant(Consultant consultant) {
-        consultants.add(consultant);
     }
 
     public void setVerboseNotifications(boolean setting) {

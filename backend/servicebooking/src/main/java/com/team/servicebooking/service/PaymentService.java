@@ -10,19 +10,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
+    private final ConfigService configService;
 
-    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository) {
+    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository, ConfigService configService) {
         this.paymentRepository = paymentRepository;
         this.bookingRepository = bookingRepository;
+        this.configService = configService;
     }
 
     /**
@@ -30,7 +30,7 @@ public class PaymentService {
      * This persists both the Payment and updates the Booking status.
      */
     @Transactional
-    public Payment processPayment(PaymentRequestDTO request) throws InterruptedException {
+    public Payment processPayment(PaymentRequestDTO request) throws InterruptedException { //TODO: use database and service layer instead of model class for payment method
         UUID bookingId = UUID.fromString(request.getBookingId());
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
@@ -41,7 +41,9 @@ public class PaymentService {
 
         PaymentMethodStrategy paymentMethod = buildPaymentMethod(request);
 
-        DatabaseSingleton config = DatabaseSingleton.getInstance();
+        //TODO; add payment method validation step
+
+        DatabaseSingleton config = configService.getConfiguration();
         double price = booking.getService().getPrice();
         double finalPrice = price * config.getDiscount();
 
@@ -93,5 +95,9 @@ public class PaymentService {
             default:
                 throw new RuntimeException("Unknown payment method type: " + type);
         }
+    }
+
+    public List<Payment> getPaymentsByClient(UUID clientId) {
+        return null; //TODO
     }
 }
