@@ -10,7 +10,10 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Allow all endpoints
-                .allowedOrigins("http://localhost:5173", "http://127.0.0.1:5173") // Allow Vite frontend
+                .allowedOrigins("http://127.0.0.1:5173", //
+                        "http://127.0.0.1:5500",
+                        "http://localhost:5500") // Allow Vite
+                // frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow standard verbs
                 .allowedHeaders("*")
                 .allowCredentials(true);

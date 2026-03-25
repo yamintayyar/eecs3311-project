@@ -2,6 +2,7 @@ package com.team.servicebooking.service;
 
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.service.Service;
+import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.repository.ConsultantRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,15 @@ public class ConsultantService {
         // -----------------------------
 
         return consultantRepository.save(consultant); // persist consultant
+    }
+
+    public Consultant login(String email, String password) {
+
+        return consultantRepository.findAll().stream()
+                .filter(c -> c.getEmail().equals(email)
+                        && c.getPassword().equals(password))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
     }
 
     public List<Consultant> getAllConsultants() {

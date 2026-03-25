@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.team.servicebooking.dto.ConsultantRequestDTO;
+import com.team.servicebooking.dto.LoginRequestDTO;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.service.ConsultantService;
 
@@ -31,6 +32,11 @@ public class ConsultantController {
                 request.getName(),
                 request.getEmail(),
                 request.getPassword());
+    }
+
+    @PostMapping("/login")
+    public Consultant login(@RequestBody LoginRequestDTO request) {
+        return consultantService.login(request.getEmail(), request.getPassword());
     }
 
     @GetMapping

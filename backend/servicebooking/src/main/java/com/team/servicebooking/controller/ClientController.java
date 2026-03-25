@@ -1,6 +1,7 @@
 package com.team.servicebooking.controller;
 
 import com.team.servicebooking.dto.ClientRequestDTO;
+import com.team.servicebooking.dto.LoginRequestDTO;
 import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.service.ClientService;
 
@@ -25,6 +26,11 @@ public class ClientController {
                 request.getName(),
                 request.getEmail(),
                 request.getPassword());
+    }
+
+    @PostMapping("/login")
+    public Client login(@RequestBody LoginRequestDTO request) {
+        return clientService.login(request.getEmail(), request.getPassword());
     }
 
     @GetMapping

@@ -24,6 +24,15 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
+    public Client login(String email, String password) {
+
+        return clientRepository.findAll().stream()
+                .filter(c -> c.getEmail().equals(email)
+                        && c.getPassword().equals(password))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
+    }
+
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
