@@ -36,7 +36,7 @@ public class Booking {
     @JoinTable(name = "booking_availability", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "availability_id"))
     private List<Availability> availabilities = new ArrayList<>();
 
-    @ManyToOne
+//    @ManyToOne
     private LocalDate bookingDate;
 
     @Transient

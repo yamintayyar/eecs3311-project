@@ -110,10 +110,6 @@ public class BookingService {
         bookingRepository.delete(booking);
     }
 
-    public List<Booking> getBookingsByClient(UUID clientId) {
-        return null;//TODO
-    }
-
     public List<Booking> getBookingsByConsultant(UUID consultantId) {
         return null;//TODO
     }

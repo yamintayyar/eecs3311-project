@@ -1,13 +1,17 @@
 package com.team.servicebooking.model.notification;
 
 import com.team.servicebooking.model.user.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name ="notification")
 public class Notification {
+
+    @Id
+    @GeneratedValue
+    private UUID id;
 
     @OneToOne
     private User user;

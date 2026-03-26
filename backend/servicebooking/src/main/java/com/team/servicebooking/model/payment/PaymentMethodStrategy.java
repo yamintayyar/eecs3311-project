@@ -11,6 +11,8 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class PaymentMethodStrategy {
 
+    @Id
+    @GeneratedValue
     protected UUID method_id;
     protected String number;
     protected String number2;

@@ -1,6 +1,5 @@
 package com.team.servicebooking.model.user;
 
-import com.team.servicebooking.config.DatabaseSingleton;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -8,7 +7,7 @@ import jakarta.persistence.Table;
 @Table(name = "clients")
 public class Client extends User {
 
-    private DatabaseSingleton database;
+//    private DatabaseSingleton database;
 
     /*
      * @OneToMany(mappedBy = "client")

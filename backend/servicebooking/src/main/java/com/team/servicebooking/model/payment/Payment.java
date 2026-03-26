@@ -23,7 +23,7 @@ public class Payment {
     @OneToOne
     private Booking booking;
 
-    @OneToMany //TODO: implement payment method in payment
+    @OneToOne //TODO: implement payment method in payment
     private PaymentMethodStrategy paymentMethod; //do we need to keep a record of the payment method? we might, in order to allow for refunds. if not, we can remove this field
 
 
