@@ -1,7 +1,6 @@
 package com.team.servicebooking.model.booking;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.service.Service;
@@ -46,9 +45,9 @@ public class Booking {
     @OneToOne
     private Payment payment;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Payment> payments = new ArrayList<>(); //??
+//    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+//    @JsonManagedReference
+//    private List<Payment> payments = new ArrayList<>(); // unnecessary, we can keep a 1:1 relationship
 
     private String status;
 
@@ -155,8 +154,13 @@ public class Booking {
     }
 
     public void addPayment(Payment payment) {
-        payments.add(payment);
-    } //TODO: why do we add payments to a list? isnt there only one payment per booking?
+//        payments.add(payment);
+        this.payment = payment;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
 
     public void confirm() {
         this.bookingState.confirm();

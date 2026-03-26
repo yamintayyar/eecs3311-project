@@ -1,9 +1,7 @@
 package com.team.servicebooking.model.payment;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import com.team.servicebooking.model.user.Client;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -18,6 +16,18 @@ public abstract class PaymentMethodStrategy {
     protected String number2;
     protected LocalDate expiry;
     protected String email;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id")
+    protected Client client; //we need access to the client, to be able to fetch all relevant payment methods for a given client
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
     public abstract boolean validate();
 

@@ -13,10 +13,8 @@ import com.team.servicebooking.repository.ConsultantRepository;
 import com.team.servicebooking.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @org.springframework.stereotype.Service
@@ -142,7 +140,7 @@ public class BookingService {
         if (booking.getBookingState().isRefundable() && config.getRefundPolicy()) { // if booking is in a refundable state (paid)
             // and the application has a refund policy
             // active
-            paymentService.refund(booking.getPayment()); //TODO: implement paymentService refund method, which should process refund + mark payment as refunded
+            paymentService.refund(booking.getPayment());
             System.out.println("Successfully refunded payment for booking " + bookingId);
 
             if (config.getVerboseNotification()) {
@@ -167,5 +165,4 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
-    public
 }
