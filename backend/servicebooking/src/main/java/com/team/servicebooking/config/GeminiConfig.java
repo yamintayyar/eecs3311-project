@@ -1,5 +1,7 @@
 package com.team.servicebooking.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.google.genai.Client;
@@ -7,8 +9,12 @@ import com.google.genai.Client;
 @Configuration
 public class GeminiConfig {
 
+    @Value("${gemini.api.key}")
+    private String geminiApiKey;
+
+    @Bean
     public Client geminiClient() {
-        return new Client();
+        return Client.builder().apiKey(geminiApiKey).build();
     }
     
 }
