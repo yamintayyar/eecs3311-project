@@ -26,7 +26,7 @@ public class ChatbotService {
 
     public String askGemini(String prompt) {
 
-        GenerateContentResponse response = geminiClient.models.generateContent("gemini-1.5-flash", prompt, config);
+        GenerateContentResponse response = geminiClient.models.generateContent("gemini-3-flash-preview", prompt, config);
 
         return response.text();
     }
