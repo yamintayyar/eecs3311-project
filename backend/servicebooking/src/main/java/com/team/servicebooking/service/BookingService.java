@@ -161,8 +161,4 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
-<<<<<<< HEAD
-    
-=======
->>>>>>> 9f2afe5edd15161adc9da745dd37e3db38989092
 }

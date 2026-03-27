@@ -150,7 +150,6 @@ async function sendMessage(){
     try {
         const res = await fetch(`${BASE_URL}/api/chat`, {
             method: "POST",
-            mode: "no-cors",
             headers: {
                 "Content-Type": "application/json"
             },
