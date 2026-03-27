@@ -10,7 +10,7 @@ public class ChatResponseDTO {
         return this.reply;
     }
 
-    public void setReply(String message) {
+    public void setReply(String reply) {
         this.reply = reply;
     }
 }
