@@ -1,6 +1,20 @@
 package com.team.servicebooking.config;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "config")
 public class DatabaseSingleton {
+
+    @Id
+    @GeneratedValue
+    private UUID id;
+
     private int min_notice = 24;
     private double discount = 1.0;
     private boolean refund = false;

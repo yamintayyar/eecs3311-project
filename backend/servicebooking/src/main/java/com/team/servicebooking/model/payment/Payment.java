@@ -1,6 +1,5 @@
 package com.team.servicebooking.model.payment;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.team.servicebooking.model.booking.Booking;
 import jakarta.persistence.*;
 
@@ -24,7 +23,7 @@ public class Payment {
     @OneToOne
     private Booking booking;
 
-    @OneToMany //TODO: implement payment method in payment
+    @OneToOne //TODO: implement payment method in payment
     private PaymentMethodStrategy paymentMethod; //do we need to keep a record of the payment method? we might, in order to allow for refunds. if not, we can remove this field
 
 
@@ -41,6 +40,15 @@ public class Payment {
         this.timestamp = LocalDateTime.now();
     }
 
+    public Payment(Booking booking, String paymentMethodType , PaymentMethodStrategy method, double amount) {
+        this.booking = booking;
+        this.paymentMethodType = paymentMethodType;
+        this.amount = amount;
+        this.timestamp = LocalDateTime.now();
+
+        this.paymentMethod = method;
+    }
+
     public UUID getPaymentId() {
         return paymentId;
     }
@@ -49,42 +57,42 @@ public class Payment {
         return amount;
     }
 
-
-    public static Payment processPayment(Booking booking, PaymentMethodStrategy paymentMethod)
-            throws InterruptedException {
-
-        try {
-            // check if payment method is valid, and then ask booking class if it can be
-            // paid (if status is confirmed)
-            // finally, create payment
-
-            if (!paymentMethod.validate()) {
-                System.out.println("Error: Invalid payment method");
-                return null;
-            }
-
-            if (!booking.payable()) {
-                System.out.println(
-                        "Error: Booking has not been confirmed yet by consultant. Please await their response.");
-                return null;
-            }
-
-            System.out.println("Processing payment...");
-            Payment payment = new Payment(booking, paymentMethod);
-            Thread.sleep(1000);
-
-            System.out.println("Communicating payment...");
-            Thread.sleep(1000);
-
-            System.out.println("Payment #" + payment.paymentId + " has been successfully processed.");
-
-            return payment;
-        } catch (InterruptedException e) {
-            System.out.println("Error: unexpected error occurred. Please try again later.");
-            return null;
-        }
-
-    }
+    //TODO: Are we not going to use paymentmethodstrategy? if so,
+//    public static Payment processPayment(Booking booking, PaymentMethodStrategy paymentMethod)
+//            throws InterruptedException {
+//
+//        try {
+//            // check if payment method is valid, and then ask booking class if it can be
+//            // paid (if status is confirmed)
+//            // finally, create payment
+//
+//            if (!paymentMethod.validate()) {
+//                System.out.println("Error: Invalid payment method");
+//                return null;
+//            }
+//
+//            if (!booking.payable()) {
+//                System.out.println(
+//                        "Error: Booking has not been confirmed yet by consultant. Please await their response.");
+//                return null;
+//            }
+//
+//            System.out.println("Processing payment...");
+//            Payment payment = new Payment(booking, paymentMethod);
+//            Thread.sleep(1000);
+//
+//            System.out.println("Communicating payment...");
+//            Thread.sleep(1000);
+//
+//            System.out.println("Payment #" + payment.paymentId + " has been successfully processed.");
+//
+//            return payment;
+//        } catch (InterruptedException e) {
+//            System.out.println("Error: unexpected error occurred. Please try again later.");
+//            return null;
+//        }
+//
+//    }
 
     public void markRefunded() {
         this.refunded = true;

@@ -1,8 +1,6 @@
 package com.team.servicebooking.service;
 
 import com.team.servicebooking.model.user.Admin;
-import com.team.servicebooking.model.user.Client;
-import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.repository.AdminRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;

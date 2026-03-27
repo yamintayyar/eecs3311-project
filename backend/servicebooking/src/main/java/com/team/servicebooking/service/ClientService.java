@@ -3,6 +3,7 @@ package com.team.servicebooking.service;
 import com.team.servicebooking.model.booking.Booking;
 import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.user.Client;
+import com.team.servicebooking.repository.BookingRepository;
 import com.team.servicebooking.repository.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,13 @@ import java.util.UUID;
 public class ClientService {
 
     private final ClientRepository clientRepository;
-    private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
     private final PaymentService paymentService;
     private final ServiceService serviceService;
 
-    public ClientService(ClientRepository clientRepository, BookingService bookingService, PaymentService paymentService, ServiceService serviceService) {
+    public ClientService(ClientRepository clientRepository, BookingRepository bookingRepository, PaymentService paymentService, ServiceService serviceService) {
         this.clientRepository = clientRepository;
-        this.bookingService = bookingService;
+        this.bookingRepository = bookingRepository;
         this.paymentService = paymentService;
         this.serviceService = serviceService;
     }
@@ -76,7 +77,7 @@ public class ClientService {
 
     @Transactional
     public List<Booking> getBookingHistory(UUID client_id) {
-        return bookingService.getBookingsByClient(client_id);
+        return null; //TODO
     }
 
     @Transactional

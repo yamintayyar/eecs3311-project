@@ -3,6 +3,7 @@ package com.team.servicebooking.service;
 import com.team.servicebooking.dto.ServiceRequestDTO;
 import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Consultant;
+import com.team.servicebooking.repository.ConsultantRepository;
 import com.team.servicebooking.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
 
@@ -14,12 +15,12 @@ import java.util.UUID;
 public class ServiceService {
 
     private final ServiceRepository serviceRepository;
-    private final ConsultantService consultantService;
+    private final ConsultantRepository consultantRepository;
 
 
-    public ServiceService(ServiceRepository serviceRepository, ConsultantService consultantService) {
+    public ServiceService(ServiceRepository serviceRepository, ConsultantRepository consultantRepository) {
         this.serviceRepository = serviceRepository;
-        this.consultantService = consultantService;
+        this.consultantRepository = consultantRepository;
     }
 
     @Transactional
@@ -39,8 +40,7 @@ public class ServiceService {
 
     @Transactional
     public void addService(ServiceRequestDTO request) {
-        Consultant consultant = consultantService.getConsultantById(
-                        UUID.fromString(request.getConsultantId()))
+        Consultant consultant = consultantRepository.findById(UUID.fromString(request.getConsultantId()))
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
 
         Service service = new Service(request.getName(), request.getPrice(), request.getDescription(), consultant);

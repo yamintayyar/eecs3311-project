@@ -18,11 +18,13 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
     private final ConfigService configService;
+    private final PaymentMethodStrategyService paymentMethodService;
 
-    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository, ConfigService configService) {
+    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository, ConfigService configService, PaymentMethodStrategyService paymentMethodService) {
         this.paymentRepository = paymentRepository;
         this.bookingRepository = bookingRepository;
         this.configService = configService;
+        this.paymentMethodService = paymentMethodService;
     }
 
     /**
@@ -40,8 +42,12 @@ public class PaymentService {
         }
 
         PaymentMethodStrategy paymentMethod = buildPaymentMethod(request);
+        paymentMethod.setClient(booking.getClient()); //set client, for ease of access later
 
-        //TODO; add payment method validation step
+        if (!paymentMethod.validate()) {
+                System.out.println("Error: Invalid payment method");
+                return null;
+            }
 
         DatabaseSingleton config = configService.getConfiguration();
         double price = booking.getService().getPrice();
@@ -55,7 +61,11 @@ public class PaymentService {
         Payment payment = new Payment(
                 booking,
                 request.getPaymentMethodType(),
+                paymentMethod, //added reference to the payment method, makes it easier to refer to method when requesting a refund
                 booking.getService().getPrice());
+
+
+        paymentMethodService.addPaymentMethod(paymentMethod); //save payment method
 
         booking.addPayment(payment);
 
@@ -99,5 +109,9 @@ public class PaymentService {
 
     public List<Payment> getPaymentsByClient(UUID clientId) {
         return null; //TODO
+    }
+
+    public void refund(Payment payment) {
+        //TODO: implement paymentService refund method, which should process refund + mark payment as refunded
     }
 }

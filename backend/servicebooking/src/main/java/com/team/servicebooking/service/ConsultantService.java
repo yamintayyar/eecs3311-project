@@ -12,11 +12,11 @@ import java.util.UUID;
 public class ConsultantService {
 
     private final ConsultantRepository consultantRepository;
-    private final ServiceService serviceService;
+//    private final ServiceService serviceService;
 
     public ConsultantService(ConsultantRepository consultantRepository, ServiceService serviceService) {
         this.consultantRepository = consultantRepository;
-        this.serviceService = serviceService;
+//        this.serviceService = serviceService;
     }
 
     /**
