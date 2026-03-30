@@ -50,6 +50,9 @@ async function register() {
     };
 
     try {
+
+//    console.log("BASE URL = " + BASE_URL + " endpoint = " + endpoint );
+
         console.log(`${BASE_URL}/${endpoint}`);
         const res = await fetch(`${BASE_URL}/${endpoint}`, {
             method: "POST",
@@ -81,6 +84,9 @@ async function login(event) {
     };
 
     try {
+
+//        console.log("BASE URL = " + BASE_URL + " endpoint = " + endpoint );
+
         const res = await fetch(`${BASE_URL}/${endpoint}/login`, {
             method: "POST",
             headers: {

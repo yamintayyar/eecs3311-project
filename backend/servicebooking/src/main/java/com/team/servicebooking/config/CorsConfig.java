@@ -12,6 +12,8 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**") // Allow all endpoints
                 .allowedOrigins("http://127.0.0.1:5173", //
                         "http://127.0.0.1:5500",
+                        "http://localhost:63342",
+                        "http://localhost:8080",
                         "http://localhost:5500") // Allow Vite
                 // frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow standard verbs
