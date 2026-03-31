@@ -44,5 +44,10 @@ public class ServiceService {
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
 
         Service service = new Service(request.getName(), request.getPrice(), request.getDescription(), consultant);
+        serviceRepository.save(service);
+
+        //add service to consultant's list of services
+        consultant.addService(service);
+        consultantRepository.save(consultant);
     }
 }

@@ -45,4 +45,13 @@ public class Consultant extends User {
         availability.setConsultant(this);
         availabilities.add(availability);
     }
+
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void addService(Service service) {
+
+        services.add(service);
+    }
 }
