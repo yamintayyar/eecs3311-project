@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Methods</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>🗓️ ServiceBook</h2>
+      <p id="sidebarUser">Loading…</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="client.html">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="booking-history.html">
+        <span class="nav-icon">📋</span> Booking History
+      </a>
+      <a href="payment-methods.html" class="active">
+        <span class="nav-icon">💳</span> Payment Methods
+      </a>
+      <a href="payment-history.html">
+        <span class="nav-icon">🧾</span> Payment History
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-danger" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>Payment Methods</h1>
+      <p>Manage your saved cards and payment accounts.</p>
+    </div>
+
+    <div class="payment-methods-grid" id="pmGrid">
+      <!-- Populated by JS -->
+    </div>
+
+  </main>
+</div>
+
+<!-- ── Add / Edit Modal ─────────────────────────────────── -->
+<div class="modal-backdrop" id="pmModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Payment Method</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <label>Payment Type</label>
+      <select id="pmType" onchange="toggleFields()">
+        <option value="CREDIT">Credit Card</option>
+        <option value="DEBIT">Debit Card</option>
+        <option value="PAYPAL">PayPal</option>
+        <option value="BANK_TRANSFER">Bank Transfer</option>
+      </select>
+
+      <!-- Card fields -->
+      <div id="cardFields">
+        <label>Card Number</label>
+        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div>
+            <label>Expiry Date</label>
+            <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)">
+          </div>
+          <div>
+            <label>CVV</label>
+            <input type="password" id="cvv" placeholder="•••" maxlength="4">
+          </div>
+        </div>
+      </div>
+
+      <!-- PayPal fields -->
+      <div id="paypalFields" style="display:none;">
+        <label>PayPal Email</label>
+        <input type="email" id="paypalEmail" placeholder="you@paypal.com">
+      </div>
+
+      <!-- Bank fields -->
+      <div id="bankFields" style="display:none;">
+        <label>Account Number</label>
+        <input type="text" id="accountNumber" placeholder="000123456789">
+        <label>Routing Number</label>
+        <input type="text" id="routingNumber" placeholder="021000021">
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+        <input type="checkbox" id="setDefault" style="width:auto;margin:0;">
+        <label for="setDefault" style="margin:0;font-size:14px;text-transform:none;letter-spacing:0;color:var(--text);font-weight:500;">
+          Set as default payment method
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button onclick="savePaymentMethod()">Save Method</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+<script>
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = localStorage.getItem("role");
+  if (!user || role !== "client") window.location.href = "index.html";
+  document.getElementById("sidebarUser").textContent = user.name;
+
+  // ── Local storage for payment methods (mock persistence) ──
+  let methods = JSON.parse(localStorage.getItem("paymentMethods") || "[]");
+
+  const TYPE_ICONS = { CREDIT:"💳", DEBIT:"🏦", PAYPAL:"🅿️", BANK_TRANSFER:"🏛️" };
+  const TYPE_LABELS= { CREDIT:"Credit Card", DEBIT:"Debit Card", PAYPAL:"PayPal", BANK_TRANSFER:"Bank Transfer" };
+
+  function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.className = "toast " + type + " show";
+    setTimeout(() => t.className = "toast", 2800);
+  }
+
+  function renderMethods() {
+    const grid = document.getElementById("pmGrid");
+    const cards = methods.map((m, i) => `
+      <div class="pm-card ${m.isDefault ? 'default' : ''}">
+        ${m.isDefault ? `<div class="pm-default-badge"><span class="badge badge-green">Default</span></div>` : ""}
+        <div class="pm-type">${TYPE_ICONS[m.type] || "💳"} ${TYPE_LABELS[m.type] || m.type}</div>
+        <div class="pm-number">${maskNumber(m)}</div>
+        <div class="pm-expiry">${m.expiry || m.email || m.accountNumber || ""}</div>
+        <div class="pm-actions">
+          ${!m.isDefault ? `<button class="btn btn-outline btn-sm" onclick="setDefault(${i})">Set Default</button>` : ""}
+          <button class="btn btn-danger btn-sm" onclick="removeMethod(${i})">Remove</button>
+        </div>
+      </div>
+    `).join("");
+
+    grid.innerHTML = cards + `
+      <button class="add-pm-card" onclick="openModal()">
+        <span>＋</span>
+        Add Payment Method
+      </button>`;
+  }
+
+  function maskNumber(m) {
+    if (m.type === "PAYPAL")         return m.email || "PayPal Account";
+    if (m.type === "BANK_TRANSFER")  return "Account •••• " + (m.accountNumber || "").slice(-4);
+    if (m.cardNumber) return "•••• •••• •••• " + m.cardNumber.replace(/\s/g,"").slice(-4);
+    return "•••• •••• •••• ••••";
+  }
+
+  function openModal(editIndex = null) {
+    document.getElementById("pmModal").classList.add("open");
+    document.getElementById("pmType").value = "CREDIT";
+    document.getElementById("cardNumber").value = "";
+    document.getElementById("expiryDate").value = "";
+    document.getElementById("cvv").value = "";
+    document.getElementById("paypalEmail").value = "";
+    document.getElementById("accountNumber").value = "";
+    document.getElementById("routingNumber").value = "";
+    document.getElementById("setDefault").checked = methods.length === 0;
+    toggleFields();
+  }
+
+  function closeModal() {
+    document.getElementById("pmModal").classList.remove("open");
+  }
+
+  function toggleFields() {
+    const type = document.getElementById("pmType").value;
+    document.getElementById("cardFields").style.display   = ["CREDIT","DEBIT"].includes(type) ? "" : "none";
+    document.getElementById("paypalFields").style.display = type === "PAYPAL"        ? "" : "none";
+    document.getElementById("bankFields").style.display   = type === "BANK_TRANSFER" ? "" : "none";
+  }
+
+  function formatCard(el) {
+    let v = el.value.replace(/\D/g,"").substring(0,16);
+    el.value = v.replace(/(.{4})/g,"$1 ").trim();
+  }
+
+  function formatExpiry(el) {
+    let v = el.value.replace(/\D/g,"");
+    if (v.length >= 2) v = v.substring(0,2) + "/" + v.substring(2,4);
+    el.value = v;
+  }
+
+  function savePaymentMethod() {
+    const type = document.getElementById("pmType").value;
+    const isDefault = document.getElementById("setDefault").checked;
+    const method = { type, isDefault };
+
+    if (["CREDIT","DEBIT"].includes(type)) {
+      const cardNum = document.getElementById("cardNumber").value;
+      const expiry  = document.getElementById("expiryDate").value;
+      if (!cardNum || cardNum.replace(/\s/g,"").length < 16) { showToast("Enter a valid card number.", "error"); return; }
+      if (!expiry)   { showToast("Enter expiry date.", "error"); return; }
+      method.cardNumber = cardNum;
+      method.expiry     = expiry;
+      method.cvv        = document.getElementById("cvv").value;
+    } else if (type === "PAYPAL") {
+      const email = document.getElementById("paypalEmail").value;
+      if (!email) { showToast("Enter PayPal email.", "error"); return; }
+      method.email = email;
+    } else {
+      const acct = document.getElementById("accountNumber").value;
+      if (!acct) { showToast("Enter account number.", "error"); return; }
+      method.accountNumber = acct;
+      method.routingNumber = document.getElementById("routingNumber").value;
+    }
+
+    if (isDefault) methods.forEach(m => m.isDefault = false);
+    methods.push(method);
+    localStorage.setItem("paymentMethods", JSON.stringify(methods));
+    closeModal();
+    renderMethods();
+    showToast("Payment method saved! 💳");
+  }
+
+  function setDefault(i) {
+    methods.forEach((m, j) => m.isDefault = j === i);
+    localStorage.setItem("paymentMethods", JSON.stringify(methods));
+    renderMethods();
+    showToast("Default payment method updated.");
+  }
+
+  function removeMethod(i) {
+    if (!confirm("Remove this payment method?")) return;
+    methods.splice(i, 1);
+    if (methods.length && !methods.some(m => m.isDefault)) methods[0].isDefault = true;
+    localStorage.setItem("paymentMethods", JSON.stringify(methods));
+    renderMethods();
+    showToast("Payment method removed.");
+  }
+
+  // Close modal on backdrop click
+  document.getElementById("pmModal").addEventListener("click", e => {
+    if (e.target === document.getElementById("pmModal")) closeModal();
+  });
+
+  function logout() { localStorage.clear(); window.location.href = "index.html"; }
+
+  renderMethods();
+</script>
+</body>
+</html>

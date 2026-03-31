@@ -1,0 +1,20 @@
+<h1>Consultant Dashboard</h1>
+<p id="welcome"></p>
+<button onclick="logout()">Logout</button>
+<script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const role = localStorage.getItem("role");
+
+    if (role !== "consultant") {
+        window.location.href = "index.html";
+    }
+    if (!user) window.location.href = "index.html";
+
+    document.getElementById("welcome").innerText =
+        "Welcome Consultant " + user.name;
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+</script>

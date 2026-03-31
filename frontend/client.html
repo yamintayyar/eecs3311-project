@@ -1,35 +1,311 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Client Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<h1>Client Dashboard</h1>
-<p id="welcome"></p>
+<div class="app-layout">
 
-<button onclick="logout()">Logout</button>
+  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>🗓️ ServiceBook</h2>
+      <p id="sidebarUser">Loading…</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="client.html" class="active">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="booking-history.html">
+        <span class="nav-icon">📋</span> Booking History
+      </a>
+      <a href="payment-methods.html">
+        <span class="nav-icon">💳</span> Payment Methods
+      </a>
+      <a href="payment-history.html">
+        <span class="nav-icon">🧾</span> Payment History
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-danger" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
 
+  <!-- ── Main ────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1 id="welcomeMsg">Welcome back!</h1>
+      <p>Browse available services and manage your upcoming bookings.</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Upcoming Bookings</div>
+        <div class="stat-value" id="statUpcoming">—</div>
+        <div class="stat-sub">Scheduled ahead</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Total Bookings</div>
+        <div class="stat-value" id="statTotal">—</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Pending Payment</div>
+        <div class="stat-value" id="statPending">—</div>
+        <div class="stat-sub">Awaiting payment</div>
+      </div>
+    </div>
+
+    <!-- ── Browse Services ─────────────────────────── -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <h2>Browse Services</h2>
+        <input type="text" id="serviceSearch" placeholder="🔍  Search services…"
+               style="width:220px; margin:0; padding:8px 12px; font-size:13px;"
+               oninput="filterServices()">
+      </div>
+      <div class="card-body">
+        <div class="services-grid" id="servicesGrid">
+          <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading services…</p></div>
+        </div>
+
+        <!-- Booking Drawer -->
+        <div class="booking-drawer" id="bookingDrawer">
+          <h3>📅 Book: <span id="drawerServiceName"></span></h3>
+          <div class="form-row">
+            <div>
+              <label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Preferred Date</label>
+              <input type="date" id="bookingDate" min="">
+            </div>
+            <div>
+              <label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Consultant</label>
+              <select id="bookingConsultant">
+                <option value="">— Select consultant —</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:14px; display:flex; gap:10px;">
+            <button onclick="submitBooking()" style="flex:1;">Confirm Booking</button>
+            <button class="btn-outline" onclick="closeDrawer()" style="flex:1; margin-top:0;">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Upcoming Bookings ───────────────────────── -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Upcoming Bookings</h2>
+        <a href="booking-history.html" style="font-size:13px;color:var(--green);text-decoration:none;font-weight:600;">View all →</a>
+      </div>
+      <div class="card-body">
+        <div id="upcomingList">
+          <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
 <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    const role = localStorage.getItem("role");
+<!--  const BASE_URL = "http://localhost:8080";-->
 
-    if (role !== "client") {
-        window.location.href = "index.html";
+  // ── Auth guard ──────────────────────────────────────────
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = localStorage.getItem("role");
+  if (!user || role !== "client") window.location.href = "index.html";
+
+  document.getElementById("welcomeMsg").textContent = "Welcome back, " + user.name + "!";
+  document.getElementById("sidebarUser").textContent = user.name;
+
+  // ── Toast helper ────────────────────────────────────────
+  function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = "toast " + type + " show";
+    setTimeout(() => t.className = "toast", 2800);
+  }
+
+  // ── Mock service catalogue (replace with API when ready) ─
+  const SERVICES = [
+    { id: "s1", name: "Tax Consultation", icon: "💼", price: 150, desc: "Personal or business tax filing guidance." },
+    { id: "s2", name: "Financial Planning", icon: "📈", price: 200, desc: "Long-term investment & savings strategy." },
+    { id: "s3", name: "Legal Consultation", icon: "⚖️", price: 250, desc: "Contract review and legal advice." },
+    { id: "s4", name: "IT Support",         icon: "💻", price: 100, desc: "Troubleshooting, setup, and tech help." },
+    { id: "s5", name: "Career Coaching",    icon: "🎯", price: 120, desc: "Resume review and interview prep." },
+    { id: "s6", name: "Health Consultation",icon: "🏥", price: 180, desc: "Wellness and preventive health advice." },
+  ];
+
+  let selectedService = null;
+  let allServices = [...SERVICES];
+
+  function renderServices(list) {
+    const grid = document.getElementById("servicesGrid");
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>No services match your search.</p></div>`;
+      return;
     }
+    grid.innerHTML = list.map(s => `
+      <div class="service-card ${selectedService?.id === s.id ? 'selected' : ''}"
+           onclick="selectService('${s.id}')" id="sc-${s.id}">
+        <div class="selected-check">✓</div>
+        <div class="service-icon">${s.icon}</div>
+        <h3>${s.name}</h3>
+        <p>${s.desc}</p>
+        <div class="service-price">$${s.price}<span style="font-size:12px;font-weight:500;color:var(--text-muted)">/session</span></div>
+      </div>
+    `).join("");
+  }
 
-    if (!user) {
-        window.location.href = "index.html";
+  function filterServices() {
+    const q = document.getElementById("serviceSearch").value.toLowerCase();
+    renderServices(allServices.filter(s =>
+      s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q)
+    ));
+  }
+
+  function selectService(id) {
+    selectedService = allServices.find(s => s.id === id);
+    renderServices(allServices.filter(s => {
+      const q = document.getElementById("serviceSearch").value.toLowerCase();
+      return s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q);
+    }));
+    document.getElementById("drawerServiceName").textContent = selectedService.name;
+    // Set min date to today
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("bookingDate").min = today;
+    document.getElementById("bookingDate").value = today;
+    document.getElementById("bookingDrawer").classList.add("open");
+    document.getElementById("bookingDrawer").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    loadConsultants();
+  }
+
+  function closeDrawer() {
+    selectedService = null;
+    document.getElementById("bookingDrawer").classList.remove("open");
+    renderServices(allServices);
+  }
+
+  async function loadConsultants() {
+    const sel = document.getElementById("bookingConsultant");
+    sel.innerHTML = `<option value="">Loading…</option>`;
+    try {
+      const res = await fetch(`${BASE_URL}/consultants`);
+      const data = await res.json();
+      sel.innerHTML = `<option value="">— Select consultant —</option>` +
+        data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+    } catch {
+      sel.innerHTML = `<option value="">— No consultants found —</option>`;
     }
+  }
 
-    document.getElementById("welcome").innerText =
-        "Welcome " + user.name;
+  async function submitBooking() {
+    const date        = document.getElementById("bookingDate").value;
+    const consultantId = document.getElementById("bookingConsultant").value;
+    if (!date)         { showToast("Please pick a date.", "error"); return; }
+    if (!consultantId) { showToast("Please select a consultant.", "error"); return; }
 
-    function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
+    try {
+      const res = await fetch(`${BASE_URL}/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientId:     user.id,
+          consultantId: consultantId,
+          serviceId:    selectedService.id,
+          slotIds:      []
+        })
+      });
+      if (!res.ok) throw new Error("Failed");
+      showToast("Booking confirmed! 🎉");
+      closeDrawer();
+      loadUpcomingBookings();
+    } catch {
+      showToast("Booking failed. Try again.", "error");
     }
+  }
+
+  // ── Upcoming Bookings ────────────────────────────────────
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  async function loadUpcomingBookings() {
+    const list = document.getElementById("upcomingList");
+    try {
+      const res  = await fetch(`${BASE_URL}/bookings`);
+      const data = await res.json();
+      // Filter to this client's bookings
+      const mine = data.filter(b => b.client?.id === user.id || true); // adjust filter when API supports it
+      const upcoming = mine.filter(b => b.status !== "COMPLETED" && b.status !== "CANCELLED").slice(0, 5);
+
+      document.getElementById("statTotal").textContent    = mine.length;
+      document.getElementById("statUpcoming").textContent = upcoming.length;
+      document.getElementById("statPending").textContent  = mine.filter(b => b.status === "PENDING").length;
+
+      if (!upcoming.length) {
+        list.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p>No upcoming bookings. Book a service above!</p></div>`;
+        return;
+      }
+
+      list.innerHTML = upcoming.map(b => {
+        const d   = b.bookingDate ? new Date(b.bookingDate) : new Date();
+        const day = d.getDate();
+        const mon = MONTHS[d.getMonth()];
+        const statusClass = { CONFIRMED:"badge-green", PENDING:"badge-amber", CANCELLED:"badge-red", COMPLETED:"badge-gray" }[b.status] || "badge-gray";
+        return `
+          <div class="booking-item">
+            <div class="booking-date-block">
+              <div class="day">${day}</div>
+              <div class="mon">${mon}</div>
+            </div>
+            <div class="booking-info">
+              <h4>${b.service?.name || "Service"}</h4>
+              <p>with ${b.consultant?.name || "Consultant"}</p>
+            </div>
+            <div class="booking-actions">
+              <span class="badge ${statusClass}">${b.status || "PENDING"}</span>
+              <button class="btn btn-outline btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>
+            </div>
+          </div>`;
+      }).join("");
+    } catch {
+      // Fallback mock data so UI is visible without backend
+      document.getElementById("statTotal").textContent    = "0";
+      document.getElementById("statUpcoming").textContent = "0";
+      document.getElementById("statPending").textContent  = "0";
+      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p>No upcoming bookings. Book a service above!</p></div>`;
+    }
+  }
+
+  async function cancelBooking(id) {
+    if (!confirm("Cancel this booking?")) return;
+    try {
+      await fetch(`${BASE_URL}/bookings/${id}`, { method: "DELETE" });
+      showToast("Booking cancelled.");
+      loadUpcomingBookings();
+    } catch {
+      showToast("Could not cancel. Try again.", "error");
+    }
+  }
+
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+
+  // ── Init ─────────────────────────────────────────────────
+  renderServices(allServices);
+  loadUpcomingBookings();
 </script>
-
 </body>
 </html>

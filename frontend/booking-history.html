@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking History</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h2>🗓️ ServiceBook</h2>
+      <p id="sidebarUser">Loading…</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="client.html">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="booking-history.html" class="active">
+        <span class="nav-icon">📋</span> Booking History
+      </a>
+      <a href="payment-methods.html">
+        <span class="nav-icon">💳</span> Payment Methods
+      </a>
+      <a href="payment-history.html">
+        <span class="nav-icon">🧾</span> Payment History
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-danger" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────── -->
+  <main class="main-content">
+
+    <div class="page-header">
+      <h1>Booking History</h1>
+      <p>A full record of all your past and present bookings.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value" id="statCompleted">—</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Confirmed</div>
+        <div class="stat-value" id="statConfirmed">—</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Pending</div>
+        <div class="stat-value" id="statPending">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Cancelled</div>
+        <div class="stat-value" id="statCancelled">—</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="padding:16px 22px;">
+        <div class="filters-bar">
+          <input type="text" id="searchInput" placeholder="🔍  Search by service or consultant…" oninput="applyFilters()">
+          <select id="statusFilter" onchange="applyFilters()">
+            <option value="">All Statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="CONFIRMED">Confirmed</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+          <input type="date" id="dateFrom" onchange="applyFilters()" title="From date">
+          <input type="date" id="dateTo"   onchange="applyFilters()" title="To date">
+          <button class="btn-outline btn-sm" onclick="clearFilters()" style="white-space:nowrap;">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+      <div class="card-header">
+        <h2>All Bookings</h2>
+        <span id="resultCount" class="text-muted"></span>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div class="table-wrap">
+          <table id="bookingTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Service</th>
+                <th>Consultant</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookingTableBody">
+              <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+<script>
+  const BASE_URL = "http://localhost:8080";
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = localStorage.getItem("role");
+  if (!user || role !== "client") window.location.href = "index.html";
+  document.getElementById("sidebarUser").textContent = user.name;
+
+  let allBookings = [];
+
+  function showToast(msg, type = "success") {
+    const t = document.getElementById("toast");
+    t.textContent = msg; t.className = "toast " + type + " show";
+    setTimeout(() => t.className = "toast", 2800);
+  }
+
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  function statusBadge(status) {
+    const map = { CONFIRMED:"badge-green", PENDING:"badge-amber", CANCELLED:"badge-red", COMPLETED:"badge-blue" };
+    return `<span class="badge ${map[status] || 'badge-gray'}">${status || "PENDING"}</span>`;
+  }
+
+  function renderTable(bookings) {
+    const tbody = document.getElementById("bookingTableBody");
+    document.getElementById("resultCount").textContent = bookings.length + " booking" + (bookings.length !== 1 ? "s" : "");
+    if (!bookings.length) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📭</div><p>No bookings found.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => {
+      const d = b.bookingDate ? new Date(b.bookingDate) : null;
+      const dateStr = d ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "—";
+      const paid = b.payment ? `<span class="badge badge-green">Paid</span>` : `<span class="badge badge-amber">Unpaid</span>`;
+      const canCancel = b.status !== "CANCELLED" && b.status !== "COMPLETED";
+      return `
+        <tr>
+          <td>${dateStr}</td>
+          <td><strong>${b.service?.name || "—"}</strong></td>
+          <td>${b.consultant?.name || "—"}</td>
+          <td>${statusBadge(b.status)}</td>
+          <td>${paid}</td>
+          <td>
+            ${canCancel ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>` : '<span class="text-muted">—</span>'}
+          </td>
+        </tr>`;
+    }).join("");
+  }
+
+  function applyFilters() {
+    const q      = document.getElementById("searchInput").value.toLowerCase();
+    const status = document.getElementById("statusFilter").value;
+    const from   = document.getElementById("dateFrom").value;
+    const to     = document.getElementById("dateTo").value;
+
+    const filtered = allBookings.filter(b => {
+      const matchQ = !q ||
+        (b.service?.name || "").toLowerCase().includes(q) ||
+        (b.consultant?.name || "").toLowerCase().includes(q);
+      const matchStatus = !status || b.status === status;
+      const d = b.bookingDate ? new Date(b.bookingDate) : null;
+      const matchFrom = !from || (d && d >= new Date(from));
+      const matchTo   = !to   || (d && d <= new Date(to));
+      return matchQ && matchStatus && matchFrom && matchTo;
+    });
+    renderTable(filtered);
+  }
+
+  function clearFilters() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("statusFilter").value = "";
+    document.getElementById("dateFrom").value = "";
+    document.getElementById("dateTo").value   = "";
+    applyFilters();
+  }
+
+  async function cancelBooking(id) {
+    if (!confirm("Cancel this booking?")) return;
+    try {
+      await fetch(`${BASE_URL}/bookings/${id}`, { method: "DELETE" });
+      showToast("Booking cancelled.");
+      allBookings = allBookings.map(b => b.id === id ? { ...b, status: "CANCELLED" } : b);
+      updateStats();
+      applyFilters();
+    } catch {
+      showToast("Could not cancel. Try again.", "error");
+    }
+  }
+
+  function updateStats() {
+    const count = s => allBookings.filter(b => b.status === s).length;
+    document.getElementById("statCompleted").textContent = count("COMPLETED");
+    document.getElementById("statConfirmed").textContent = count("CONFIRMED");
+    document.getElementById("statPending").textContent   = count("PENDING");
+    document.getElementById("statCancelled").textContent = count("CANCELLED");
+  }
+
+  async function loadBookings() {
+    try {
+      const res  = await fetch(`${BASE_URL}/bookings`);
+      allBookings = await res.json();
+      updateStats();
+      applyFilters();
+    } catch {
+      allBookings = [];
+      updateStats();
+      renderTable([]);
+    }
+  }
+
+  function logout() { localStorage.clear(); window.location.href = "index.html"; }
+
+  loadBookings();
+</script>
+</body>
+</html>
