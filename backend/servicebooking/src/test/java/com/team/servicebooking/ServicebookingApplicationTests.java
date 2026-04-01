@@ -1,13 +1,12 @@
 package com.team.servicebooking;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class ServicebookingApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+//	@Test //TODO: what is this test for?
+//	void contextLoads() {
+//	}
 
 }

@@ -20,7 +20,7 @@ public class Service {
 
     private String description;
 
-    private int durationHours; //TODO: implement; currently not set or accounted for by price
+    private int durationHours; //TODO: implement??; currently not set or accounted for by price
 
     @ManyToOne
     @JoinColumn(name = "consultant_id")
@@ -52,4 +52,6 @@ public class Service {
     public int getDuration() {
         return durationHours;
     }
+
+    public UUID getId() {return id;}
 }
