@@ -123,10 +123,8 @@ async function login(event) {
 let buttonState = false;
 
 const chatToggleBtn = document.getElementById("chat-btn");
-
 const chatIn = document.getElementById("userInput");
 const sendChatInBtn = document.getElementById("sendBtn");
-
 const chatHistory = document.querySelector(".chat-box-body");
 
 
@@ -146,6 +144,12 @@ async function sendMessage(){
     chatHistory.appendChild(createMessageDiv(userMessage, "sent"));
     chatIn.value = "";
     let botMessage = "Something went wrong!";
+    
+    const typingBubble = createMessageDiv("...", "received")
+    chatHistory.appendChild(typingBubble);
+    
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
 
     try {
         const res = await fetch(`${BASE_URL}/api/chat`, {
@@ -156,17 +160,25 @@ async function sendMessage(){
             body: JSON.stringify({message: userMessage})
         });
 
+        
+        if (typingBubble) {
+            typingBubble.remove();
+        }
+
         if (!res.ok) {
-        alert("Connection to Gemini failed!");
-        return;
+            alert("Connection to Gemini failed!");
+            return;
         }
 
         const data = await res.json();
         console.log(data);
-
         botMessage = data.reply;
 
     } catch (err) {
+
+        if (typingBubble) {
+            typingBubble.remove();
+        }
         console.log(err);
     }
 

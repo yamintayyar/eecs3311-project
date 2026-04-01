@@ -43,3 +43,5 @@ build/
 
 ### Gemini API key ###
 .env
+
+.DS_Store

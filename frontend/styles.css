@@ -118,9 +118,9 @@ button:hover {
     height: 520px;
     border-radius: 20px;
     box-shadow: 0 0 0 2px rgba(76,175,80,0.1);
-    transform: scale(1);  /* 0.5 */
-    opacity: 1;             /* 0 */
-    pointer-events: auto;   /* none */
+    transform: scale(0.5);  /* 0.5 */
+    opacity: 0;             /* 0 */
+    pointer-events: none;   /* none */
 }
 
 body.show-chatbot #chatbot-container .chat-box {
@@ -230,4 +230,10 @@ body.show-chatbot #chatbot-container .chat-box {
     border-radius: 50%;
     color: #3f6c8c;
     
+}
+
+#chatbot-container .loading-indicator p{
+display: none;
+color:  gray;
+font-style: italic;
 }
