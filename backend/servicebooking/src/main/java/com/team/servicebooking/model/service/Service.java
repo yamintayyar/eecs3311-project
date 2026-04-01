@@ -54,4 +54,8 @@ public class Service {
     }
 
     public UUID getId() {return id;}
+
+    public String getConsultantName() {
+        return consultant.getName();
+    }
 }

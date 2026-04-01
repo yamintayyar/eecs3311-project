@@ -81,14 +81,14 @@
           <div class="form-row">
             <div>
               <label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Preferred Date</label>
-              <input type="date" id="bookingDate" min="">
+              <input type="datetime-local" id="bookingDate" min="" step=900>
             </div>
-            <div>
-              <label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Consultant</label>
-              <select id="bookingConsultant">
-                <option value="">— Select consultant —</option>
-              </select>
-            </div>
+<!--            <div>-->
+<!--              <label style="font-size:13px;font-weight:600;color:var(&#45;&#45;text-muted);display:block;margin-bottom:6px;">Consultant</label>-->
+<!--              <select id="bookingConsultant">-->
+<!--                <option value="">— Select consultant —</option>-->
+<!--              </select>-->
+<!--            </div>-->
           </div>
           <div style="margin-top:14px; display:flex; gap:10px;">
             <button onclick="submitBooking()" style="flex:1;">Confirm Booking</button>
@@ -152,7 +152,7 @@
         <div class="selected-check">✓</div>
 <!--        <div class="service-icon">${s.icon}</div>-->
         <h3>${s.name}</h3>
-        <p>${s.description}</p>
+        <p>${s.description} <br><br>With: ${s.consultantName}</p>
         <div class="service-price">$${s.price}<span style="font-size:12px;font-weight:500;color:var(--text-muted)">/session</span></div>
       </div>
     `).join("");
@@ -173,12 +173,12 @@
     }));
     document.getElementById("drawerServiceName").textContent = selectedService.name;
     // Set min date to today
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toISOString().slice(0,-5);
     document.getElementById("bookingDate").min = today;
     document.getElementById("bookingDate").value = today;
     document.getElementById("bookingDrawer").classList.add("open");
     document.getElementById("bookingDrawer").scrollIntoView({ behavior: "smooth", block: "nearest" });
-    loadConsultants();
+    // loadConsultants(selectedService.name); //we dont need this, because each listed service corresponds to exactly one consultant
   }
 
   function closeDrawer() {
@@ -187,7 +187,7 @@
     renderServices(allServices);
   }
 
-  async function loadConsultants() {
+  async function loadConsultants(name) {
     const sel = document.getElementById("bookingConsultant");
     sel.innerHTML = `<option value="">Loading…</option>`;
     try {
