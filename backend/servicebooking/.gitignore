@@ -40,3 +40,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Gemini API key ###
+.env
+
+.DS_Store
