@@ -1,6 +1,6 @@
 package com.team.servicebooking.model.booking;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.payment.Payment;
 import com.team.servicebooking.model.service.Service;
@@ -22,12 +22,15 @@ public class Booking {
     private UUID id;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonIgnore
     private Client client;
 
     @ManyToOne
-    @JsonBackReference
+//    @JsonBackReference
+    @JsonIgnore
     private Consultant consultant;
+
 
     @ManyToOne
     private Service service;
@@ -39,8 +42,8 @@ public class Booking {
 //    @ManyToOne
     private LocalDate bookingDate;
 
-    @Transient
-    private BookingState bookingState;
+//    @Transient
+//    private BookingState bookingState;
 
 //    @OneToOne
     @ManyToOne //using many to one to avoid issues when payment is not yet added to booking (could result in primary key conflict otherwise)
@@ -52,6 +55,7 @@ public class Booking {
 
     private String status;
 
+    @JsonIgnore
     @Transient
     private BookingState state;
 
@@ -67,7 +71,7 @@ public class Booking {
         this.service = service;
         this.availabilities = availabilities;
         this.bookingDate = LocalDate.now();
-        this.bookingState = new RequestState(this);
+        this.state = new RequestState(this);
 
 //        System.out.println("Booking requested for " + client.getName() + "on " + bookingDate.toString() + ".");
 
@@ -87,8 +91,16 @@ public class Booking {
         return client;
     }
 
+    public UUID getClientId() {
+        return client.getID();
+    }
+
     public Consultant getConsultant() {
         return consultant;
+    }
+
+    public UUID getConsultantId() {
+        return consultant.getID();
     }
 
     public Service getService() {
@@ -99,28 +111,25 @@ public class Booking {
         return bookingDate;
     }
 
-    public BookingState getBookingState() {
-        return bookingState;
-    }
-
     public String getStatus() {
         return status;
     }
 
+    @JsonIgnore
     public BookingState getState() {
         return state;
     }
 
     public boolean payable() {
-        return this.bookingState.payable();
+        return this.state.payable();
     }
 
     public void cancel() {
-        this.bookingState.cancel();
+        this.state.cancel();
     }
 
     public void reject() {
-        this.bookingState.reject();
+        this.state.reject();
     }
 
     public List<Availability> getAvailabilities() {
@@ -164,10 +173,23 @@ public class Booking {
     }
 
     public void confirm() {
-        this.bookingState.confirm();
+        this.state.confirm();
     }
 
     public void complete() {
-        this.bookingState.complete();
+        this.state.complete();
+    }
+
+    @PostLoad
+    private void initState() {
+        if (status != null) {
+            switch (status) {
+                case "REQUESTED"  -> this.state = new RequestState(this);
+                case "CONFIRMED"  -> this.state = new ConfirmedState(this);
+                case "COMPLETED"  -> this.state = new CompletedState(this);
+                case "CANCELLED"  -> this.state = new CancelledState(this);
+                case "REJECTED"   -> this.state = new RejectedState(this);
+            }
+        }
     }
 }

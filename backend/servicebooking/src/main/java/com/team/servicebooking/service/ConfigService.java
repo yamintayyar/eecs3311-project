@@ -2,8 +2,11 @@ package com.team.servicebooking.service;
 
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.repository.ConfigRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class ConfigService {
@@ -45,8 +48,18 @@ public class ConfigService {
     }
 
     @Transactional
+    @Query(value = "SELECT * FROM config ORDER BY ", nativeQuery = true)
     public DatabaseSingleton getConfiguration() {
-        return null; //TODO: return most recent row in config database. likely will need a simple SQL query
+        Optional<DatabaseSingleton> cfg =  configRepository.findFirstByOrderByCreatedAtDesc();
+
+        if (cfg.isEmpty()) {
+            DatabaseSingleton new_cfg = new DatabaseSingleton();
+            configRepository.save(new_cfg);
+            return new_cfg;
+        }
+
+        return cfg.get();
+
     }
 
 }

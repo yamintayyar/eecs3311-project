@@ -13,7 +13,6 @@ import com.team.servicebooking.repository.ConsultantRepository;
 import com.team.servicebooking.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -126,19 +125,21 @@ public class BookingService {
 
         int min_notice = config.getMinNotice();
 
-        LocalDateTime cancel_deadline = booking.getAvailabilities().get(0).getStartTime().plusHours(-min_notice);
+        //TODO: implement availabilities before re-enabling deadline validation
 
-        if (cancel_deadline.compareTo(LocalDateTime.now()) < 0) {
-            System.out.println("Error: Can not cancel booking because deadline has passed.");
+//        LocalDateTime cancel_deadline = booking.getAvailabilities().get(0).getStartTime().plusHours(-min_notice);
+//
+//        if (cancel_deadline.compareTo(LocalDateTime.now()) < 0) {
+//            System.out.println("Error: Can not cancel booking because deadline has passed.");
+//
+//            if (config.getVerboseNotification()) {
+//                notificationService.notify(booking.getClient(), "Error: Can not cancel booking because deadline has passed.");
+//            }
+//
+//            return;
+//        }
 
-            if (config.getVerboseNotification()) {
-                notificationService.notify(booking.getClient(), "Error: Can not cancel booking because deadline has passed.");
-            }
-
-            return;
-        }
-
-        if (booking.getBookingState().isRefundable() && config.getRefundPolicy()) { // if booking is in a refundable state (paid)
+        if (booking.getState().isRefundable() && config.getRefundPolicy()) { // if booking is in a refundable state (paid)
             // and the application has a refund policy
             // active
             paymentService.refund(booking.getPayment());
@@ -150,6 +151,8 @@ public class BookingService {
         }
 
         booking.cancel(); //changes internal state
+
+        System.out.println("booking " + bookingId + "cancelled, status =" + booking.getStatus());
 
         bookingRepository.save(booking); //update in database
 

@@ -37,4 +37,15 @@ public class BookingController {
     public void deleteBooking(@PathVariable UUID id) {
         bookingService.deleteBooking(id);
     }
+
+    @PostMapping("/{id}")
+    public void updateBookingStatus(@PathVariable UUID id, @RequestBody String update) {
+
+        update = update.toLowerCase();
+
+        System.out.println("msg = " + update);
+
+        if ( update.equals("cancel") ) bookingService.cancelBooking(id);
+
+    }
 }

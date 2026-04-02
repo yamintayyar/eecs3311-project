@@ -1,10 +1,9 @@
 package com.team.servicebooking.config;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,6 +13,10 @@ public class DatabaseSingleton {
     @Id
     @GeneratedValue
     private UUID id;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     private int min_notice = 24;
     private double discount = 1.0;

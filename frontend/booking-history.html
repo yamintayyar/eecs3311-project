@@ -116,7 +116,7 @@
 
 <script src="script.js"></script>
 <script>
-  const BASE_URL = "http://localhost:8080";
+<!--  const BASE_URL = "http://localhost:8080";-->
   const user = JSON.parse(localStorage.getItem("user"));
   const role = localStorage.getItem("role");
   if (!user || role !== "client") window.location.href = "index.html";
@@ -153,7 +153,7 @@
         <tr>
           <td>${dateStr}</td>
           <td><strong>${b.service?.name || "—"}</strong></td>
-          <td>${b.consultant?.name || "—"}</td>
+          <td>${b.service?.consultantName || "—"}</td>
           <td>${statusBadge(b.status)}</td>
           <td>${paid}</td>
           <td>
@@ -169,10 +169,12 @@
     const from   = document.getElementById("dateFrom").value;
     const to     = document.getElementById("dateTo").value;
 
+    console.log("list is "+  allBookings);
+
     const filtered = allBookings.filter(b => {
       const matchQ = !q ||
         (b.service?.name || "").toLowerCase().includes(q) ||
-        (b.consultant?.name || "").toLowerCase().includes(q);
+        (b.service?.consultantName || "").toLowerCase().includes(q);
       const matchStatus = !status || b.status === status;
       const d = b.bookingDate ? new Date(b.bookingDate) : null;
       const matchFrom = !from || (d && d >= new Date(from));
@@ -193,11 +195,18 @@
   async function cancelBooking(id) {
     if (!confirm("Cancel this booking?")) return;
     try {
-      await fetch(`${BASE_URL}/bookings/${id}`, { method: "DELETE" });
+      await fetch(`${BASE_URL}/bookings/${id}`, { method: "POST",
+      headers: { "Content-Type": "text/plain" },
+        body: "cancel"
+        });
+
       showToast("Booking cancelled.");
       allBookings = allBookings.map(b => b.id === id ? { ...b, status: "CANCELLED" } : b);
       updateStats();
       applyFilters();
+
+      loadBookings(); //call it again, to refresh
+
     } catch {
       showToast("Could not cancel. Try again.", "error");
     }
