@@ -46,6 +46,11 @@ public class BookingService {
     }
 
     public Booking createBooking(BookingRequestDTO request) {
+
+        System.out.println("client is " + request.getClientId());
+        System.out.println("cons is " + request.getConsultantId());
+        System.out.println("ser is " + request.getServiceId());
+
         Client client = clientService.getClientById(UUID.fromString(request.getClientId()))
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 

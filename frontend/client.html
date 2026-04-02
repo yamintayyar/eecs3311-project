@@ -139,6 +139,7 @@
 
   let selectedService = null;
   let allServices = [] //[...SERVICES]; //make it empty initially
+  let consultant = null; //keep track of consultant
 
   function renderServices(list) {
     const grid = document.getElementById("servicesGrid");
@@ -153,6 +154,7 @@
 <!--        <div class="service-icon">${s.icon}</div>-->
         <h3>${s.name}</h3>
         <p>${s.description} <br><br>With: ${s.consultantName}</p>
+        <div id="cons_id" style="display:none">${s.consultantId}</div>
         <div class="service-price">$${s.price}<span style="font-size:12px;font-weight:500;color:var(--text-muted)">/session</span></div>
       </div>
     `).join("");
@@ -179,12 +181,16 @@
     document.getElementById("bookingDrawer").classList.add("open");
     document.getElementById("bookingDrawer").scrollIntoView({ behavior: "smooth", block: "nearest" });
     // loadConsultants(selectedService.name); //we dont need this, because each listed service corresponds to exactly one consultant
+
+    consultant = selectedService.consultantId //set current relevant consultant
+    console.log(consultant)
   }
 
   function closeDrawer() {
-    selectedService = null;
     document.getElementById("bookingDrawer").classList.remove("open");
     renderServices(allServices);
+    selectedService = null;
+
   }
 
   async function loadConsultants(name) {
@@ -202,7 +208,7 @@
 
   async function submitBooking() {
     const date        = document.getElementById("bookingDate").value;
-    const consultantId = document.getElementById("bookingConsultant").value;
+    const consultantId =  consultant //document.getElementById("cons_id").value;
     if (!date)         { showToast("Please pick a date.", "error"); return; }
     if (!consultantId) { showToast("Please select a consultant.", "error"); return; }
 
@@ -211,7 +217,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clientId:     user.id,
+          clientId:     user.ID,
           consultantId: consultantId,
           serviceId:    selectedService.id,
           slotIds:      []

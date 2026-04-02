@@ -1,9 +1,8 @@
 package com.team.servicebooking.model.user;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import jakarta.persistence.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -12,7 +11,7 @@ public abstract class User {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    private UUID user_id;
 
     private String name;
     private String email;
@@ -27,12 +26,12 @@ public abstract class User {
         this.password = password;
     }
 
-    public UUID getId() {
-        return id;
+    public UUID getUser_id() {
+        return user_id;
     }
 
     public UUID getID() {
-        return id;
+        return user_id;
     }
 
     public String getName() {

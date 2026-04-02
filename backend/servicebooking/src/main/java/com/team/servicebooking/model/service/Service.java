@@ -58,4 +58,8 @@ public class Service {
     public String getConsultantName() {
         return consultant.getName();
     }
+
+    public UUID getConsultantId() {
+        return consultant.getUser_id();
+    }
 }

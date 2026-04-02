@@ -13,8 +13,10 @@ public class Notification {
     @GeneratedValue
     private UUID id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name="user_id")
     private User user;
+
     private String message;
 
     public Notification() {

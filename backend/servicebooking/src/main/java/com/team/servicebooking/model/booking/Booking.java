@@ -42,7 +42,8 @@ public class Booking {
     @Transient
     private BookingState bookingState;
 
-    @OneToOne
+//    @OneToOne
+    @ManyToOne //using many to one to avoid issues when payment is not yet added to booking (could result in primary key conflict otherwise)
     private Payment payment;
 
 //    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
