@@ -242,7 +242,7 @@
       const data = await res.json();
       // Filter to this client's bookings
       const mine = data.filter(b => b.client?.id === user.id || true); // adjust filter when API supports it
-      const upcoming = mine.filter(b => b.status !== "COMPLETED" && b.status !== "CANCELLED").slice(0, 5);
+      const upcoming = mine.filter(b => b.status !== "COMPLETED" && b.status !== "CANCELLED" && b.status !== "REJECTED").slice(0, 5);
 
       document.getElementById("statTotal").textContent    = mine.length;
       document.getElementById("statUpcoming").textContent = upcoming.length;

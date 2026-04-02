@@ -169,4 +169,12 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
+    public void confirm(UUID bookingId) {
+        Booking booking = getBookingById(bookingId);
+
+        booking.confirm();
+
+        bookingRepository.save(booking);
+    }
+
 }

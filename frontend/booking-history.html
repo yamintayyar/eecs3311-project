@@ -148,7 +148,7 @@
       const d = b.bookingDate ? new Date(b.bookingDate) : null;
       const dateStr = d ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "—";
       const paid = b.payment ? `<span class="badge badge-green">Paid</span>` : `<span class="badge badge-amber">Unpaid</span>`;
-      const canCancel = b.status !== "CANCELLED" && b.status !== "COMPLETED";
+      const canCancel = b.status !== "CANCELLED" && b.status !== "COMPLETED" && b.status != "REJECTED";
       return `
         <tr>
           <td>${dateStr}</td>
