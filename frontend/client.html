@@ -286,7 +286,10 @@
   async function cancelBooking(id) {
     if (!confirm("Cancel this booking?")) return;
     try {
-      await fetch(`${BASE_URL}/bookings/${id}`, { method: "DELETE" });
+      await fetch(`${BASE_URL}/bookings/${id}`, { method: "POST",
+      headers: { "Content-Type": "text/plain" },
+        body: "cancel"
+        });
       showToast("Booking cancelled.");
       loadUpcomingBookings();
     } catch {
