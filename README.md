@@ -4,7 +4,7 @@
 
 ### Prerequisites
 - Java 17+
-
+- Gemini API Key
 ---
 
 ### To run the Backend
@@ -36,6 +36,10 @@ npm run dev
 Test if the frontend works by going to `http://localhost:5173/`.
 
 --- 
+
+### To run the chatbot, you must provide an API key.
+1. Create a '.env' file in the root directory similiar to '.env.example'
+2. Place your API key in here.
 
 ## Contributions
 
