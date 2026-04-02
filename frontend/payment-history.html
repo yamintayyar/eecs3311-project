@@ -1,163 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment History</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<div class="app-layout">
+  <div class="app-layout">
 
-  <!-- ── Sidebar ─────────────────────────────────────── -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <h2>🗓️ ServiceBook</h2>
-      <p id="sidebarUser">Loading…</p>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="client.html">
-        <span class="nav-icon">🏠</span> Dashboard
-      </a>
-      <a href="booking-history.html">
-        <span class="nav-icon">📋</span> Booking History
-      </a>
-      <a href="payment-methods.html">
-        <span class="nav-icon">💳</span> Payment Methods
-      </a>
-      <a href="payment-history.html" class="active">
-        <span class="nav-icon">🧾</span> Payment History
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <button class="btn-danger" onclick="logout()">Sign Out</button>
-    </div>
-  </aside>
-
-  <!-- ── Main ────────────────────────────────────────── -->
-  <main class="main-content">
-
-    <div class="page-header">
-      <h1>Payment History</h1>
-      <p>A complete record of all your transactions.</p>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-card green">
-        <div class="stat-label">Total Paid</div>
-        <div class="stat-value" id="statTotalPaid">—</div>
-        <div class="stat-sub">All time</div>
+    <!-- ── Sidebar ─────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h2>🗓️ ServiceBook</h2>
+        <p id="sidebarUser">Loading…</p>
       </div>
-      <div class="stat-card blue">
-        <div class="stat-label">Transactions</div>
-        <div class="stat-value" id="statCount">—</div>
+      <nav class="sidebar-nav">
+        <a href="client.html">
+          <span class="nav-icon">🏠</span> Dashboard
+        </a>
+        <a href="booking-history.html">
+          <span class="nav-icon">📋</span> Booking History
+        </a>
+        <a href="payment-methods.html">
+          <span class="nav-icon">💳</span> Payment Methods
+        </a>
+        <a href="payment-history.html" class="active">
+          <span class="nav-icon">🧾</span> Payment History
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn-danger" onclick="logout()">Sign Out</button>
       </div>
-      <div class="stat-card amber">
-        <div class="stat-label">This Month</div>
-        <div class="stat-value" id="statMonth">—</div>
-      </div>
-    </div>
+    </aside>
 
-    <!-- Filters -->
-    <div class="card" style="margin-bottom:20px;">
-      <div class="card-body" style="padding:16px 22px;">
-        <div class="filters-bar">
-          <input type="text" id="searchInput" placeholder="🔍  Search by service or method…" oninput="applyFilters()">
-          <select id="methodFilter" onchange="applyFilters()">
-            <option value="">All Methods</option>
-            <option value="CREDIT">Credit Card</option>
-            <option value="DEBIT">Debit Card</option>
-            <option value="PAYPAL">PayPal</option>
-            <option value="BANK_TRANSFER">Bank Transfer</option>
-          </select>
-          <input type="date" id="dateFrom" onchange="applyFilters()" title="From date">
-          <input type="date" id="dateTo"   onchange="applyFilters()" title="To date">
-          <button class="btn-outline btn-sm" onclick="clearFilters()" style="white-space:nowrap;">Clear</button>
+    <!-- ── Main ────────────────────────────────────────── -->
+    <main class="main-content">
+
+      <div class="page-header">
+        <h1>Payment History</h1>
+        <p>A complete record of all your transactions.</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="stat-label">Total Paid</div>
+          <div class="stat-value" id="statTotalPaid">—</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Transactions</div>
+          <div class="stat-value" id="statCount">—</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">This Month</div>
+          <div class="stat-value" id="statMonth">—</div>
         </div>
       </div>
-    </div>
 
-    <!-- Table -->
-    <div class="card">
-      <div class="card-header">
-        <h2>Transactions</h2>
-        <span id="resultCount" class="text-muted"></span>
-      </div>
-      <div class="card-body" style="padding:0;">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Booking / Service</th>
-                <th>Method</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Receipt</th>
-              </tr>
-            </thead>
-            <tbody id="paymentTableBody">
-              <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">Loading…</td></tr>
-            </tbody>
-          </table>
+      <!-- Filters -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-body" style="padding:16px 22px;">
+          <div class="filters-bar">
+            <input type="text" id="searchInput" placeholder="🔍  Search by service or method…" oninput="applyFilters()">
+            <select id="methodFilter" onchange="applyFilters()">
+              <option value="">All Methods</option>
+              <option value="CREDIT">Credit Card</option>
+              <option value="DEBIT">Debit Card</option>
+              <option value="PAYPAL">PayPal</option>
+              <option value="BANK_TRANSFER">Bank Transfer</option>
+            </select>
+            <input type="date" id="dateFrom" onchange="applyFilters()" title="From date">
+            <input type="date" id="dateTo" onchange="applyFilters()" title="To date">
+            <button class="btn-outline btn-sm" onclick="clearFilters()" style="white-space:nowrap;">Clear</button>
+          </div>
         </div>
       </div>
-    </div>
 
-  </main>
-</div>
+      <!-- Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Transactions</h2>
+          <span id="resultCount" class="text-muted"></span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Booking / Service</th>
+                  <th>Method</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Receipt</th>
+                </tr>
+              </thead>
+              <tbody id="paymentTableBody">
+                <tr>
+                  <td colspan="6" style="text-align:center;padding:32px;color:var(--text-muted);">Loading…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
-<div class="toast" id="toast"></div>
+    </main>
+  </div>
 
-<script src="script.js"></script>
-<script>
-  const BASE_URL = "http://localhost:8080";
-  const user = JSON.parse(localStorage.getItem("user"));
-  const role = localStorage.getItem("role");
-  if (!user || role !== "client") window.location.href = "index.html";
-  document.getElementById("sidebarUser").textContent = user.name;
+  <div class="toast" id="toast"></div>
 
-  let allPayments = [];
+  <script src="script.js"></script>
+  <script>
 
-  function showToast(msg, type = "success") {
-    const t = document.getElementById("toast");
-    t.textContent = msg; t.className = "toast " + type + " show";
-    setTimeout(() => t.className = "toast", 2800);
-  }
+    //const BASE_URL = "http://localhost:8080";
+    const user = JSON.parse(localStorage.getItem("user"));
+    const role = localStorage.getItem("role");
+    if (!user || role !== "client") window.location.href = "index.html";
+    document.getElementById("sidebarUser").textContent = user.name;
 
-  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const METHOD_LABELS = { CREDIT:"💳 Credit Card", DEBIT:"🏦 Debit Card", PAYPAL:"🅿️ PayPal", BANK_TRANSFER:"🏛️ Bank Transfer" };
+    let allPayments = [];
 
-  function formatAmount(val) {
-    if (val === undefined || val === null) return "—";
-    return "$" + parseFloat(val).toFixed(2);
-  }
-
-  function renderTable(payments) {
-    const tbody = document.getElementById("paymentTableBody");
-    document.getElementById("resultCount").textContent = payments.length + " transaction" + (payments.length !== 1 ? "s" : "");
-
-    if (!payments.length) {
-      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🧾</div><p>No payments found.</p></div></td></tr>`;
-      return;
+    function showToast(msg, type = "success") {
+      const t = document.getElementById("toast");
+      t.textContent = msg; t.className = "toast " + type + " show";
+      setTimeout(() => t.className = "toast", 2800);
     }
 
-    tbody.innerHTML = payments.map(p => {
-      const d = p.createdAt || p.paymentDate ? new Date(p.createdAt || p.paymentDate) : null;
-      const dateStr = d ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "—";
-      const method  = METHOD_LABELS[p.paymentMethodType] || p.paymentMethodType || "—";
-      const status  = p.status === "COMPLETED" || p.status === "SUCCESS"
-        ? `<span class="badge badge-green">✓ Paid</span>`
-        : `<span class="badge badge-amber">Pending</span>`;
-      const serviceName = p.booking?.service?.name || "Service";
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const METHOD_LABELS = { CREDIT: "💳 Credit Card", DEBIT: "🏦 Debit Card", PAYPAL: "🅿️ PayPal", BANK_TRANSFER: "🏛️ Bank Transfer" };
 
-      return `
+    function formatAmount(val) {
+      if (val === undefined || val === null) return "—";
+      return "$" + parseFloat(val).toFixed(2);
+    }
+
+    function renderTable(payments) {
+      const tbody = document.getElementById("paymentTableBody");
+      document.getElementById("resultCount").textContent = payments.length + " transaction" + (payments.length !== 1 ? "s" : "");
+
+      if (!payments.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🧾</div><p>No payments found.</p></div></td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = payments.map(p => {
+        const d = p.createdAt || p.paymentDate ? new Date(p.createdAt || p.paymentDate) : null;
+        const dateStr = d ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "—";
+        const method = METHOD_LABELS[p.paymentMethodType] || p.paymentMethodType || "—";
+        const status = p.status === "COMPLETED" || p.status === "SUCCESS"
+          ? `<span class="badge badge-green">✓ Paid</span>`
+          : `<span class="badge badge-amber">Pending</span>`;
+        const serviceName = p.booking?.service?.name || "Service";
+
+        return `
         <tr>
           <td>${dateStr}</td>
           <td><strong>${serviceName}</strong>
-              ${p.bookingId ? `<br><span class="text-muted" style="font-size:11px;">#${p.bookingId.substring(0,8)}…</span>` : ""}
+              ${p.bookingId ? `<br><span class="text-muted" style="font-size:11px;">#${p.bookingId.substring(0, 8)}…</span>` : ""}
           </td>
           <td>${method}</td>
           <td><strong>${formatAmount(p.amount)}</strong></td>
@@ -166,71 +171,72 @@
             <button class="btn btn-outline btn-sm" onclick="downloadReceipt('${p.id}')">⬇ Receipt</button>
           </td>
         </tr>`;
-    }).join("");
-  }
-
-  function applyFilters() {
-    const q      = document.getElementById("searchInput").value.toLowerCase();
-    const method = document.getElementById("methodFilter").value;
-    const from   = document.getElementById("dateFrom").value;
-    const to     = document.getElementById("dateTo").value;
-
-    const filtered = allPayments.filter(p => {
-      const matchQ = !q ||
-        (p.booking?.service?.name || "").toLowerCase().includes(q) ||
-        (p.paymentMethodType || "").toLowerCase().includes(q);
-      const matchMethod = !method || p.paymentMethodType === method;
-      const d = p.createdAt ? new Date(p.createdAt) : null;
-      const matchFrom = !from || (d && d >= new Date(from));
-      const matchTo   = !to   || (d && d <= new Date(to));
-      return matchQ && matchMethod && matchFrom && matchTo;
-    });
-    renderTable(filtered);
-  }
-
-  function clearFilters() {
-    document.getElementById("searchInput").value = "";
-    document.getElementById("methodFilter").value = "";
-    document.getElementById("dateFrom").value = "";
-    document.getElementById("dateTo").value   = "";
-    applyFilters();
-  }
-
-  function updateStats(payments) {
-    const total = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-    const now   = new Date();
-    const monthTotal = payments
-      .filter(p => {
-        const d = p.createdAt ? new Date(p.createdAt) : null;
-        return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      })
-      .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-
-    document.getElementById("statTotalPaid").textContent = "$" + total.toFixed(2);
-    document.getElementById("statCount").textContent     = payments.length;
-    document.getElementById("statMonth").textContent     = "$" + monthTotal.toFixed(2);
-  }
-
-  function downloadReceipt(id) {
-    showToast("Receipt download coming soon!", "success");
-  }
-
-  async function loadPayments() {
-    try {
-      const res   = await fetch(`${BASE_URL}/payments`);
-      allPayments = await res.json();
-      updateStats(allPayments);
-      applyFilters();
-    } catch {
-      allPayments = [];
-      updateStats([]);
-      renderTable([]);
+      }).join("");
     }
-  }
 
-  function logout() { localStorage.clear(); window.location.href = "index.html"; }
+    function applyFilters() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      const method = document.getElementById("methodFilter").value;
+      const from = document.getElementById("dateFrom").value;
+      const to = document.getElementById("dateTo").value;
 
-  loadPayments();
-</script>
+      const filtered = allPayments.filter(p => {
+        const matchQ = !q ||
+          (p.booking?.service?.name || "").toLowerCase().includes(q) ||
+          (p.paymentMethodType || "").toLowerCase().includes(q);
+        const matchMethod = !method || p.paymentMethodType === method;
+        const d = p.createdAt ? new Date(p.createdAt) : null;
+        const matchFrom = !from || (d && d >= new Date(from));
+        const matchTo = !to || (d && d <= new Date(to));
+        return matchQ && matchMethod && matchFrom && matchTo;
+      });
+      renderTable(filtered);
+    }
+
+    function clearFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("methodFilter").value = "";
+      document.getElementById("dateFrom").value = "";
+      document.getElementById("dateTo").value = "";
+      applyFilters();
+    }
+
+    function updateStats(payments) {
+      const total = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+      const now = new Date();
+      const monthTotal = payments
+        .filter(p => {
+          const d = p.createdAt ? new Date(p.createdAt) : null;
+          return d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        })
+        .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+
+      document.getElementById("statTotalPaid").textContent = "$" + total.toFixed(2);
+      document.getElementById("statCount").textContent = payments.length;
+      document.getElementById("statMonth").textContent = "$" + monthTotal.toFixed(2);
+    }
+
+    function downloadReceipt(id) {
+      showToast("Receipt download coming soon!", "success");
+    }
+
+    async function loadPayments() {
+      try {
+        const res = await fetch(`${BASE_URL}/payments`);
+        allPayments = await res.json();
+        updateStats(allPayments);
+        applyFilters();
+      } catch {
+        allPayments = [];
+        updateStats([]);
+        renderTable([]);
+      }
+    }
+
+    function logout() { localStorage.clear(); window.location.href = "index.html"; }
+
+    loadPayments();
+  </script>
 </body>
+
 </html>
