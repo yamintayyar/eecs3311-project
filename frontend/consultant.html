@@ -1,20 +1,184 @@
-<h1>Consultant Dashboard</h1>
-<p id="welcome"></p>
-<button onclick="logout()">Logout</button>
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consultant Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h2>🧑‍💼 Consultant</h2>
+        <p id="sidebarUser">Loading...</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="consultant.html" class="active">Dashboard</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-danger" onclick="logout()">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1 id="welcomeMsg">Welcome!</h1>
+        <p>Manage your availability slots and bookings.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Slots</div>
+          <div class="stat-value" id="totalSlots">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Available Slots</div>
+          <div class="stat-value" id="availableSlots">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Bookings</div>
+          <div class="stat-value" id="totalBookings">0</div>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="card-header">
+          <h2>Availability Slots</h2>
+        </div>
+        <div class="card-body" id="availabilityList">
+          <p>Loading availability...</p>
+        </div>
+      </section>
+
+      <section class="card" style="margin-top: 24px;">
+        <div class="card-header">
+          <h2>Bookings</h2>
+        </div>
+        <div class="card-body" id="bookingList">
+          <p>Loading bookings...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
     const user = JSON.parse(localStorage.getItem("user"));
     const role = localStorage.getItem("role");
 
-    if (role !== "consultant") {
-        window.location.href = "index.html";
+    if (!user || role !== "consultant") {
+      window.location.href = "index.html";
     }
-    if (!user) window.location.href = "index.html";
 
-    document.getElementById("welcome").innerText =
-        "Welcome Consultant " + user.name;
+    const consultantId = user.ID || user.user_id || user.id;
+
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${user.name || "Consultant"}!`;
+    document.getElementById("sidebarUser").textContent = user.name || "Consultant";
 
     function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
+      localStorage.clear();
+      window.location.href = "index.html";
     }
-</script>
+
+    function formatDateTime(dateTime) {
+      if (!dateTime) return "N/A";
+      const d = new Date(dateTime);
+      return isNaN(d) ? dateTime : d.toLocaleString();
+    }
+
+    function renderAvailability(slots) {
+      const container = document.getElementById("availabilityList");
+
+      if (!slots || slots.length === 0) {
+        container.innerHTML = `<p>No availability slots found.</p>`;
+        return;
+      }
+
+      container.innerHTML = slots.map(slot => `
+        <div class="service-card" style="margin-bottom: 16px;">
+          <h3>${slot.isBooked ? "Booked Slot" : "Available Slot"}</h3>
+          <p><strong>Slot ID:</strong> ${slot.slotId || "N/A"}</p>
+          <p><strong>Start:</strong> ${formatDateTime(slot.startTime)}</p>
+          <p><strong>End:</strong> ${formatDateTime(slot.endTime)}</p>
+          <p><strong>Status:</strong> ${slot.isBooked ? "Booked" : "Available"}</p>
+        </div>
+      `).join("");
+
+      document.getElementById("totalSlots").textContent = slots.length;
+      document.getElementById("availableSlots").textContent =
+        slots.filter(slot => !slot.isBooked).length;
+    }
+
+    function renderBookings(bookings) {
+      const container = document.getElementById("bookingList");
+
+      if (!bookings || bookings.length === 0) {
+        container.innerHTML = `<p>No bookings found.</p>`;
+        document.getElementById("totalBookings").textContent = 0;
+        return;
+      }
+
+      container.innerHTML = bookings.map(booking => `
+        <div class="service-card" style="margin-bottom: 16px;">
+          <h3>${booking.service?.name || "Booked Service"}</h3>
+          <p><strong>Status:</strong> ${booking.status || "N/A"}</p>
+          <p><strong>Booking Date:</strong> ${booking.bookingDate || "N/A"}</p>
+          <p><strong>Price:</strong> ${booking.service?.price ?? "N/A"}</p>
+          <p><strong>Slots:</strong></p>
+          <ul>
+            ${(booking.availabilities || []).map(slot => `
+              <li>${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}</li>
+            `).join("")}
+          </ul>
+        </div>
+      `).join("");
+
+      document.getElementById("totalBookings").textContent = bookings.length;
+    }
+
+    async function loadConsultant() {
+      try {
+        const res = await fetch(`${BASE_URL}/consultants/${consultantId}`);
+        if (!res.ok) throw new Error("Failed to fetch consultant");
+
+        const consultant = await res.json();
+        renderAvailability(consultant.availabilities || []);
+      } catch (err) {
+        console.error(err);
+        document.getElementById("availabilityList").innerHTML =
+          `<p>Failed to load availability slots.</p>`;
+      }
+    }
+
+    async function loadBookings() {
+      try {
+        // Future-friendly: replace with your backend consultant-bookings endpoint later
+        const res = await fetch(`${BASE_URL}/bookings/consultant/${consultantId}`);
+
+        if (!res.ok) {
+          renderBookings([]);
+          return;
+        }
+
+        const bookings = await res.json();
+        renderBookings(bookings || []);
+      } catch (err) {
+        console.error(err);
+        renderBookings([]);
+      }
+    }
+
+    async function initPage() {
+      await loadConsultant();
+      await loadBookings();
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
