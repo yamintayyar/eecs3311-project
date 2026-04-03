@@ -26,9 +26,8 @@ public class DatabaseSingleton {
     public DatabaseSingleton() {
     }
 
-
-
-    //TODO: Is this even a singleton anymore, if we are getting objects via the database?
+    // TODO: Is this even a singleton anymore, if we are getting objects via the
+    // database?
 
     public int getMinNotice() {
         return min_notice;
@@ -54,7 +53,7 @@ public class DatabaseSingleton {
         refund = policy;
     }
 
-    public void setVerboseNotifications(boolean setting) {
+    public void setVerboseNotification(boolean setting) {
         verbose = setting;
     }
 

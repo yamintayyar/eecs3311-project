@@ -2,7 +2,6 @@ package com.team.servicebooking.service;
 
 import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.repository.ConfigRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,11 @@ public class ConfigService {
     public ConfigService(ConfigRepository configRepository) {
         this.configRepository = configRepository;
 
-        //TODO: we need to have a config available by default. add default configuration here
+        // Seed default config if none exists
+        if (configRepository.findFirstByOrderByCreatedAtDesc().isEmpty()) {
+            DatabaseSingleton defaultConfig = new DatabaseSingleton();
+            configRepository.save(defaultConfig);
+        }
     }
 
     @Transactional
@@ -43,14 +46,13 @@ public class ConfigService {
     @Transactional
     public void setVerboseNotifications(boolean verboseNotifications) {
         DatabaseSingleton config = this.getConfiguration();
-        config.setVerboseNotifications(verboseNotifications);
+        config.setVerboseNotification(verboseNotifications);
         configRepository.save(config);
     }
 
     @Transactional
-    @Query(value = "SELECT * FROM config ORDER BY ", nativeQuery = true)
     public DatabaseSingleton getConfiguration() {
-        Optional<DatabaseSingleton> cfg =  configRepository.findFirstByOrderByCreatedAtDesc();
+        Optional<DatabaseSingleton> cfg = configRepository.findFirstByOrderByCreatedAtDesc();
 
         if (cfg.isEmpty()) {
             DatabaseSingleton new_cfg = new DatabaseSingleton();
@@ -59,7 +61,5 @@ public class ConfigService {
         }
 
         return cfg.get();
-
     }
-
 }

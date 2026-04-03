@@ -11,7 +11,7 @@ import com.team.servicebooking.dto.ChatRequestDTO;
 import com.team.servicebooking.dto.ChatResponseDTO;
 import com.team.servicebooking.service.ChatbotService;
 
-@CrossOrigin("http://127.0.0.1:5500")
+//@CrossOrigin("http://127.0.0.1:5500")
 @RestController
 @RequestMapping("/api/chat")
 public class ChatbotController {
@@ -24,7 +24,7 @@ public class ChatbotController {
 
     @PostMapping
     public ResponseEntity<ChatResponseDTO> chat(@RequestBody ChatRequestDTO request) {
-        
+
         String response = chatbotService.askGemini(request.getMessage());
 
         return ResponseEntity.ok(new ChatResponseDTO(response));

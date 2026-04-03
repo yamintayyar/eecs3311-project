@@ -14,6 +14,9 @@ import com.team.servicebooking.repository.ConsultantRepository;
 import com.team.servicebooking.repository.ServiceRepository;
 import jakarta.transaction.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -30,11 +33,11 @@ public class BookingService {
     private final PaymentService paymentService;
 
     public BookingService(BookingRepository bookingRepository,
-                          ClientService clientService,
-                          ConsultantRepository consultantRepository,
-                          ServiceRepository serviceRepository,
-                          AvailabilityRepository availabilityRepository,
-                          NotificationService notificationService, ConfigService configService, PaymentService paymentService) {
+            ClientService clientService,
+            ConsultantRepository consultantRepository,
+            ServiceRepository serviceRepository,
+            AvailabilityRepository availabilityRepository,
+            NotificationService notificationService, ConfigService configService, PaymentService paymentService) {
         this.bookingRepository = bookingRepository;
         this.clientService = clientService;
         this.consultantRepository = consultantRepository;
@@ -64,9 +67,11 @@ public class BookingService {
 
         List<Availability> slots = availabilityRepository.findAllById(
                 request.getSlotIds().stream().map(UUID::fromString).toList());
-//                .orElseThrow(() -> new RuntimeException("Invalid availability slot not found; please try again."));; //TODO: perhaps it is better to use an iterative approach instead, to facilitate error handling
+        // .orElseThrow(() -> new RuntimeException("Invalid availability slot not found;
+        // please try again."));; //TODO: perhaps it is better to use an iterative
+        // approach instead, to facilitate error handling
 
-//        int minNotice = configService.getConfiguration().getMinNotice();
+        // int minNotice = configService.getConfiguration().getMinNotice();
 
         for (Availability slot : slots) {
 
@@ -74,18 +79,23 @@ public class BookingService {
                 throw new RuntimeException("Slot already booked");
             }
 
-//            long hours = Math.abs(Duration.between(LocalDateTime.now(), slot.getStartTime()).toHours());
-//
-//            if (hours < minNotice) { //TODO: something to be made aware of: minNotice was meant to reflect cancellation deadlines; we can do this too, although it is not a requirement
-//                throw new RuntimeException("Booking must be made " + minNotice + " hours in advance");
-//            }
+            // long hours = Math.abs(Duration.between(LocalDateTime.now(),
+            // slot.getStartTime()).toHours());
+            //
+            // if (hours < minNotice) { //TODO: something to be made aware of: minNotice was
+            // meant to reflect cancellation deadlines; we can do this too, although it is
+            // not a requirement
+            // throw new RuntimeException("Booking must be made " + minNotice + " hours in
+            // advance");
+            // }
 
-            slot.markBooked(); //TODO: maybe we should mark the availability booked only after the booking has been accepted?
+            slot.markBooked(); // TODO: maybe we should mark the availability booked only after the booking has
+                               // been accepted?
         }
 
         Booking booking = new Booking(client, consultant, service, slots);
 
-        notificationService.notify( client,
+        notificationService.notify(client,
                 "Your booking with consultant " + consultant.getName() + " is confirmed.");
 
         return bookingRepository.save(booking);
@@ -116,54 +126,60 @@ public class BookingService {
     }
 
     public List<Booking> getBookingsByConsultant(UUID consultantId) {
-        return null;//TODO
+        return null;// TODO
     }
 
     public void cancelBooking(UUID bookingId) {
-        Booking booking = getBookingById(bookingId);
 
+        Booking booking = getBookingById(bookingId);
         DatabaseSingleton config = configService.getConfiguration();
 
-        int min_notice = config.getMinNotice();
+        LocalDateTime now = LocalDateTime.now();
+        int minNotice = config.getMinNotice();
 
-        //TODO: implement availabilities before re-enabling deadline validation
+        LocalDateTime earliestStart = booking.getAvailabilities()
+                .stream()
+                .map(Availability::getStartTime)
+                .min(LocalDateTime::compareTo)
+                .orElseThrow(() -> new RuntimeException("No availability found"));
 
-//        LocalDateTime cancel_deadline = booking.getAvailabilities().get(0).getStartTime().plusHours(-min_notice);
-//
-//        if (cancel_deadline.compareTo(LocalDateTime.now()) < 0) {
-//            System.out.println("Error: Can not cancel booking because deadline has passed.");
-//
-//            if (config.getVerboseNotification()) {
-//                notificationService.notify(booking.getClient(), "Error: Can not cancel booking because deadline has passed.");
-//            }
-//
-//            return;
-//        }
+        long hoursUntilStart = Duration.between(now, earliestStart).toHours();
 
-        if (booking.getState().isRefundable() && config.getRefundPolicy()) { // if booking is in a refundable state (paid)
-            // and the application has a refund policy
-            // active
-            paymentService.refund(booking.getPayment());
-            System.out.println("Successfully refunded payment for booking " + bookingId);
+        if (hoursUntilStart < minNotice) {
+            String message = "Cannot cancel booking. Minimum notice of "
+                    + minNotice + " hours required.";
 
-            if (config.getVerboseNotification()) {
-                notificationService.notify(booking.getClient(), "Successfully refunded payment for booking " + bookingId);
-            }
+            notificationService.notify(booking.getClient(), message);
+            throw new RuntimeException(message);
         }
 
-        booking.cancel(); //changes internal state
+        // Refund logic
+        if (booking.getPayment() != null &&
+                booking.getState().isRefundable() &&
+                config.getRefundPolicy()) {
 
-        System.out.println("booking " + bookingId + "cancelled, status =" + booking.getStatus());
+            paymentService.refund(booking.getPayment());
 
-        bookingRepository.save(booking); //update in database
+            notificationService.notify(
+                    booking.getClient(),
+                    "Payment refunded for booking " + bookingId);
+        }
 
+        booking.cancel();
+
+        notificationService.notify(
+                booking.getClient(),
+                "Booking " + bookingId + " cancelled successfully");
+
+        bookingRepository.save(booking);
     }
 
     public void reject(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
 
-        //Non-optional notification, as per guidelines
-        notificationService.notify(booking.getClient(), "Booking " + bookingId + " has been rejected by consultant " + booking.getConsultant().getName());
+        // Non-optional notification, as per guidelines
+        notificationService.notify(booking.getClient(),
+                "Booking " + bookingId + " has been rejected by consultant " + booking.getConsultant().getName());
 
         booking.reject();
 
