@@ -35,7 +35,9 @@ public class BookingService {
                           ConsultantRepository consultantRepository,
                           ServiceRepository serviceRepository,
                           AvailabilityRepository availabilityRepository,
-                          NotificationService notificationService, ConfigService configService, PaymentService paymentService) {
+                          NotificationService notificationService,
+                          ConfigService configService,
+                          PaymentService paymentService) {
         this.bookingRepository = bookingRepository;
         this.clientService = clientService;
         this.consultantRepository = consultantRepository;
@@ -55,39 +57,38 @@ public class BookingService {
         Client client = clientService.getClientById(UUID.fromString(request.getClientId()))
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
-        Consultant consultant = consultantRepository.findById(
-                UUID.fromString(request.getConsultantId()))
+        Consultant consultant = consultantRepository.findById(UUID.fromString(request.getConsultantId()))
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
 
-        Service service = serviceRepository.findById(
-                UUID.fromString(request.getServiceId()))
+        Service service = serviceRepository.findById(UUID.fromString(request.getServiceId()))
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
         List<Availability> slots = availabilityRepository.findAllById(
-                request.getSlotIds().stream().map(UUID::fromString).toList());
-//                .orElseThrow(() -> new RuntimeException("Invalid availability slot not found; please try again."));; //TODO: perhaps it is better to use an iterative approach instead, to facilitate error handling
+                request.getSlotIds().stream().map(UUID::fromString).toList()
+        );
 
-//        int minNotice = configService.getConfiguration().getMinNotice();
+        if (slots.isEmpty()) {
+            throw new RuntimeException("No availability slots selected");
+        }
 
         for (Availability slot : slots) {
-
             if (slot.isBooked()) {
                 throw new RuntimeException("Slot already booked");
             }
 
-//            long hours = Math.abs(Duration.between(LocalDateTime.now(), slot.getStartTime()).toHours());
-//
-//            if (hours < minNotice) { //TODO: something to be made aware of: minNotice was meant to reflect cancellation deadlines; we can do this too, although it is not a requirement
-//                throw new RuntimeException("Booking must be made " + minNotice + " hours in advance");
-//            }
+            if (slot.getConsultant() == null || !slot.getConsultant().getID().equals(consultant.getID())) {
+                throw new RuntimeException("One or more slots do not belong to this consultant");
+            }
 
-            slot.markBooked(); //TODO: maybe we should mark the availability booked only after the booking has been accepted?
+            slot.markBooked();
         }
 
         Booking booking = new Booking(client, consultant, service, slots);
 
-        notificationService.notify( client,
-                "Your booking with consultant " + consultant.getName() + " is confirmed.");
+        notificationService.notify(
+                client,
+                "Your booking with consultant " + consultant.getName() + " is confirmed."
+        );
 
         return bookingRepository.save(booking);
     }
@@ -107,97 +108,88 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.getAvailabilities().forEach(Availability::markAvailable);
-        notificationService.notify(booking.getClient(),
-                "Your booking has been cancelled.");
 
-        notificationService.notify(booking.getConsultant(),
-                "A booking has been cancelled.");
+        notificationService.notify(
+                booking.getClient(),
+                "Your booking has been cancelled."
+        );
+
+        notificationService.notify(
+                booking.getConsultant(),
+                "A booking has been cancelled."
+        );
 
         bookingRepository.delete(booking);
     }
 
     public List<Booking> getBookingsByConsultant(UUID consultantId) {
-        return null;//TODO
+        Consultant consultant = consultantRepository.findById(consultantId)
+                .orElseThrow(() -> new RuntimeException("Consultant not found"));
+
+        return bookingRepository.findAllByConsultant(consultant);
     }
 
     public void cancelBooking(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
 
         DatabaseSingleton config = configService.getConfiguration();
-
         int min_notice = config.getMinNotice();
 
-        //TODO: implement availabilities before re-enabling deadline validation
+        // Future deadline validation can go here
 
-//        LocalDateTime cancel_deadline = booking.getAvailabilities().get(0).getStartTime().plusHours(-min_notice);
-//
-//        if (cancel_deadline.compareTo(LocalDateTime.now()) < 0) {
-//            System.out.println("Error: Can not cancel booking because deadline has passed.");
-//
-//            if (config.getVerboseNotification()) {
-//                notificationService.notify(booking.getClient(), "Error: Can not cancel booking because deadline has passed.");
-//            }
-//
-//            return;
-//        }
-
-        if (booking.getState().isRefundable() && config.getRefundPolicy()) { // if booking is in a refundable state (paid)
-            // and the application has a refund policy
-            // active
+        if (booking.getState().isRefundable() && config.getRefundPolicy()) {
             paymentService.refund(booking.getPayment());
             System.out.println("Successfully refunded payment for booking " + bookingId);
 
             if (config.getVerboseNotification()) {
-                notificationService.notify(booking.getClient(), "Successfully refunded payment for booking " + bookingId);
+                notificationService.notify(
+                        booking.getClient(),
+                        "Successfully refunded payment for booking " + bookingId
+                );
             }
         }
 
-        booking.cancel(); //changes internal state
+        booking.cancel();
 
-        System.out.println("booking " + bookingId + "cancelled, status =" + booking.getStatus());
+        System.out.println("booking " + bookingId + " cancelled, status = " + booking.getStatus());
 
-        bookingRepository.save(booking); //update in database
-
+        bookingRepository.save(booking);
     }
 
     public void reject(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
 
-        //Non-optional notification, as per guidelines
-        notificationService.notify(booking.getClient(), "Booking " + bookingId + " has been rejected by consultant " + booking.getConsultant().getName());
+        notificationService.notify(
+                booking.getClient(),
+                "Booking " + bookingId + " has been rejected by consultant " + booking.getConsultant().getName()
+        );
 
         booking.reject();
-
         bookingRepository.save(booking);
     }
 
     public void confirm(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
-
         booking.confirm();
-
         bookingRepository.save(booking);
     }
 
     public void setPending(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
-
         booking.changeState(new PendingPaymentState(booking));
-
         bookingRepository.save(booking);
     }
 
     public void setPaid(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
-
         booking.changeState(new PaidState(booking));
-
         bookingRepository.save(booking);
     }
 
     public List<Booking> getBookingsByClient(UUID clientId) {
-        Client client = clientService.getClientById(clientId).get();
+        Client client = clientService.getClientById(clientId)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+
         return bookingRepository.findAllByClient(client);
     }
-
 }
