@@ -1,6 +1,7 @@
 package com.team.servicebooking.service;
 
 import com.team.servicebooking.model.payment.PaymentMethodStrategy;
+import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.repository.PaymentMethodStrategyRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,9 @@ public class PaymentMethodStrategyService {
 
     public List<PaymentMethodStrategy> getAllPaymentMethodStrategies() {
         return repo.findAll();
+    }
+
+    public List<PaymentMethodStrategy> getAllPaymentMethodsByClient(Client client) {
+        return repo.findAllByClient(client);
     }
 }

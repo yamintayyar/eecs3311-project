@@ -249,7 +249,7 @@ async function payBooking(id) {
 
     // Load payment methods
     try {
-        const res = await fetch(`${BASE_URL}/payment-methods`);
+        const res = await fetch(`${BASE_URL}/payment-methods/client/${user.ID}`);
         const methods = await res.json();
 
         const list = document.getElementById("paymentMethodsList");
