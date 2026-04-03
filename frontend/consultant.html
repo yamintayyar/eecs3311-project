@@ -1,20 +1,381 @@
-<h1>Consultant Dashboard</h1>
-<p id="welcome"></p>
-<button onclick="logout()">Logout</button>
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consultant Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <h2>🧑‍💼 Consultant</h2>
+        <p id="sidebarUser">Loading...</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="consultant.html" class="active">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-danger" onclick="logout()">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1 id="welcomeMsg">Welcome!</h1>
+        <p>Manage your availability slots and review your bookings.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="stat-label">Total Slots</div>
+          <div class="stat-value" id="statTotalSlots">0</div>
+          <div class="stat-sub">All availability entries</div>
+        </div>
+
+        <div class="stat-card blue">
+          <div class="stat-label">Available Slots</div>
+          <div class="stat-value" id="statAvailableSlots">0</div>
+          <div class="stat-sub">Open for booking</div>
+        </div>
+
+        <div class="stat-card amber">
+          <div class="stat-label">Booked Slots</div>
+          <div class="stat-value" id="statBookedSlots">0</div>
+          <div class="stat-sub">Already reserved</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Bookings</div>
+          <div class="stat-value" id="statBookings">0</div>
+          <div class="stat-sub">Consultant bookings</div>
+        </div>
+      </div>
+
+      <div class="consultant-grid">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Availability Slots</h2>
+              <p class="consultant-section-note">These are the slots clients will eventually book from the client side.</p>
+            </div>
+
+            <div class="filters-bar consultant-toolbar">
+              <select id="slotFilter">
+                <option value="all">All Slots</option>
+                <option value="available">Available Only</option>
+                <option value="booked">Booked Only</option>
+              </select>
+              <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadConsultantData()">Refresh</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="consultant-items-grid" id="availabilityList">
+              <div class="empty-state">
+                <div class="empty-icon">⏳</div>
+                <p>Loading availability slots...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Add Availability Slot</h2>
+              <p class="consultant-section-note">Create open time slots for future bookings.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form id="availabilityForm" class="consultant-form">
+              <div class="consultant-form-grid">
+                <div class="consultant-form-group">
+                  <label for="startTime">Start Time</label>
+                  <input type="datetime-local" id="startTime" required />
+                </div>
+
+                <div class="consultant-form-group">
+                  <label for="endTime">End Time</label>
+                  <input type="datetime-local" id="endTime" required />
+                </div>
+              </div>
+
+              <div class="consultant-form-actions">
+                <button type="submit" class="btn consultant-action-btn">Add Slot</button>
+                <button type="button" class="btn btn-outline consultant-action-btn" onclick="document.getElementById('availabilityForm').reset()">Clear</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Bookings</h2>
+              <p class="consultant-section-note">This section is ready for consultant bookings and future client-side integration.</p>
+            </div>
+
+            <div class="filters-bar consultant-toolbar">
+              <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadBookings()">Refresh Bookings</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="consultant-items-grid" id="bookingList">
+              <div class="empty-state">
+                <div class="empty-icon">📘</div>
+                <p>Loading bookings...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+  <script>
     const user = JSON.parse(localStorage.getItem("user"));
     const role = localStorage.getItem("role");
 
-    if (role !== "consultant") {
-        window.location.href = "index.html";
+    if (!user || role !== "consultant") {
+      window.location.href = "index.html";
     }
-    if (!user) window.location.href = "index.html";
 
-    document.getElementById("welcome").innerText =
-        "Welcome Consultant " + user.name;
+    const consultantId = user.ID || user.user_id || user.id;
+
+    let allSlots = [];
+    let allBookings = [];
+
+    document.getElementById("welcomeMsg").textContent = `Welcome, ${user.name || "Consultant"}!`;
+    document.getElementById("sidebarUser").textContent = user.name || "Consultant";
+
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.className = "toast";
+      }, 2500);
+    }
 
     function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
+      localStorage.clear();
+      window.location.href = "index.html";
     }
-</script>
+
+    function formatDateTime(dateTime) {
+      if (!dateTime) return "N/A";
+      const d = new Date(dateTime);
+      if (isNaN(d.getTime())) return dateTime;
+      return d.toLocaleString();
+    }
+
+    function updateStats() {
+      const totalSlots = allSlots.length;
+      const availableSlots = allSlots.filter(slot => !slot.isBooked).length;
+      const bookedSlots = allSlots.filter(slot => slot.isBooked).length;
+      const totalBookings = allBookings.length;
+
+      document.getElementById("statTotalSlots").textContent = totalSlots;
+      document.getElementById("statAvailableSlots").textContent = availableSlots;
+      document.getElementById("statBookedSlots").textContent = bookedSlots;
+      document.getElementById("statBookings").textContent = totalBookings;
+    }
+
+    function getFilteredSlots() {
+      const filter = document.getElementById("slotFilter").value;
+
+      if (filter === "available") {
+        return allSlots.filter(slot => !slot.isBooked);
+      }
+
+      if (filter === "booked") {
+        return allSlots.filter(slot => slot.isBooked);
+      }
+
+      return allSlots;
+    }
+
+    function renderAvailability() {
+      const container = document.getElementById("availabilityList");
+      const slots = getFilteredSlots();
+
+      if (!slots.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <p>No availability slots found for this filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = slots.map(slot => `
+        <div class="consultant-item-card">
+          <h3>${slot.isBooked ? "Booked Slot" : "Available Slot"}</h3>
+          <p><strong>Slot ID:</strong> ${slot.slotId || "N/A"}</p>
+          <p><strong>Start:</strong> ${formatDateTime(slot.startTime)}</p>
+          <p><strong>End:</strong> ${formatDateTime(slot.endTime)}</p>
+          <span class="consultant-status-badge ${slot.isBooked ? "consultant-status-booked" : "consultant-status-available"}">
+            ${slot.isBooked ? "Booked" : "Available"}
+          </span>
+        </div>
+      `).join("");
+    }
+
+    function renderBookings() {
+      const container = document.getElementById("bookingList");
+
+      if (!allBookings.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📘</div>
+            <p>No bookings found yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allBookings.map(booking => `
+        <div class="consultant-item-card">
+          <h3>${booking.service?.name || "Service Booking"}</h3>
+          <p><strong>Status:</strong> ${booking.status || "N/A"}</p>
+          <p><strong>Booking Date:</strong> ${booking.bookingDate || "N/A"}</p>
+          <p><strong>Price:</strong> ${booking.service?.price ?? booking.price ?? "N/A"}</p>
+          <p><strong>Service Description:</strong> ${booking.service?.description || "N/A"}</p>
+
+          <span class="consultant-status-badge consultant-status-generic">
+            ${booking.status || "Booking"}
+          </span>
+
+          <div class="consultant-booking-slots">
+            <strong>Reserved Slots:</strong>
+            ${
+              booking.availabilities && booking.availabilities.length
+                ? `<ul class="consultant-booking-slot-list">
+                    ${booking.availabilities.map(slot => `
+                      <li>${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}</li>
+                    `).join("")}
+                  </ul>`
+                : `<p class="text-muted mt-4">No slot details available.</p>`
+            }
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function loadConsultantData() {
+      try {
+        const response = await fetch(`${BASE_URL}/consultants/${consultantId}`);
+        if (!response.ok) {
+          throw new Error("Failed to load consultant data");
+        }
+
+        const consultant = await response.json();
+        allSlots = consultant.availabilities || [];
+
+        updateStats();
+        renderAvailability();
+      } catch (error) {
+        console.error(error);
+        document.getElementById("availabilityList").innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>Failed to load availability slots.</p>
+          </div>
+        `;
+        showToast("Failed to load consultant data.", "error");
+      }
+    }
+
+    async function loadBookings() {
+      try {
+        const response = await fetch(`${BASE_URL}/bookings/consultant/${consultantId}`);
+
+        if (!response.ok) {
+          allBookings = [];
+          updateStats();
+          renderBookings();
+          return;
+        }
+
+        const bookings = await response.json();
+        allBookings = bookings || [];
+
+        updateStats();
+        renderBookings();
+      } catch (error) {
+        console.error(error);
+        allBookings = [];
+        updateStats();
+        renderBookings();
+      }
+    }
+
+    async function createAvailabilitySlot(event) {
+      event.preventDefault();
+
+      const startTime = document.getElementById("startTime").value;
+      const endTime = document.getElementById("endTime").value;
+
+      if (!startTime || !endTime) {
+        showToast("Please fill in both start and end time.", "error");
+        return;
+      }
+
+      if (new Date(startTime) >= new Date(endTime)) {
+        showToast("End time must be after start time.", "error");
+        return;
+      }
+
+      const payload = {
+        startTime: startTime,
+        endTime: endTime,
+        isBooked: false
+      };
+
+      try {
+        const response = await fetch(`${BASE_URL}/consultants/${consultantId}/availabilities`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create slot");
+        }
+
+        document.getElementById("availabilityForm").reset();
+        showToast("Availability slot added.");
+        await loadConsultantData();
+      } catch (error) {
+        console.error(error);
+        showToast("Could not add availability slot. We may need to align this with the backend endpoint.", "error");
+      }
+    }
+
+    document.getElementById("slotFilter").addEventListener("change", renderAvailability);
+    document.getElementById("availabilityForm").addEventListener("submit", createAvailabilitySlot);
+
+    async function initPage() {
+      await loadConsultantData();
+      await loadBookings();
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

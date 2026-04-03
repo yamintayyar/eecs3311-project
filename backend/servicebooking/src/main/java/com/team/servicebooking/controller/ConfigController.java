@@ -8,32 +8,39 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/config")
 public class ConfigController {
 
-//    private final DatabaseSingleton config = DatabaseSingleton.getInstance(); //TODO: See TODOs in ConfigService and DatabaseSingleton
-//
     private final ConfigService config;
 
-    ConfigController(ConfigService config) {
+    public ConfigController(ConfigService config) {
         this.config = config;
     }
 
+    // GET ALL CONFIG
     @GetMapping
     public DatabaseSingleton getConfig() {
         return config.getConfiguration();
     }
 
-    @PostMapping("/discount/{value}")
+    // UPDATE DISCOUNT
+    @PutMapping("/discount/{value}")
     public void setDiscount(@PathVariable double value) {
         config.setDiscount(value);
     }
 
-    @PostMapping("/min-notice/{hours}")
+    // UPDATE MIN NOTICE
+    @PutMapping("/min-notice/{hours}")
     public void setMinNotice(@PathVariable int hours) {
         config.setCancellationDeadline(hours);
     }
 
-    @PostMapping("/switch-verbose/{setting}")
-    public void switchVerbose(@PathVariable boolean setting) {
+    // UPDATE VERBOSE
+    @PutMapping("/verbose/{setting}")
+    public void setVerbose(@PathVariable boolean setting) {
         config.setVerboseNotifications(setting);
     }
 
+    // UPDATE REFUND POLICY
+    @PutMapping("/refund/{enabled}")
+    public void setRefund(@PathVariable boolean enabled) {
+        config.setRefundPolicy(enabled);
+    }
 }

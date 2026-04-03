@@ -14,6 +14,8 @@ public class Debit extends PaymentMethodStrategy {
         this.number2 = cvv;
     }
 
+    public Debit() {}
+
     public boolean validate() {
 
         // validate number

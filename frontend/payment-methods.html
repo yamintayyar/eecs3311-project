@@ -120,11 +120,10 @@
   if (!user || role !== "client") window.location.href = "index.html";
   document.getElementById("sidebarUser").textContent = user.name;
 
-  // ── Local storage for payment methods (mock persistence) ──
-  let methods = JSON.parse(localStorage.getItem("paymentMethods") || "[]");
+  let methods = [];
 
-  const TYPE_ICONS = { CREDIT:"💳", DEBIT:"🏦", PAYPAL:"🅿️", BANK_TRANSFER:"🏛️" };
-  const TYPE_LABELS= { CREDIT:"Credit Card", DEBIT:"Debit Card", PAYPAL:"PayPal", BANK_TRANSFER:"Bank Transfer" };
+  const TYPE_ICONS  = { CREDIT:"💳", DEBIT:"🏦", PAYPAL:"🅿️", BANK_TRANSFER:"🏛️" };
+  const TYPE_LABELS = { CREDIT:"Credit Card", DEBIT:"Debit Card", PAYPAL:"PayPal", BANK_TRANSFER:"Bank Transfer" };
 
   function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
@@ -132,17 +131,29 @@
     setTimeout(() => t.className = "toast", 2800);
   }
 
+  async function loadMethods() {
+    try {
+      const res = await fetch(`${BASE_URL}/payment-methods/client/${user.ID}`);
+      methods = await res.json();
+      renderMethods();
+    } catch {
+      showToast("Could not load payment methods.", "error");
+      methods = [];
+      renderMethods();
+    }
+  }
+
   function renderMethods() {
     const grid = document.getElementById("pmGrid");
     const cards = methods.map((m, i) => `
       <div class="pm-card ${m.isDefault ? 'default' : ''}">
         ${m.isDefault ? `<div class="pm-default-badge"><span class="badge badge-green">Default</span></div>` : ""}
-        <div class="pm-type">${TYPE_ICONS[m.type] || "💳"} ${TYPE_LABELS[m.type] || m.type}</div>
+        <div class="pm-type">${TYPE_ICONS[m.paymentMethodType] || "💳"} ${TYPE_LABELS[m.paymentMethodType] || m.paymentMethodType}</div>
         <div class="pm-number">${maskNumber(m)}</div>
-        <div class="pm-expiry">${m.expiry || m.email || m.accountNumber || ""}</div>
+        <div class="pm-expiry">${m.expiryDate || m.email || m.accountNumber || ""}</div>
         <div class="pm-actions">
-          ${!m.isDefault ? `<button class="btn btn-outline btn-sm" onclick="setDefault(${i})">Set Default</button>` : ""}
-          <button class="btn btn-danger btn-sm" onclick="removeMethod(${i})">Remove</button>
+          ${!m.isDefault ? `<button class="btn btn-outline btn-sm" onclick="setDefault('${m.id}')">Set Default</button>` : ""}
+          <button class="btn btn-danger btn-sm" onclick="removeMethod('${m.id}')">Remove</button>
         </div>
       </div>
     `).join("");
@@ -155,13 +166,13 @@
   }
 
   function maskNumber(m) {
-    if (m.type === "PAYPAL")         return m.email || "PayPal Account";
-    if (m.type === "BANK_TRANSFER")  return "Account •••• " + (m.accountNumber || "").slice(-4);
+    if (m.paymentMethodType === "PAYPAL")        return m.email || "PayPal Account";
+    if (m.paymentMethodType === "BANK_TRANSFER") return "Account •••• " + (m.accountNumber || "").slice(-4);
     if (m.cardNumber) return "•••• •••• •••• " + m.cardNumber.replace(/\s/g,"").slice(-4);
     return "•••• •••• •••• ••••";
   }
 
-  function openModal(editIndex = null) {
+  function openModal() {
     document.getElementById("pmModal").classList.add("open");
     document.getElementById("pmType").value = "CREDIT";
     document.getElementById("cardNumber").value = "";
@@ -196,16 +207,16 @@
     el.value = v;
   }
 
-  function savePaymentMethod() {
-    const type = document.getElementById("pmType").value;
+  async function savePaymentMethod() {
+    const type      = document.getElementById("pmType").value;
     const isDefault = document.getElementById("setDefault").checked;
-    const method = { type, isDefault };
+    const method    = { type, isDefault };
 
     if (["CREDIT","DEBIT"].includes(type)) {
       const cardNum = document.getElementById("cardNumber").value;
       const expiry  = document.getElementById("expiryDate").value;
       if (!cardNum || cardNum.replace(/\s/g,"").length < 16) { showToast("Enter a valid card number.", "error"); return; }
-      if (!expiry)   { showToast("Enter expiry date.", "error"); return; }
+      if (!expiry) { showToast("Enter expiry date.", "error"); return; }
       method.cardNumber = cardNum;
       method.expiry     = expiry;
       method.cvv        = document.getElementById("cvv").value;
@@ -220,38 +231,61 @@
       method.routingNumber = document.getElementById("routingNumber").value;
     }
 
-    if (isDefault) methods.forEach(m => m.isDefault = false);
-    methods.push(method);
-    localStorage.setItem("paymentMethods", JSON.stringify(methods));
-    closeModal();
-    renderMethods();
-    showToast("Payment method saved! 💳");
+    try {
+      await fetch(`${BASE_URL}/payment-methods`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentMethodType: type,
+          cardNumber:    method.cardNumber,
+          expiryDate:    method.expiry,
+          cvv:           method.cvv,
+          accountNumber: method.accountNumber,
+          routingNumber: method.routingNumber,
+          email:         method.email,
+          clientId:      user.ID,
+        })
+      });
+
+      closeModal();
+      showToast("Payment method saved! 💳");
+      await loadMethods(); // reload from server
+    } catch {
+      showToast("Could not save payment method.", "error");
+    }
+
+    loadMethods(); //refresh methods
+
   }
 
-  function setDefault(i) {
-    methods.forEach((m, j) => m.isDefault = j === i);
-    localStorage.setItem("paymentMethods", JSON.stringify(methods));
-    renderMethods();
-    showToast("Default payment method updated.");
+  async function setDefault(id) {
+    try {
+      await fetch(`${BASE_URL}/payment-methods/${id}/default`, { method: "POST" });
+      showToast("Default payment method updated.");
+      await loadMethods();
+    } catch {
+      showToast("Could not update default.", "error");
+    }
   }
 
-  function removeMethod(i) {
+  async function removeMethod(id) {
     if (!confirm("Remove this payment method?")) return;
-    methods.splice(i, 1);
-    if (methods.length && !methods.some(m => m.isDefault)) methods[0].isDefault = true;
-    localStorage.setItem("paymentMethods", JSON.stringify(methods));
-    renderMethods();
-    showToast("Payment method removed.");
+    try {
+      await fetch(`${BASE_URL}/payment-methods/${id}`, { method: "DELETE" });
+      showToast("Payment method removed.");
+      await loadMethods();
+    } catch {
+      showToast("Could not remove payment method.", "error");
+    }
   }
 
-  // Close modal on backdrop click
   document.getElementById("pmModal").addEventListener("click", e => {
     if (e.target === document.getElementById("pmModal")) closeModal();
   });
 
   function logout() { localStorage.clear(); window.location.href = "index.html"; }
 
-  renderMethods();
+  loadMethods();
 </script>
 </body>
 </html>

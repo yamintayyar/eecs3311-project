@@ -38,17 +38,32 @@ public class BookingController {
         bookingService.deleteBooking(id);
     }
 
+    @GetMapping("/client/{id}")
+    public List<Booking> getAllBookingsByClient(@PathVariable UUID id) {
+        return bookingService.getBookingsByClient(id);
+    }
+
+    @GetMapping("/consultant/{id}")
+    public List<Booking> getAllBookingsByConsultant(@PathVariable UUID id) {
+        return bookingService.getBookingsByConsultant(id);
+    }
+
     @PostMapping("/{id}")
     public void updateBookingStatus(@PathVariable UUID id, @RequestBody String update) {
-
-        update = update.toLowerCase();
+        update = update.toLowerCase().trim();
 
         System.out.println("msg = " + update);
 
-        if ( update.equals("cancel") ) bookingService.cancelBooking(id);
-        else if ( update.equals("confirm") ) bookingService.confirm(id);
-        else if ( update.equals("reject") ) bookingService.reject(id);
-        else if ( update.equals("pending") ) bookingService.setPending(id);
-
+        if (update.equals("cancel")) {
+            bookingService.cancelBooking(id);
+        } else if (update.equals("confirm")) {
+            bookingService.confirm(id);
+        } else if (update.equals("reject")) {
+            bookingService.reject(id);
+        } else if (update.equals("pending")) {
+            bookingService.setPending(id);
+        } else if (update.equals("paid")) {
+            bookingService.setPaid(id);
+        }
     }
 }

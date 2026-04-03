@@ -238,7 +238,7 @@
   async function loadUpcomingBookings() {
     const list = document.getElementById("upcomingList");
     try {
-      const res  = await fetch(`${BASE_URL}/bookings`);
+      const res  = await fetch(`${BASE_URL}/bookings/client/${user.ID}`);
       const data = await res.json();
       // Filter to this client's bookings
       const mine = data.filter(b => b.client?.id === user.id || true); // adjust filter when API supports it

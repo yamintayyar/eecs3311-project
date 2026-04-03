@@ -12,6 +12,8 @@ public class BankTransfer extends PaymentMethodStrategy {
         this.number2 = routingNumber;
     }
 
+    public BankTransfer() {}
+
     public boolean validate() {
         if (!number.matches("\\d{5}-\\d{3}-\\d{7,12}"))
             return false; // ensures format XXXXX-YYY-ZZZZZZZ(...) for bank account number
