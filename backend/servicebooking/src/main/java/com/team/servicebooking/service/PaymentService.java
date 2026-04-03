@@ -19,12 +19,16 @@ public class PaymentService {
     private final BookingRepository bookingRepository;
     private final ConfigService configService;
     private final PaymentMethodStrategyService paymentMethodService;
+    private final NotificationService notificationService;
 
-    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository, ConfigService configService, PaymentMethodStrategyService paymentMethodService) {
+    public PaymentService(PaymentRepository paymentRepository, BookingRepository bookingRepository,
+            ConfigService configService, PaymentMethodStrategyService paymentMethodService,
+            NotificationService notificationService) {
         this.paymentRepository = paymentRepository;
         this.bookingRepository = bookingRepository;
         this.configService = configService;
         this.paymentMethodService = paymentMethodService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -32,28 +36,30 @@ public class PaymentService {
      * This persists both the Payment and updates the Booking status.
      */
     @Transactional
-    public Payment processPayment(PaymentRequestDTO request) throws InterruptedException { //TODO: use database and service layer instead of model class for payment method
+    public Payment processPayment(PaymentRequestDTO request) throws InterruptedException {
+
         UUID bookingId = UUID.fromString(request.getBookingId());
+
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         if (!booking.getState().payable()) {
             throw new RuntimeException("Booking is not payable");
         }
 
         PaymentMethodStrategy paymentMethod = buildPaymentMethod(request);
-        paymentMethod.setClient(booking.getClient()); //set client, for ease of access later
+        paymentMethod.setClient(booking.getClient());
 
         if (!paymentMethod.validate()) {
-                System.out.println("Error: Invalid payment method");
-                return null;
-            }
+            throw new RuntimeException("Invalid payment method");
+        }
 
-        DatabaseSingleton config = configService.getConfiguration();
         double price = booking.getService().getPrice();
-        double finalPrice = price * config.getDiscount();
+        double discount = configService.getConfiguration().getDiscount();
+        double finalPrice = price * discount;
 
         boolean success = paymentMethod.pay(finalPrice);
+
         if (!success) {
             throw new RuntimeException("Payment failed");
         }
@@ -61,19 +67,23 @@ public class PaymentService {
         Payment payment = new Payment(
                 booking,
                 request.getPaymentMethodType(),
-                paymentMethod, //added reference to the payment method, makes it easier to refer to method when requesting a refund
-                booking.getService().getPrice());
+                paymentMethod,
+                finalPrice // ✅ correct
+        );
 
-
-        paymentMethodService.addPaymentMethod(paymentMethod); //save payment method
+        paymentMethodService.addPaymentMethod(paymentMethod);
 
         booking.addPayment(payment);
-
         booking.markPaid();
 
         bookingRepository.save(booking);
+        paymentRepository.save(payment);
 
-        return paymentRepository.save(payment);
+        notificationService.notify(
+                booking.getClient(),
+                "Payment successful for booking " + booking.getId());
+
+        return payment;
     }
 
     public List<Payment> getAllPayments() {
@@ -108,10 +118,11 @@ public class PaymentService {
     }
 
     public List<Payment> getPaymentsByClient(UUID clientId) {
-        return null; //TODO
+        return null; // TODO
     }
 
     public void refund(Payment payment) {
-        //TODO: implement paymentService refund method, which should process refund + mark payment as refunded
+        // TODO: implement paymentService refund method, which should process refund +
+        // mark payment as refunded
     }
 }
