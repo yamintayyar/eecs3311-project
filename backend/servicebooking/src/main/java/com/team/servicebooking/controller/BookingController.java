@@ -48,7 +48,7 @@ public class BookingController {
         if ( update.equals("cancel") ) bookingService.cancelBooking(id);
         else if ( update.equals("confirm") ) bookingService.confirm(id);
         else if ( update.equals("reject") ) bookingService.reject(id);
-//        else if ( update.equals("pay") ) bookingService.pay(id);
+        else if ( update.equals("pending") ) bookingService.setPending(id);
 
     }
 }
