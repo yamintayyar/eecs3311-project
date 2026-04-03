@@ -43,7 +43,7 @@ public class BookingController {
 
         update = update.toLowerCase();
 
-//        System.out.println("msg = " + update);
+        System.out.println("msg = " + update);
 
         if ( update.equals("cancel") ) bookingService.cancelBooking(id);
         else if ( update.equals("confirm") ) bookingService.confirm(id);

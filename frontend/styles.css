@@ -60,6 +60,10 @@ body.auth-page {
   letter-spacing: -.3px;
 }
 
+#bookingTable td {
+    vertical-align: middle;
+}
+
 .section { margin-bottom: 24px; }
 .section label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 13px; text-transform: uppercase; letter-spacing: .4px; }
 

@@ -133,7 +133,7 @@
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
   function statusBadge(status) {
-    const map = { CONFIRMED:"badge-green", PENDING:"badge-amber", CANCELLED:"badge-red", COMPLETED:"badge-blue" };
+    const map = { CONFIRMED:"badge-green", PENDING:"badge-amber", "PENDING PAYMENT": "badge-amber", CANCELLED:"badge-red", COMPLETED:"badge-blue" };
     return `<span class="badge ${map[status] || 'badge-gray'}">${status || "PENDING"}</span>`;
   }
 
@@ -149,18 +149,25 @@
       const dateStr = d ? `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "—";
       const paid = b.payment ? `<span class="badge badge-green">Paid</span>` : `<span class="badge badge-amber">Unpaid</span>`;
       const canCancel = b.status !== "CANCELLED" && b.status !== "COMPLETED" && b.status != "REJECTED";
-      return `
-        <tr>
-          <td>${dateStr}</td>
-          <td><strong>${b.service?.name || "—"}</strong></td>
-          <td>${b.service?.consultantName || "—"}</td>
-          <td>${statusBadge(b.status)}</td>
-          <td>${paid}</td>
-          <td>
-            ${canCancel ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>` : '<span class="text-muted">—</span>'}
-          </td>
-        </tr>`;
+      const needsPayment = b.status === "PENDING PAYMENT" || b.status === "CONFIRMED";
+
+    return `
+      <tr>
+        <td>${dateStr}</td>
+        <td><strong>${b.service?.name || "—"}</strong></td>
+        <td>${b.service?.consultantName || "—"}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td>${paid}</td>
+        <td>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            ${needsPayment ? `<button class="btn btn-primary btn-sm" onclick="payBooking('${b.id}')">Pay Now</button>` : ''}
+            ${canCancel ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>` : ''}
+            ${!canCancel && !needsPayment ? '<span class="text-muted">—</span>' : ''}
+          </div>
+        </td>
+      </tr>`;
     }).join("");
+
   }
 
   function applyFilters() {
@@ -169,7 +176,7 @@
     const from   = document.getElementById("dateFrom").value;
     const to     = document.getElementById("dateTo").value;
 
-    console.log("list is "+  allBookings);
+<!--    console.log("list is "+  allBookings);-->
 
     const filtered = allBookings.filter(b => {
       const matchQ = !q ||
@@ -212,6 +219,26 @@
     }
   }
 
+  async function payBooking(id) {
+    if (!confirm("Proceed to payment for this booking?")) return;
+    try {
+        await fetch(`${BASE_URL}/bookings/${id}`, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: "paid"
+        });
+
+        showToast("Payment successful!");
+        allBookings = allBookings.map(b => b.id === id ? { ...b, payment: true, status: "CONFIRMED" } : b);
+        updateStats();
+        applyFilters();
+
+        loadBookings(); // refresh from server
+    } catch {
+        showToast("Payment failed. Try again.", "error");
+    }
+}
+
   function updateStats() {
     const count = s => allBookings.filter(b => b.status === s).length;
     document.getElementById("statCompleted").textContent = count("COMPLETED");
@@ -226,6 +253,18 @@
       allBookings = await res.json();
       updateStats();
       applyFilters();
+
+      //mark booking that has been seen as confirmed
+
+      for (const b of allBookings) {
+        if (b.status == "CONFIRMED") {
+          await fetch(`${BASE_URL}/bookings/${b.id}`, { method: "POST",
+        headers: { "Content-Type": "text/plain" },
+          body: "pending"
+          });
+        }
+      };
+
     } catch {
       allBookings = [];
       updateStats();
