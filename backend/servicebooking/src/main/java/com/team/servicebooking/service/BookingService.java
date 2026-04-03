@@ -4,6 +4,7 @@ import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.dto.BookingRequestDTO;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.booking.PaidState;
 import com.team.servicebooking.model.booking.PendingPaymentState;
 import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Client;
@@ -57,12 +58,10 @@ public class BookingService {
         Client client = clientService.getClientById(UUID.fromString(request.getClientId()))
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
-        Consultant consultant = consultantRepository.findById(
-                UUID.fromString(request.getConsultantId()))
+        Consultant consultant = consultantRepository.findById(UUID.fromString(request.getConsultantId()))
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
 
-        Service service = serviceRepository.findById(
-                UUID.fromString(request.getServiceId()))
+        Service service = serviceRepository.findById(UUID.fromString(request.getServiceId()))
                 .orElseThrow(() -> new RuntimeException("Service not found"));
 
         List<Availability> slots = availabilityRepository.findAllById(
@@ -74,7 +73,6 @@ public class BookingService {
         // int minNotice = configService.getConfiguration().getMinNotice();
 
         for (Availability slot : slots) {
-
             if (slot.isBooked()) {
                 throw new RuntimeException("Slot already booked");
             }
@@ -116,11 +114,16 @@ public class BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         booking.getAvailabilities().forEach(Availability::markAvailable);
-        notificationService.notify(booking.getClient(),
-                "Your booking has been cancelled.");
 
-        notificationService.notify(booking.getConsultant(),
-                "A booking has been cancelled.");
+        notificationService.notify(
+                booking.getClient(),
+                "Your booking has been cancelled."
+        );
+
+        notificationService.notify(
+                booking.getConsultant(),
+                "A booking has been cancelled."
+        );
 
         bookingRepository.delete(booking);
     }
@@ -182,24 +185,31 @@ public class BookingService {
                 "Booking " + bookingId + " has been rejected by consultant " + booking.getConsultant().getName());
 
         booking.reject();
-
         bookingRepository.save(booking);
     }
 
     public void confirm(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
-
         booking.confirm();
-
         bookingRepository.save(booking);
     }
 
     public void setPending(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
-
         booking.changeState(new PendingPaymentState(booking));
-
         bookingRepository.save(booking);
     }
 
+    public void setPaid(UUID bookingId) {
+        Booking booking = getBookingById(bookingId);
+        booking.changeState(new PaidState(booking));
+        bookingRepository.save(booking);
+    }
+
+    public List<Booking> getBookingsByClient(UUID clientId) {
+        Client client = clientService.getClientById(clientId)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+
+        return bookingRepository.findAllByClient(client);
+    }
 }

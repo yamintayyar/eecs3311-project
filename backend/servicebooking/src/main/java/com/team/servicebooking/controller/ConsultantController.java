@@ -1,7 +1,9 @@
 package com.team.servicebooking.controller;
 
+import com.team.servicebooking.dto.AvailabilityRequestDTO;
 import com.team.servicebooking.dto.ConsultantRequestDTO;
 import com.team.servicebooking.dto.LoginRequestDTO;
+import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.service.ConsultantService;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +23,12 @@ public class ConsultantController {
 
     @PostMapping
     public Consultant createConsultant(@RequestBody ConsultantRequestDTO request) {
-        Consultant consultant = new Consultant(request.getName(), request.getEmail(), request.getPassword());
+        Consultant consultant = new Consultant(
+                request.getName(),
+                request.getEmail(),
+                request.getPassword()
+        );
+
         return consultantService.addConsultant(consultant);
     }
 
@@ -41,9 +48,18 @@ public class ConsultantController {
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
     }
 
+    @PostMapping("/{id}/availabilities")
+    public Availability addAvailability(@PathVariable UUID id,
+                                        @RequestBody AvailabilityRequestDTO request) {
+        return consultantService.addAvailabilityToConsultant(
+                id,
+                request.getStartTime(),
+                request.getEndTime()
+        );
+    }
+
     @DeleteMapping("/{id}")
     public void deleteConsultant(@PathVariable UUID id) {
         consultantService.deleteConsultant(id);
     }
-
 }

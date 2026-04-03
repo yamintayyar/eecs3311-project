@@ -7,7 +7,7 @@ public class PendingPaymentState extends BookingState {
 
 	@Override
 	public String getStatus() {
-		return "PENDING_PAYMENT";
+		return "PENDING PAYMENT";
 	}
 
 	public void markPaid() {

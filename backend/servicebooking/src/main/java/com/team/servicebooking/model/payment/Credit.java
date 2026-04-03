@@ -7,15 +7,15 @@ import java.time.LocalDate;
 @Entity
 //@Table(name = "Credit")
 public class Credit extends PaymentMethodStrategy {
-    private String number;
-    private LocalDate expiry;
-    private String cvv;
+
 
     public Credit(String number, LocalDate expiry, String cvv) {
         this.number = number;
         this.expiry = expiry;
-        this.cvv = cvv;
+        this.number2 = cvv;
     }
+
+    public Credit() {}
 
     public boolean validate() {
 
@@ -24,7 +24,7 @@ public class Credit extends PaymentMethodStrategy {
             return false; // ensures string is 16 digits
 
         // validate cvv
-        if (!cvv.strip().matches("\\d{3}"))
+        if (!number2.strip().matches("\\d{3}"))
             return false; // ensures string is 3 digits
 
         // validate expiry

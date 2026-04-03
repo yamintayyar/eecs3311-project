@@ -35,4 +35,19 @@ public abstract class PaymentMethodStrategy {
 
     public abstract boolean pay(double amount) throws InterruptedException;
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public String getNumber2() {
+        return number2;
+    }
+
+    public LocalDate getExpiry() {
+        return expiry;
+    }
 }
