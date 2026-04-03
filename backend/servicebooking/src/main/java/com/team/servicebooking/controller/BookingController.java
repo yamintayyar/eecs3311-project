@@ -38,6 +38,11 @@ public class BookingController {
         bookingService.deleteBooking(id);
     }
 
+    @GetMapping("/client/{id}")
+    public List<Booking> getAllBookingsByClient(@PathVariable UUID id) {
+        return bookingService.getBookingsByClient(id);
+    }
+
     @PostMapping("/{id}")
     public void updateBookingStatus(@PathVariable UUID id, @RequestBody String update) {
 
@@ -49,6 +54,7 @@ public class BookingController {
         else if ( update.equals("confirm") ) bookingService.confirm(id);
         else if ( update.equals("reject") ) bookingService.reject(id);
         else if ( update.equals("pending") ) bookingService.setPending(id);
+        else if (update.equals("paid")) bookingService.setPaid(id);
 
     }
 }

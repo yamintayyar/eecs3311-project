@@ -4,6 +4,8 @@ import com.team.servicebooking.model.payment.PaymentMethodStrategy;
 import com.team.servicebooking.repository.PaymentMethodStrategyRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentMethodStrategyService {
 
@@ -17,5 +19,9 @@ public class PaymentMethodStrategyService {
 
     public void addPaymentMethod(PaymentMethodStrategy method) {
         repo.save(method);
+    }
+
+    public List<PaymentMethodStrategy> getAllPaymentMethodStrategies() {
+        return repo.findAll();
     }
 }

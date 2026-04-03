@@ -4,6 +4,7 @@ import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.dto.BookingRequestDTO;
 import com.team.servicebooking.model.availability.Availability;
 import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.booking.PaidState;
 import com.team.servicebooking.model.booking.PendingPaymentState;
 import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Client;
@@ -184,6 +185,19 @@ public class BookingService {
         booking.changeState(new PendingPaymentState(booking));
 
         bookingRepository.save(booking);
+    }
+
+    public void setPaid(UUID bookingId) {
+        Booking booking = getBookingById(bookingId);
+
+        booking.changeState(new PaidState(booking));
+
+        bookingRepository.save(booking);
+    }
+
+    public List<Booking> getBookingsByClient(UUID clientId) {
+        Client client = clientService.getClientById(clientId).get();
+        return bookingRepository.findAllByClient(client);
     }
 
 }

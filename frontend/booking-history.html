@@ -110,6 +110,24 @@
     </div>
 
   </main>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:var(--bg-card, #fff);border-radius:12px;padding:32px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+      <h2 style="margin:0 0 8px;">Select Payment Method</h2>
+      <p style="color:var(--text-muted);margin:0 0 24px;">Choose how you'd like to pay for this booking.</p>
+
+      <div id="paymentMethodsList" style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px;">
+        <!-- populated dynamically -->
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-outline" onclick="closePaymentModal()">Cancel</button>
+        <button class="btn btn-primary" id="confirmPayBtn" onclick="confirmPayment()" disabled>Pay Now</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -219,25 +237,117 @@
     }
   }
 
-  async function payBooking(id) {
-    if (!confirm("Proceed to payment for this booking?")) return;
+let pendingPaymentId = null;
+let selectedPaymentMethodId = null;
+
+async function payBooking(id) {
+    pendingPaymentId = id;
+    selectedPaymentMethodId = null;
+
+    // Reset confirm button
+    document.getElementById("confirmPayBtn").disabled = true;
+
+    // Load payment methods
     try {
-        await fetch(`${BASE_URL}/bookings/${id}`, {
+        const res = await fetch(`${BASE_URL}/payment-methods`);
+        const methods = await res.json();
+
+        const list = document.getElementById("paymentMethodsList");
+
+        if (!methods || methods.length === 0) {
+            list.innerHTML = `
+                <div style="text-align:center;padding:16px;">
+                    <p style="color:var(--text-muted);margin-bottom:12px;">No payment methods saved.</p>
+                    <a href="payment-methods.html" class="btn btn-primary">Add Payment Method</a>
+                </div>`;
+        } else {
+            list.innerHTML = methods.map(m => `
+                <div class="payment-method-option"
+                     id="pm-${m.id}"
+                     onclick="selectPaymentMethod('${m.id}')"
+                     style="border:2px solid var(--border-color, #e2e8f0);border-radius:8px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color 0.15s;">
+                    <span style="font-size:1.4rem;">${getCardIcon(m.type)}</span>
+                    <div>
+                        <div style="font-weight:600;">${m.type || "Card"}</div>
+                        <div style="font-size:0.85rem;color:var(--text-muted);">•••• ${m.lastFour || "****"}</div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+    } catch {
+        document.getElementById("paymentMethodsList").innerHTML =
+            `<p style="color:var(--text-muted);">Could not load payment methods.</p>`;
+    }
+
+    // Show modal
+    const modal = document.getElementById("paymentModal");
+    modal.style.display = "flex";
+}
+
+function selectPaymentMethod(id) {
+    selectedPaymentMethodId = id;
+
+    // Highlight selected, unhighlight others
+    document.querySelectorAll(".payment-method-option").forEach(el => {
+        el.style.borderColor = "var(--border-color, #e2e8f0)";
+        el.style.background = "";
+    });
+
+    const selected = document.getElementById(`pm-${id}`);
+    if (selected) {
+        selected.style.borderColor = "var(--primary, #6366f1)";
+        selected.style.background = "var(--primary-light, #eef2ff)";
+    }
+
+    document.getElementById("confirmPayBtn").disabled = false;
+}
+
+function getCardIcon(type) {
+    if (!type) return "💳";
+    const t = type.toLowerCase();
+    if (t.includes("visa"))       return "💳";
+    if (t.includes("mastercard")) return "💳";
+    if (t.includes("paypal"))     return "🅿️";
+    if (t.includes("apple"))      return "🍎";
+    return "💳";
+}
+
+function closePaymentModal() {
+    document.getElementById("paymentModal").style.display = "none";
+    pendingPaymentId = null;
+    selectedPaymentMethodId = null;
+}
+
+async function confirmPayment() {
+    if (!pendingPaymentId || !selectedPaymentMethodId) return;
+
+    const btn = document.getElementById("confirmPayBtn");
+    btn.disabled = true;
+    btn.textContent = "Processing…";
+
+    try {
+        await fetch(`${BASE_URL}/bookings/${pendingPaymentId}`, {
             method: "POST",
             headers: { "Content-Type": "text/plain" },
             body: "paid"
         });
 
+        closePaymentModal();
         showToast("Payment successful!");
-        allBookings = allBookings.map(b => b.id === id ? { ...b, payment: true, status: "CONFIRMED" } : b);
-        updateStats();
-        applyFilters();
+        loadBookings();
 
-        loadBookings(); // refresh from server
     } catch {
         showToast("Payment failed. Try again.", "error");
+        btn.disabled = false;
+        btn.textContent = "Pay Now";
     }
 }
+
+// Close modal when clicking backdrop
+document.getElementById("paymentModal").addEventListener("click", function(e) {
+    if (e.target === this) closePaymentModal();
+});
 
   function updateStats() {
     const count = s => allBookings.filter(b => b.status === s).length;
@@ -249,7 +359,7 @@
 
   async function loadBookings() {
     try {
-      const res  = await fetch(`${BASE_URL}/bookings`);
+      const res  = await fetch(`${BASE_URL}/bookings/client/${user.ID}`);
       allBookings = await res.json();
       updateStats();
       applyFilters();
