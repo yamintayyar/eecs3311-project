@@ -17,6 +17,8 @@ public class Credit extends PaymentMethodStrategy {
         this.cvv = cvv;
     }
 
+    public Credit() {}
+
     public boolean validate() {
 
         // validate number

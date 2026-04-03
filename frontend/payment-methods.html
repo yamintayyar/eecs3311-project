@@ -121,7 +121,7 @@
   document.getElementById("sidebarUser").textContent = user.name;
 
   // ── Local storage for payment methods (mock persistence) ──
-  let methods = JSON.parse(localStorage.getItem("paymentMethods") || "[]");
+<!--  let methods = JSON.parse(localStorage.getItem("paymentMethods") || "[]");-->
 
   const TYPE_ICONS = { CREDIT:"💳", DEBIT:"🏦", PAYPAL:"🅿️", BANK_TRANSFER:"🏛️" };
   const TYPE_LABELS= { CREDIT:"Credit Card", DEBIT:"Debit Card", PAYPAL:"PayPal", BANK_TRANSFER:"Bank Transfer" };
@@ -222,7 +222,21 @@
 
     if (isDefault) methods.forEach(m => m.isDefault = false);
     methods.push(method);
-    localStorage.setItem("paymentMethods", JSON.stringify(methods));
+<!--    localStorage.setItem("paymentMethods", JSON.stringify(methods));-->
+    fetch (`${BASE_URL}/payment-methods`,
+    { method: "POST",
+      headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentMethodType: type,
+          cardNumber: method.cardNumber,
+          expiryDate: method.expiry,
+          cvv: method.cvv,
+          accountNumber: method.accountNumber,
+          routingNumber: method.routingNumber,
+          email: method.email,
+          clientId: user.ID,
+        })
+        });
     closeModal();
     renderMethods();
     showToast("Payment method saved! 💳");

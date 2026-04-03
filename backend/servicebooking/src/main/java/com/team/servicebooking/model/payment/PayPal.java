@@ -10,6 +10,8 @@ public class PayPal extends PaymentMethodStrategy {
         this.email = email;
     }
 
+    public PayPal() {}
+
     public boolean validate() {
 
         return email.matches("\\p{Alnum}+@\\p{Alnum}+.[a-zA-Z]+"); // ensures email is in format

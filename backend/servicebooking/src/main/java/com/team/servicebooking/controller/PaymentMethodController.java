@@ -1,14 +1,14 @@
 package com.team.servicebooking.controller;
 
-import com.team.servicebooking.model.payment.PaymentMethodStrategy;
+import com.team.servicebooking.dto.PaymentMethodRequestDTO;
+import com.team.servicebooking.model.payment.*;
 import com.team.servicebooking.model.user.Client;
 import com.team.servicebooking.service.ClientService;
 import com.team.servicebooking.service.PaymentMethodStrategyService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +34,33 @@ public class PaymentMethodController {
     public List<PaymentMethodStrategy> getPaymentMethodStrategiesByClientId(@PathVariable UUID id){
         Client client = clientService.getClientById(id).get();
         return paymentMethodStrategyService.getAllPaymentMethodsByClient(client);
+    }
+
+    @PostMapping
+    public void addPaymentMethodStrategy(@RequestBody PaymentMethodRequestDTO request){
+
+        String type =  request.getPaymentMethodType();
+        PaymentMethodStrategy method;
+
+        switch (type){
+            case "PAYPAL":
+                method = new PayPal(request.getEmail());
+                break;
+
+            case "BANK TRANSFER":
+                method = new BankTransfer(request.getAccountNumber(), request.getRoutingNumber());
+                break;
+
+            case "DEBIT":
+                method = new Debit(request.getAccountNumber(), YearMonth.parse(request.getExpiryDate(), DateTimeFormatter.ofPattern("MM/yy")).atEndOfMonth(), request.getCvv());
+                break;
+            default:
+                method = new Credit(request.getAccountNumber(), YearMonth.parse(request.getExpiryDate(), DateTimeFormatter.ofPattern("MM/yy")).atEndOfMonth(), request.getCvv());
+                break;
+        }
+
+        paymentMethodStrategyService.addPaymentMethod(method);
+
     }
 
 }
