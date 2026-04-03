@@ -45,9 +45,10 @@ public class PaymentMethodController {
         switch (type){
             case "PAYPAL":
                 method = new PayPal(request.getEmail());
+                System.out.println("email is "+request.getEmail());
                 break;
 
-            case "BANK TRANSFER":
+            case "BANK_TRANSFER":
                 method = new BankTransfer(request.getAccountNumber(), request.getRoutingNumber());
                 break;
 
@@ -58,6 +59,8 @@ public class PaymentMethodController {
                 method = new Credit(request.getAccountNumber(), YearMonth.parse(request.getExpiryDate(), DateTimeFormatter.ofPattern("MM/yy")).atEndOfMonth(), request.getCvv());
                 break;
         }
+        Client client = clientService.getClientById( UUID.fromString(request.getClientId())).get();
+        method.setClient(client);
 
         paymentMethodStrategyService.addPaymentMethod(method);
 
