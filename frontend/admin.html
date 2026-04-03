@@ -1,20 +1,749 @@
-<h1>Admin Dashboard</h1>
-<p id="welcome"></p>
-<button onclick="logout()">Logout</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ServiceBook – Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-icon">📅</div>
+    <div>
+      <h2>ServiceBook</h2>
+      <p>ADMIN PANEL</p>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <a href="#" class="active" onclick="showPage('dashboard', this); return false;">
+      <span class="nav-icon">🏠</span> Dashboard
+    </a>
+
+    <div class="nav-section-label">Management</div>
+    <a href="#" onclick="showPage('users', this); return false;">
+      <span class="nav-icon">👥</span> Users
+    </a>
+    <a href="#" onclick="showPage('consultants', this); return false;">
+      <span class="nav-icon">🧑‍💼</span> Consultants
+    </a>
+    <a href="#" onclick="showPage('bookings', this); return false;">
+      <span class="nav-icon">📋</span> Bookings
+    </a>
+
+    <div class="nav-section-label">System</div>
+    <a href="#" onclick="showPage('policies', this); return false;">
+      <span class="nav-icon">⚙️</span> System Policies
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-signout" onclick="logout()">🚪 Sign Out</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+  <!-- ── DASHBOARD PAGE ── -->
+  <div id="page-dashboard" class="page active">
+    <div class="page-header">
+      <h1 id="welcome-msg">Welcome back, Admin 👋</h1>
+      <p>Here's what's happening across ServiceBook today.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card green">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="stat-users">—</div>
+        <div class="stat-sub">Registered clients</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Consultants</div>
+        <div class="stat-value" id="stat-consultants">—</div>
+        <div class="stat-sub">Active providers</div>
+      </div>
+      <div class="stat-card amber">
+        <div class="stat-label">Total Bookings</div>
+        <div class="stat-value" id="stat-bookings">—</div>
+        <div class="stat-sub">All time</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-label">Pending Payments</div>
+        <div class="stat-value">—</div>
+        <div class="stat-sub">Awaiting settlement</div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <a class="quick-action-card" href="#" onclick="showPage('users', document.querySelector('[onclick*=users]')); return false;">
+        <div class="quick-action-icon" style="background:#E8F5E9">👥</div>
+        <div><h4>Manage Users</h4><p>View & remove clients</p></div>
+      </a>
+      <a class="quick-action-card" href="#" onclick="showPage('consultants', document.querySelector('[onclick*=consultants]')); return false;">
+        <div class="quick-action-icon" style="background:#eff6ff">🧑‍💼</div>
+        <div><h4>Consultants</h4><p>Manage service providers</p></div>
+      </a>
+      <a class="quick-action-card" href="#" onclick="showPage('bookings', document.querySelector('[onclick*=bookings]')); return false;">
+        <div class="quick-action-icon" style="background:#fffbeb">📋</div>
+        <div><h4>All Bookings</h4><p>Monitor & cancel bookings</p></div>
+      </a>
+      <a class="quick-action-card" href="#" onclick="showPage('policies', document.querySelector('[onclick*=policies]')); return false;">
+        <div class="quick-action-icon" style="background:#fee2e2">⚙️</div>
+        <div><h4>System Policies</h4><p>Configure rules & pricing</p></div>
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h2>Recent Activity</h2></div>
+      <div class="card-body">
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-dot" style="background:#E8F5E9">👤</div>
+            <div class="activity-info">
+              <strong>New user registered</strong>
+              <p>A new client joined the platform</p>
+            </div>
+            <div class="activity-time">Just now</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:#eff6ff">📋</div>
+            <div class="activity-info">
+              <strong>Booking created</strong>
+              <p>A booking was placed for a consultation</p>
+            </div>
+            <div class="activity-time">5 min ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-dot" style="background:#fffbeb">⚙️</div>
+            <div class="activity-info">
+              <strong>Policy updated</strong>
+              <p>Cancellation window changed to 24h</p>
+            </div>
+            <div class="activity-time">1 hr ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── USERS PAGE ── -->
+  <div id="page-users" class="page">
+    <div class="page-header">
+      <h1>Users</h1>
+      <p>Manage all registered clients on the platform.</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h2>All Clients</h2>
+        <div class="filters-bar">
+          <input type="text" id="user-search" placeholder="🔍  Search by name or email…" oninput="filterUsers()">
+        </div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading users…</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONSULTANTS PAGE ── -->
+  <div id="page-consultants" class="page">
+    <div class="page-header">
+      <h1>Consultants</h1>
+      <p>View and manage all service providers.</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h2>All Consultants</h2>
+        <div class="filters-bar">
+          <input type="text" id="consultant-search" placeholder="🔍  Search consultants…" oninput="filterConsultants()">
+        </div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Consultant</th>
+                <th>Email</th>
+                <th>Specialty</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="consultants-table-body">
+              <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading consultants…</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BOOKINGS PAGE ── -->
+  <div id="page-bookings" class="page">
+    <div class="page-header">
+      <h1>All Bookings</h1>
+      <p>Monitor and manage bookings across the platform.</p>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h2>Bookings</h2>
+        <div class="filters-bar">
+          <input type="text" id="booking-search" placeholder="🔍  Search bookings…" oninput="filterBookings()">
+          <select id="booking-status-filter" onchange="filterBookings()">
+            <option value="">All Statuses</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="pending">Pending</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Consultant</th>
+                <th>Service</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-table-body">
+              <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading bookings…</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── POLICIES PAGE ── -->
+  <div id="page-policies" class="page">
+    <div class="page-header">
+      <h1>System Policies</h1>
+      <p>Configure platform-wide rules, pricing, and notification settings.</p>
+    </div>
+    <div class="policy-grid">
+
+      <div class="policy-card">
+        <div class="policy-icon" style="background:#fee2e2">❌</div>
+        <h3>Cancellation Rules</h3>
+        <p>Define how far in advance a booking can be cancelled without penalty.</p>
+        <span class="policy-value" id="cancel-val">24 hours before booking</span>
+        <button class="btn btn-outline btn-sm" onclick="openPolicyModal('cancellation')">Edit Policy</button>
+      </div>
+
+      <div class="policy-card">
+        <div class="policy-icon" style="background:#fffbeb">🏷️</div>
+        <h3>Service Discount</h3>
+        <p>Set a discount multiplier applied to services on sale (1.0 = full price, 0.8 = 20% off).</p>
+        <span class="policy-value" id="pricing-val">1.0 (no discount)</span>
+        <button class="btn btn-outline btn-sm" onclick="openPolicyModal('pricing')">Edit Policy</button>
+      </div>
+
+      <div class="policy-card">
+        <div class="policy-icon" style="background:#eff6ff">🔔</div>
+        <h3>Notification Settings</h3>
+        <p>Control which automated notifications are sent to users and consultants.</p>
+        <span class="policy-value" id="notif-val">Email + In-app enabled</span>
+        <button class="btn btn-outline btn-sm" onclick="openPolicyModal('notifications')">Edit Policy</button>
+      </div>
+
+      <div class="policy-card">
+        <div class="policy-icon" style="background:#E8F5E9">💸</div>
+        <h3>Refund Policy</h3>
+        <p>Set the refund percentage clients receive on eligible cancellations.</p>
+        <span class="policy-value" id="refund-val">100% if cancelled in time</span>
+        <button class="btn btn-outline btn-sm" onclick="openPolicyModal('refund')">Edit Policy</button>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main-content -->
+
+<!-- ── POLICY MODAL ── -->
+<div class="modal-backdrop" id="policy-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="policy-modal-title">Edit Policy</h3>
+      <button class="modal-close" onclick="closeModal('policy-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="policy-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('policy-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePolicy()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── USER DETAIL MODAL ── -->
+<div class="modal-backdrop" id="user-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="user-modal-title">User Details</h3>
+      <button class="modal-close" onclick="closeModal('user-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="user-modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('user-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
 <script>
-    const user = JSON.parse(localStorage.getItem("user"));
-    const role = localStorage.getItem("role");
+  const BASE_URL = "http://localhost:8080";
 
-    if (role !== "admin") {
-        window.location.href = "index.html";
+  // ── AUTH GUARD ──
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = localStorage.getItem("role");
+  if (!user || role !== "admin") window.location.href = "index.html";
+
+  document.getElementById("welcome-msg").textContent = `Welcome back, ${user.name} 👋`;
+
+  // ── PAGE NAV ──
+  function showPage(pageId, linkEl) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    if (linkEl) linkEl.classList.add('active');
+    if (pageId === 'users')       loadUsers();
+    if (pageId === 'consultants') loadConsultants();
+    if (pageId === 'bookings')    loadBookings();
+    if (pageId === 'dashboard')   loadDashboardStats();
+  }
+
+  // ── TOAST ──
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── MODAL ──
+  function openModal(id)  { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // ── HELPERS ──
+  function initials(name) {
+    return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  }
+  function statusBadge(status) {
+    const map = {
+      active: 'badge-green', confirmed: 'badge-green', completed: 'badge-green',
+      pending: 'badge-amber', cancelled: 'badge-red', inactive: 'badge-gray'
+    };
+    const cls = map[(status || '').toLowerCase()] || 'badge-gray';
+    return `<span class="badge ${cls}">${status || 'Unknown'}</span>`;
+  }
+
+  // ── DASHBOARD STATS ──
+  async function loadDashboardStats() {
+    try {
+      const [usersRes, consultantsRes] = await Promise.allSettled([
+        fetch(`${BASE_URL}/clients`),
+        fetch(`${BASE_URL}/consultants`)
+      ]);
+      if (usersRes.status === 'fulfilled' && usersRes.value.ok) {
+        const data = await usersRes.value.json();
+        document.getElementById('stat-users').textContent = Array.isArray(data) ? data.length : '—';
+      }
+      if (consultantsRes.status === 'fulfilled' && consultantsRes.value.ok) {
+        const data = await consultantsRes.value.json();
+        document.getElementById('stat-consultants').textContent = Array.isArray(data) ? data.length : '—';
+      }
+    } catch (e) { /* fail silently */ }
+  }
+  loadDashboardStats();
+
+  // ── USERS ──
+  let allUsers = [];
+  async function loadUsers() {
+    const tbody = document.getElementById('users-table-body');
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div></td></tr>`;
+    try {
+      const res = await fetch(`${BASE_URL}/clients`);
+      if (!res.ok) throw new Error();
+      allUsers = await res.json();
+      renderUsers(allUsers);
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load users.</p></div></td></tr>`;
     }
-    if (!user) window.location.href = "index.html";
+  }
 
-    document.getElementById("welcome").innerText =
-        "Welcome Admin " + user.name;
-
-    function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
+  function renderUsers(users) {
+    const tbody = document.getElementById('users-table-body');
+    if (!users.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👥</div><p>No users found.</p></div></td></tr>`;
+      return;
     }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td><div class="user-cell"><div class="avatar">${initials(u.name)}</div><span>${u.name || '—'}</span></div></td>
+        <td>${u.email || '—'}</td>
+        <td><span class="badge badge-blue">Client</span></td>
+        <td>${statusBadge(u.status || 'active')}</td>
+        <td>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm"
+              data-user='${JSON.stringify(u).replace(/'/g,"&#39;")}'
+              onclick="viewUser(JSON.parse(this.dataset.user))">View</button>
+            <button class="btn btn-danger btn-sm"
+              data-id="${u.ID}" data-name="${u.name}"
+              onclick="deleteUser(this.dataset.id, this.dataset.name)">Remove</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterUsers() {
+    const q = document.getElementById('user-search').value.toLowerCase();
+    renderUsers(allUsers.filter(u =>
+      (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q)
+    ));
+  }
+
+  function viewUser(u) {
+    document.getElementById('user-modal-title').textContent = u.name || 'User Details';
+    document.getElementById('user-modal-body').innerHTML = `
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+        <div class="avatar" style="width:56px;height:56px;font-size:20px">${initials(u.name)}</div>
+        <div><strong style="font-size:1.1rem">${u.name}</strong><br>
+        <span style="color:var(--text-muted);font-size:13px">${u.email}</span></div>
+      </div>
+      <label>User ID</label>
+      <div style="font-family:'DM Mono',monospace;font-size:13px;background:var(--bg);padding:8px 12px;border-radius:6px;margin-bottom:16px">${u.ID || '—'}</div>
+      <label>Status</label>
+      <div style="margin-bottom:16px">${statusBadge(u.status || 'active')}</div>
+    `;
+    openModal('user-modal');
+  }
+
+  async function deleteUser(id, name) {
+    if (!confirm(`Remove user "${name}"? This action cannot be undone.`)) return;
+    try {
+      const res = await fetch(`${BASE_URL}/clients/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error();
+      showToast(`User "${name}" removed.`);
+      loadUsers();
+    } catch {
+      showToast('Failed to remove user.', 'error');
+    }
+  }
+
+  // ── CONSULTANTS ──
+  let allConsultants = [];
+  async function loadConsultants() {
+    const tbody = document.getElementById('consultants-table-body');
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div></td></tr>`;
+    try {
+      const res = await fetch(`${BASE_URL}/consultants`);
+      if (!res.ok) throw new Error();
+      allConsultants = await res.json();
+      renderConsultants(allConsultants);
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load consultants.</p></div></td></tr>`;
+    }
+  }
+
+  function renderConsultants(list) {
+    const tbody = document.getElementById('consultants-table-body');
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🧑‍💼</div><p>No consultants found.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(c => `
+      <tr>
+        <td><div class="user-cell"><div class="avatar" style="background:#eff6ff;color:var(--blue)">${initials(c.name)}</div><span>${c.name || '—'}</span></div></td>
+        <td>${c.email || '—'}</td>
+        <td><span class="badge badge-blue">${c.specialty || 'General'}</span></td>
+        <td>${statusBadge(c.status || 'active')}</td>
+        <td>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm"
+              data-user='${JSON.stringify(c).replace(/'/g,"&#39;")}'
+              onclick="viewUser(JSON.parse(this.dataset.user))">View</button>
+            <button class="btn btn-danger btn-sm"
+              data-id="${c.ID}" data-name="${c.name}"
+              onclick="removeConsultant(this.dataset.id, this.dataset.name)">Remove</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterConsultants() {
+    const q = document.getElementById('consultant-search').value.toLowerCase();
+    renderConsultants(allConsultants.filter(c =>
+      (c.name || '').toLowerCase().includes(q) || (c.email || '').toLowerCase().includes(q)
+    ));
+  }
+
+  async function removeConsultant(id, name) {
+    if (!confirm(`Remove consultant "${name}"?`)) return;
+    try {
+      const res = await fetch(`${BASE_URL}/consultants/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error();
+      showToast(`Consultant "${name}" removed.`);
+      loadConsultants();
+    } catch {
+      showToast('Failed to remove consultant.', 'error');
+    }
+  }
+
+  // ── BOOKINGS ──
+  let allBookings = [];
+  async function loadBookings() {
+    const tbody = document.getElementById('bookings-table-body');
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div></td></tr>`;
+    try {
+      const res = await fetch(`${BASE_URL}/bookings`);
+      if (!res.ok) throw new Error();
+      allBookings = await res.json();
+      renderBookings(allBookings);
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load bookings.</p></div></td></tr>`;
+    }
+  }
+
+  function renderBookings(list) {
+    const tbody = document.getElementById('bookings-table-body');
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📋</div><p>No bookings found.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(b => `
+      <tr>
+        <td>${b.clientName || b.client?.name || '—'}</td>
+        <td>${b.consultantName || b.consultant?.name || '—'}</td>
+        <td>${b.serviceName || b.service || '—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:13px">${b.date ? new Date(b.date).toLocaleDateString() : '—'}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td>
+          ${(b.status || '').toLowerCase() !== 'cancelled'
+            ? `<button class="btn btn-danger btn-sm" onclick="cancelBooking(${b.id})">Cancel</button>`
+            : '<span class="badge badge-gray">Cancelled</span>'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterBookings() {
+    const q = document.getElementById('booking-search').value.toLowerCase();
+    const status = document.getElementById('booking-status-filter').value.toLowerCase();
+    renderBookings(allBookings.filter(b => {
+      const matchesQ = (b.clientName || '').toLowerCase().includes(q) ||
+                       (b.consultantName || '').toLowerCase().includes(q) ||
+                       (b.serviceName || '').toLowerCase().includes(q);
+      const matchesStatus = !status || (b.status || '').toLowerCase() === status;
+      return matchesQ && matchesStatus;
+    }));
+  }
+
+  async function cancelBooking(id) {
+    if (!confirm('Cancel this booking?')) return;
+    try {
+      const res = await fetch(`${BASE_URL}/bookings/${id}/cancel`, { method: 'PUT' });
+      if (!res.ok) throw new Error();
+      showToast('Booking cancelled.');
+      loadBookings();
+    } catch {
+      showToast('Failed to cancel booking.', 'error');
+    }
+  }
+
+ let policies = {
+  cancellation: { label: "Cancellation Rules", hours: 24 },
+  pricing: { label: "Service Discount", discount: 1.0 },
+  notifications: { label: "Notification Settings", verbose: false },
+  refund: { label: "Refund Policy", enabled: false }
+};
+
+ async function loadPoliciesFromBackend() {
+  try {
+    const res = await fetch(`${BASE_URL}/config`);
+    if (!res.ok) throw new Error();
+
+    const config = await res.json();
+
+    // Map backend → frontend
+    policies.cancellation.hours = config.minNotice;
+    policies.pricing.discount = config.discount;
+    policies.notifications.verbose = config.verboseNotification;
+    policies.refund.enabled = config.refundPolicy;
+
+    // Update UI
+    document.getElementById('cancel-val').textContent =
+      `${config.minNotice} hours before booking`;
+
+    const pct = Math.round((1 - config.discount) * 100);
+    document.getElementById('pricing-val').textContent =
+      pct > 0 ? `${config.discount} (${pct}% off)` : `${config.discount} (no discount)`;
+
+    document.getElementById('notif-val').textContent =
+      config.verboseNotification ? "Verbose notifications enabled" : "Minimal notifications";
+
+    document.getElementById('refund-val').textContent =
+        config.refundPolicy ? "Refunds enabled" : "Refunds disabled";
+
+  } catch (err) {
+    showToast("Failed to load policies", "error");
+  }
+}
+
+  loadPoliciesFromBackend()
+  let currentPolicy = null;
+
+  function openPolicyModal(type) {
+  currentPolicy = type;
+  const p = policies[type];
+
+  document.getElementById('policy-modal-title').textContent = 'Edit — ' + p.label;
+
+  let html = '';
+
+  if (type === 'cancellation') {
+    html = `
+      <label>Cancellation Window (hours)</label>
+      <input type="number" id="p-hours" value="${p.hours}" min="1" max="168">
+      <p style="font-size:13px;color:var(--text-muted)">
+        Clients must cancel at least this many hours before their booking.
+      </p>`;
+  }
+
+  else if (type === 'pricing') {
+    html = `
+      <label>Discount Multiplier</label>
+      <input type="number" id="p-commission" value="${p.discount}" min="0" max="1" step="0.05">
+      <p style="font-size:13px;color:var(--text-muted)">
+        1.0 = full price, 0.9 = 10% off, 0.5 = 50% off.
+      </p>`;
+  }
+
+  else if (type === 'notifications') {
+    html = `
+      <div class="toggle-wrap">
+        <label class="toggle">
+          <input type="checkbox" id="p-verbose" ${p.verbose ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label">Enable verbose notifications</span>
+      </div>
+    `;
+  }
+
+  else if (type === 'refund') {
+    html = `
+      <div class="toggle-wrap">
+        <label class="toggle">
+          <input type="checkbox" id="p-refund-enabled" ${p.enabled ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label">Allow refunds</span>
+      </div>
+    `;
+  }
+
+  document.getElementById('policy-modal-body').innerHTML = html;
+  openModal('policy-modal');
+}
+
+  async function savePolicy() {
+  try {
+    if (!currentPolicy) {
+      showToast("No policy selected", "error");
+      return;
+    }
+
+    if (currentPolicy === 'cancellation') {
+      const hours = parseInt(document.getElementById('p-hours').value) || 24;
+
+      await fetch(`${BASE_URL}/config/min-notice/${hours}`, {
+        method: 'PUT'
+      });
+
+      policies.cancellation.hours = hours;
+    }
+
+    else if (currentPolicy === 'pricing') {
+      const discount = parseFloat(document.getElementById('p-commission').value) || 1.0;
+
+      await fetch(`${BASE_URL}/config/discount/${discount}`, {
+        method: 'PUT'
+      });
+
+      policies.pricing.discount = discount;
+    }
+
+    else if (currentPolicy === 'notifications') {
+      const verbose = document.getElementById('p-verbose').checked;
+
+      await fetch(`${BASE_URL}/config/verbose/${verbose}`, {
+        method: 'PUT'
+      });
+
+      policies.notifications.verbose = verbose;
+    }
+
+    else if (currentPolicy === 'refund') {
+      const enabled = document.getElementById('p-refund-enabled').checked;
+
+      await fetch(`${BASE_URL}/config/refund/${enabled}`, {
+        method: 'PUT'
+      });
+
+      policies.refund.enabled = enabled;
+    }
+
+    closeModal('policy-modal');
+    currentPolicy = null;
+
+    showToast("Policy saved to backend ✅");
+
+    // Reload to sync UI with backend
+    loadPoliciesFromBackend();
+
+  } catch (err) {
+    showToast("Failed to save policy ❌", "error");
+  }
+}
+
+  // ── LOGOUT ──
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
 </script>
+</body>
+</html>
