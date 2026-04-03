@@ -5,6 +5,256 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consultant Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .consultant-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e9eef4;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #667085;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1d2939;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e9eef4;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #eef2f6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #1d2939;
+    }
+
+    .card-body {
+      padding: 20px 24px 24px 24px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .toolbar select,
+    .toolbar input {
+      padding: 10px 12px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .item-card {
+      border: 1px solid #e9eef4;
+      border-radius: 16px;
+      padding: 18px;
+      background: #fcfdff;
+    }
+
+    .item-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      color: #1d2939;
+    }
+
+    .item-card p {
+      margin: 6px 0;
+      color: #475467;
+      font-size: 14px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .status-available {
+      background: #ecfdf3;
+      color: #027a48;
+    }
+
+    .status-booked {
+      background: #fff1f3;
+      color: #c01048;
+    }
+
+    .status-generic {
+      background: #f2f4f7;
+      color: #344054;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 16px;
+      color: #667085;
+    }
+
+    .empty-state .icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #344054;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #1570ef;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #eff4ff;
+      color: #175cd3;
+      border: 1px solid #c7d7fe;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .section-note {
+      color: #667085;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      background: #101828;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: 0.25s ease;
+      z-index: 999;
+      max-width: 320px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast.success {
+      background: #027a48;
+    }
+
+    .toast.error {
+      background: #b42318;
+    }
+
+    .booking-slot-list {
+      margin-top: 10px;
+      padding-left: 18px;
+      color: #475467;
+      font-size: 14px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .card-header {
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="app-layout">
@@ -26,45 +276,115 @@
     <main class="main-content">
       <div class="page-header">
         <h1 id="welcomeMsg">Welcome!</h1>
-        <p>Manage your availability slots and bookings.</p>
+        <p>Manage your availability slots and review your bookings.</p>
       </div>
 
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-label">Total Slots</div>
-          <div class="stat-value" id="totalSlots">0</div>
+          <div class="stat-value" id="statTotalSlots">0</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-label">Available Slots</div>
-          <div class="stat-value" id="availableSlots">0</div>
+          <div class="stat-value" id="statAvailableSlots">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Booked Slots</div>
+          <div class="stat-value" id="statBookedSlots">0</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-label">Bookings</div>
-          <div class="stat-value" id="totalBookings">0</div>
+          <div class="stat-value" id="statBookings">0</div>
         </div>
       </div>
 
-      <section class="card">
-        <div class="card-header">
-          <h2>Availability Slots</h2>
-        </div>
-        <div class="card-body" id="availabilityList">
-          <p>Loading availability...</p>
-        </div>
-      </section>
+      <div class="consultant-grid">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Availability Slots</h2>
+              <div class="section-note">These are the slots clients will eventually book from the client side.</div>
+            </div>
 
-      <section class="card" style="margin-top: 24px;">
-        <div class="card-header">
-          <h2>Bookings</h2>
-        </div>
-        <div class="card-body" id="bookingList">
-          <p>Loading bookings...</p>
-        </div>
-      </section>
+            <div class="toolbar">
+              <select id="slotFilter">
+                <option value="all">All Slots</option>
+                <option value="available">Available Only</option>
+                <option value="booked">Booked Only</option>
+              </select>
+              <button class="btn-secondary" onclick="loadConsultantData()">Refresh</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="items-grid" id="availabilityList">
+              <div class="empty-state">
+                <div class="icon">⏳</div>
+                <p>Loading availability slots...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Add Availability Slot</h2>
+              <div class="section-note">Create new open time slots for future client bookings.</div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form id="availabilityForm">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="startTime">Start Time</label>
+                  <input type="datetime-local" id="startTime" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="endTime">End Time</label>
+                  <input type="datetime-local" id="endTime" required />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Add Slot</button>
+                <button type="button" class="btn-secondary" onclick="document.getElementById('availabilityForm').reset()">Clear</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Bookings</h2>
+              <div class="section-note">This section is ready for consultant bookings and will connect cleanly with the client side.</div>
+            </div>
+
+            <div class="top-actions">
+              <button class="btn-secondary" onclick="loadBookings()">Refresh Bookings</button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="items-grid" id="bookingList">
+              <div class="empty-state">
+                <div class="icon">📘</div>
+                <p>Loading bookings...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
+
+  <div class="toast" id="toast"></div>
 
   <script src="script.js"></script>
   <script>
@@ -77,8 +397,20 @@
 
     const consultantId = user.ID || user.user_id || user.id;
 
+    let allSlots = [];
+    let allBookings = [];
+
     document.getElementById("welcomeMsg").textContent = `Welcome, ${user.name || "Consultant"}!`;
     document.getElementById("sidebarUser").textContent = user.name || "Consultant";
+
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.className = "toast";
+      }, 2500);
+    }
 
     function logout() {
       localStorage.clear();
@@ -88,93 +420,205 @@
     function formatDateTime(dateTime) {
       if (!dateTime) return "N/A";
       const d = new Date(dateTime);
-      return isNaN(d) ? dateTime : d.toLocaleString();
+      if (isNaN(d.getTime())) return dateTime;
+      return d.toLocaleString();
     }
 
-    function renderAvailability(slots) {
+    function updateStats() {
+      const totalSlots = allSlots.length;
+      const availableSlots = allSlots.filter(slot => !slot.isBooked).length;
+      const bookedSlots = allSlots.filter(slot => slot.isBooked).length;
+      const totalBookings = allBookings.length;
+
+      document.getElementById("statTotalSlots").textContent = totalSlots;
+      document.getElementById("statAvailableSlots").textContent = availableSlots;
+      document.getElementById("statBookedSlots").textContent = bookedSlots;
+      document.getElementById("statBookings").textContent = totalBookings;
+    }
+
+    function getFilteredSlots() {
+      const filter = document.getElementById("slotFilter").value;
+
+      if (filter === "available") {
+        return allSlots.filter(slot => !slot.isBooked);
+      }
+
+      if (filter === "booked") {
+        return allSlots.filter(slot => slot.isBooked);
+      }
+
+      return allSlots;
+    }
+
+    function renderAvailability() {
       const container = document.getElementById("availabilityList");
+      const slots = getFilteredSlots();
 
       if (!slots || slots.length === 0) {
-        container.innerHTML = `<p>No availability slots found.</p>`;
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📅</div>
+            <p>No availability slots found for this filter.</p>
+          </div>
+        `;
         return;
       }
 
       container.innerHTML = slots.map(slot => `
-        <div class="service-card" style="margin-bottom: 16px;">
+        <div class="item-card">
           <h3>${slot.isBooked ? "Booked Slot" : "Available Slot"}</h3>
           <p><strong>Slot ID:</strong> ${slot.slotId || "N/A"}</p>
           <p><strong>Start:</strong> ${formatDateTime(slot.startTime)}</p>
           <p><strong>End:</strong> ${formatDateTime(slot.endTime)}</p>
-          <p><strong>Status:</strong> ${slot.isBooked ? "Booked" : "Available"}</p>
+          <span class="status-badge ${slot.isBooked ? "status-booked" : "status-available"}">
+            ${slot.isBooked ? "Booked" : "Available"}
+          </span>
         </div>
       `).join("");
-
-      document.getElementById("totalSlots").textContent = slots.length;
-      document.getElementById("availableSlots").textContent =
-        slots.filter(slot => !slot.isBooked).length;
     }
 
-    function renderBookings(bookings) {
+    function renderBookings() {
       const container = document.getElementById("bookingList");
 
-      if (!bookings || bookings.length === 0) {
-        container.innerHTML = `<p>No bookings found.</p>`;
-        document.getElementById("totalBookings").textContent = 0;
+      if (!allBookings || allBookings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📘</div>
+            <p>No bookings found yet.</p>
+          </div>
+        `;
         return;
       }
 
-      container.innerHTML = bookings.map(booking => `
-        <div class="service-card" style="margin-bottom: 16px;">
-          <h3>${booking.service?.name || "Booked Service"}</h3>
+      container.innerHTML = allBookings.map(booking => `
+        <div class="item-card">
+          <h3>${booking.service?.name || "Service Booking"}</h3>
           <p><strong>Status:</strong> ${booking.status || "N/A"}</p>
           <p><strong>Booking Date:</strong> ${booking.bookingDate || "N/A"}</p>
-          <p><strong>Price:</strong> ${booking.service?.price ?? "N/A"}</p>
-          <p><strong>Slots:</strong></p>
-          <ul>
-            ${(booking.availabilities || []).map(slot => `
-              <li>${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}</li>
-            `).join("")}
-          </ul>
+          <p><strong>Price:</strong> ${booking.service?.price ?? booking.price ?? "N/A"}</p>
+          <p><strong>Service Description:</strong> ${booking.service?.description || "N/A"}</p>
+
+          <span class="status-badge status-generic">
+            ${booking.status || "Booking"}
+          </span>
+
+          <div style="margin-top: 10px;">
+            <strong>Reserved Slots:</strong>
+            ${
+              booking.availabilities && booking.availabilities.length
+                ? `<ul class="booking-slot-list">
+                    ${booking.availabilities.map(slot => `
+                      <li>${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}</li>
+                    `).join("")}
+                  </ul>`
+                : `<p style="margin-top: 8px;">No slot details available.</p>`
+            }
+          </div>
         </div>
       `).join("");
-
-      document.getElementById("totalBookings").textContent = bookings.length;
     }
 
-    async function loadConsultant() {
+    async function loadConsultantData() {
       try {
-        const res = await fetch(`${BASE_URL}/consultants/${consultantId}`);
-        if (!res.ok) throw new Error("Failed to fetch consultant");
+        const response = await fetch(`${BASE_URL}/consultants/${consultantId}`);
+        if (!response.ok) {
+          throw new Error("Failed to load consultant data");
+        }
 
-        const consultant = await res.json();
-        renderAvailability(consultant.availabilities || []);
-      } catch (err) {
-        console.error(err);
-        document.getElementById("availabilityList").innerHTML =
-          `<p>Failed to load availability slots.</p>`;
+        const consultant = await response.json();
+        allSlots = consultant.availabilities || [];
+
+        updateStats();
+        renderAvailability();
+      } catch (error) {
+        console.error(error);
+        document.getElementById("availabilityList").innerHTML = `
+          <div class="empty-state">
+            <div class="icon">⚠️</div>
+            <p>Failed to load availability slots.</p>
+          </div>
+        `;
+        showToast("Failed to load consultant data.", "error");
       }
     }
 
     async function loadBookings() {
       try {
-        // Future-friendly: replace with your backend consultant-bookings endpoint later
-        const res = await fetch(`${BASE_URL}/bookings/consultant/${consultantId}`);
+        const response = await fetch(`${BASE_URL}/bookings/consultant/${consultantId}`);
 
-        if (!res.ok) {
-          renderBookings([]);
+        if (!response.ok) {
+          allBookings = [];
+          updateStats();
+          renderBookings();
           return;
         }
 
-        const bookings = await res.json();
-        renderBookings(bookings || []);
-      } catch (err) {
-        console.error(err);
-        renderBookings([]);
+        const bookings = await response.json();
+        allBookings = bookings || [];
+
+        updateStats();
+        renderBookings();
+      } catch (error) {
+        console.error(error);
+        allBookings = [];
+        updateStats();
+        renderBookings();
       }
     }
 
+    async function createAvailabilitySlot(event) {
+      event.preventDefault();
+
+      const startTime = document.getElementById("startTime").value;
+      const endTime = document.getElementById("endTime").value;
+
+      if (!startTime || !endTime) {
+        showToast("Please fill in both start and end time.", "error");
+        return;
+      }
+
+      if (new Date(startTime) >= new Date(endTime)) {
+        showToast("End time must be after start time.", "error");
+        return;
+      }
+
+      const payload = {
+        startTime: startTime,
+        endTime: endTime,
+        isBooked: false
+      };
+
+      try {
+        /*
+          This endpoint may need to be aligned with your backend.
+          The frontend is structured so backend hookup will be easy.
+        */
+        const response = await fetch(`${BASE_URL}/consultants/${consultantId}/availabilities`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create slot");
+        }
+
+        document.getElementById("availabilityForm").reset();
+        showToast("Availability slot added.");
+        await loadConsultantData();
+      } catch (error) {
+        console.error(error);
+        showToast("Could not add availability slot. We may need to align this with the backend endpoint.", "error");
+      }
+    }
+
+    document.getElementById("slotFilter").addEventListener("change", renderAvailability);
+    document.getElementById("availabilityForm").addEventListener("submit", createAvailabilitySlot);
+
     async function initPage() {
-      await loadConsultant();
+      await loadConsultantData();
       await loadBookings();
     }
 
