@@ -38,8 +38,8 @@ Test if the frontend works by going to `http://localhost:5173/`.
 --- 
 
 ### To run the chatbot, you must provide an API key.
-1. Create a '.env' file in the root directory similiar to '.env.example'
-2. Place your API key in here.
+1. Create a '.env.properties' file in the root directory similiar to '.env.example'
+2. Place your Gemini API key in here.
 
 ## Contributions
 
