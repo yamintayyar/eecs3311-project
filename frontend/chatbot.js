@@ -9,6 +9,22 @@ const sendChatInBtn = document.getElementById("sendBtn");
 const chatHistory = document.querySelector(".chat-box-body");
 
 
+function loadChat() {
+    const savedChat = sessionStorage.getItem("active_chat_html");
+    if (savedChat && chatHistory) {
+        chatHistory.innerHTML = savedChat;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+}
+
+loadChat();
+
+function saveChat() {
+    if (chatHistory) {
+        sessionStorage.setItem("active_chat_html", chatHistory.innerHTML);
+    }
+}
+
 function createMessageDiv(message, className){
     const newDiv = document.createElement("div");
     newDiv.classList.add("message", className);
@@ -24,6 +40,9 @@ async function sendMessage(){
     const userMessage = chatIn.value;
     chatHistory.appendChild(createMessageDiv(userMessage, "sent"));
     chatIn.value = "";
+
+    saveChat();
+
     let botMessage = "Something went wrong!";
     
     const typingBubble = createMessageDiv("...", "received")
@@ -64,7 +83,7 @@ async function sendMessage(){
     }
 
     chatHistory.appendChild(createMessageDiv(botMessage, "received"));
-
+    saveChat();
 }
 
 
