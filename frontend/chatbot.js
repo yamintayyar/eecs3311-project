@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8080";
+const CHAT_BASE_URL = "http://localhost:8080";
 
 //CHATBOT
 let buttonState = false;
@@ -33,7 +33,7 @@ async function sendMessage(){
 
 
     try {
-        const res = await fetch(`${BASE_URL}/api/chat`, {
+        const res = await fetch(`${CHAT_BASE_URL}/api/chat`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
