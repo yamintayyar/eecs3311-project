@@ -457,7 +457,7 @@ tbody tr:hover { background: #fafafa; }
     position: absolute;
     right: 40px;
     bottom: 100px;
-    height: 520px;
+    height: 540px;
     border-radius: 20px;
     box-shadow: 0 0 0 2px rgba(76,175,80,0.1);
     transform: scale(0.5);  /* 0.5 */
