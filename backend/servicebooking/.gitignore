@@ -43,5 +43,4 @@ build/
 
 .env
 .env.properties
-application.properties
 .DS_Store
