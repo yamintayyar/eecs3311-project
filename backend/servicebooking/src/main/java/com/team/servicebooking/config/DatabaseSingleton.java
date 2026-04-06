@@ -21,6 +21,8 @@ public class DatabaseSingleton {
     private int min_notice = 24;
     private double discount = 1.0;
     private boolean refund = false;
+
+    @Column(name = "verbose_notification")
     private boolean verbose = false;
 
     public DatabaseSingleton() {

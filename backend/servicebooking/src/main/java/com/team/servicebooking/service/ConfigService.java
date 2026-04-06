@@ -4,6 +4,7 @@ import com.team.servicebooking.config.DatabaseSingleton;
 import com.team.servicebooking.repository.ConfigRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.annotation.PostConstruct;
 
 import java.util.Optional;
 
@@ -14,8 +15,10 @@ public class ConfigService {
 
     public ConfigService(ConfigRepository configRepository) {
         this.configRepository = configRepository;
+    }
 
-        // Seed default config if none exists
+    @PostConstruct // ← runs after bean is initialized and DB is ready
+    public void seedDefaultConfig() {
         if (configRepository.findFirstByOrderByCreatedAtDesc().isEmpty()) {
             DatabaseSingleton defaultConfig = new DatabaseSingleton();
             configRepository.save(defaultConfig);
