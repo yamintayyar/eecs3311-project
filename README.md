@@ -43,7 +43,7 @@ Test if the frontend works by going to `http://localhost:5173/`.
 
 ## Contributions
 
-- Yamin: Use Case Diagram, Class Diagram, Model(all classes)
+- Yamin: Use Case Diagram, Class Diagram, Model(all classes), Client Frontend view 
 - Emmanuel: SpringBoot initialization
 - Fahmid: Class Diagram, Controllers(Payment, Booking)
 - Hasan: Class Diagram, Model(Booking, Service)
