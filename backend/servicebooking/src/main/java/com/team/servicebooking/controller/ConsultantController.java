@@ -4,11 +4,13 @@ import com.team.servicebooking.dto.AvailabilityRequestDTO;
 import com.team.servicebooking.dto.ConsultantRequestDTO;
 import com.team.servicebooking.dto.LoginRequestDTO;
 import com.team.servicebooking.model.availability.Availability;
+import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Consultant;
 import com.team.servicebooking.service.ConsultantService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -48,13 +50,32 @@ public class ConsultantController {
                 .orElseThrow(() -> new RuntimeException("Consultant not found"));
     }
 
+    @GetMapping("/service-catalog")
+    public Map<String, Double> getServiceCatalog() {
+        return consultantService.getFixedServiceCatalog();
+    }
+
+    @GetMapping("/{id}/services")
+    public List<Service> getConsultantServices(@PathVariable UUID id) {
+        return consultantService.getConsultantServices(id);
+    }
+
+    @PutMapping("/{id}/services")
+    public List<Service> replaceConsultantServices(@PathVariable UUID id,
+                                                   @RequestBody List<String> selectedServiceNames) {
+        return consultantService.replaceConsultantServices(id, selectedServiceNames);
+    }
+
     @PostMapping("/{id}/availabilities")
     public Availability addAvailability(@PathVariable UUID id,
                                         @RequestBody AvailabilityRequestDTO request) {
         return consultantService.addAvailabilityToConsultant(
                 id,
                 request.getStartTime(),
-                request.getEndTime()
+                request.getEndTime(),
+                request.getServiceId() == null || request.getServiceId().isBlank()
+                        ? null
+                        : UUID.fromString(request.getServiceId())
         );
     }
 

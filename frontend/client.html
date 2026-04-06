@@ -6,16 +6,17 @@
   <title>Client Dashboard</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="client-page">
 
 <div class="app-layout">
 
-  <!-- ── Sidebar ─────────────────────────────────────── -->
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-brand">
       <h2>🗓️ ServiceBook</h2>
       <p id="sidebarUser">Loading…</p>
     </div>
+
     <nav class="sidebar-nav">
       <a href="client.html" class="active">
         <span class="nav-icon">🏠</span> Dashboard
@@ -30,83 +31,121 @@
         <span class="nav-icon">🧾</span> Payment History
       </a>
     </nav>
+
     <div class="sidebar-footer">
       <button class="btn-danger" onclick="logout()">Sign Out</button>
     </div>
   </aside>
 
-  <!-- ── Main ────────────────────────────────────────── -->
+  <!-- Main -->
   <main class="main-content">
 
     <div class="page-header">
       <h1 id="welcomeMsg">Welcome back!</h1>
-      <p>Browse available services and manage your upcoming bookings.</p>
+      <p>Browse consultant availability and accept/book a slot directly.</p>
     </div>
 
-    <!-- Stats Row -->
+    <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card green">
+        <div class="stat-label">Available Slots</div>
+        <div class="stat-value" id="statAvailableSlots">—</div>
+        <div class="stat-sub">Open consultant slots</div>
+      </div>
+      <div class="stat-card blue">
         <div class="stat-label">Upcoming Bookings</div>
         <div class="stat-value" id="statUpcoming">—</div>
         <div class="stat-sub">Scheduled ahead</div>
       </div>
-      <div class="stat-card blue">
+      <div class="stat-card amber">
+        <div class="stat-label">Requested Bookings</div>
+        <div class="stat-value" id="statRequested">—</div>
+        <div class="stat-sub">Waiting for consultant action</div>
+      </div>
+      <div class="stat-card">
         <div class="stat-label">Total Bookings</div>
         <div class="stat-value" id="statTotal">—</div>
         <div class="stat-sub">All time</div>
       </div>
-      <div class="stat-card amber">
-        <div class="stat-label">Pending Payment</div>
-        <div class="stat-value" id="statPending">—</div>
-        <div class="stat-sub">Awaiting payment</div>
-      </div>
     </div>
 
-    <!-- ── Browse Services ─────────────────────────── -->
+    <!-- Browse Available Slots -->
     <div class="card" style="margin-bottom: 24px;">
       <div class="card-header">
-        <h2>Browse Services</h2>
-        <input type="text" id="serviceSearch" placeholder="🔍  Search services…"
-               style="width:220px; margin:0; padding:8px 12px; font-size:13px;"
-               oninput="filterServices()">
+        <h2>Available Consultant Slots</h2>
+        <input
+          type="text"
+          id="serviceSearch"
+          placeholder="🔍 Search by service or consultant…"
+          style="width:260px; margin:0; padding:8px 12px; font-size:13px;"
+          oninput="filterSlots()"
+        >
       </div>
+
       <div class="card-body">
-        <div class="services-grid" id="servicesGrid">
-          <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading services…</p></div>
+        <div class="services-grid client-slot-grid" id="servicesGrid">
+          <div class="empty-state">
+            <div class="empty-icon">⏳</div>
+            <p>Loading available slots…</p>
+          </div>
         </div>
 
         <!-- Booking Drawer -->
         <div class="booking-drawer" id="bookingDrawer">
-          <h3>📅 Book: <span id="drawerServiceName"></span></h3>
-          <div class="form-row">
-            <div>
-              <label style="font-size:13px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px;">Preferred Date</label>
-              <input type="datetime-local" id="bookingDate" min="" step=900>
+          <h3>📅 Confirm Booking</h3>
+
+          <div class="client-confirm-grid">
+            <div class="client-confirm-box">
+              <div class="client-confirm-label">Service</div>
+              <div class="client-confirm-value" id="drawerServiceName">—</div>
             </div>
-<!--            <div>-->
-<!--              <label style="font-size:13px;font-weight:600;color:var(&#45;&#45;text-muted);display:block;margin-bottom:6px;">Consultant</label>-->
-<!--              <select id="bookingConsultant">-->
-<!--                <option value="">— Select consultant —</option>-->
-<!--              </select>-->
-<!--            </div>-->
+
+            <div class="client-confirm-box">
+              <div class="client-confirm-label">Consultant</div>
+              <div class="client-confirm-value" id="drawerConsultantName">—</div>
+            </div>
+
+            <div class="client-confirm-box">
+              <div class="client-confirm-label">Rate</div>
+              <div class="client-confirm-value" id="drawerPrice">—</div>
+            </div>
+
+            <div class="client-confirm-box">
+              <div class="client-confirm-label">Start</div>
+              <div class="client-confirm-value" id="drawerStart">—</div>
+            </div>
+
+            <div class="client-confirm-box">
+              <div class="client-confirm-label">End</div>
+              <div class="client-confirm-value" id="drawerEnd">—</div>
+            </div>
+
+            <div class="client-confirm-box">
+              <div class="client-confirm-label">Slot ID</div>
+              <div class="client-confirm-value" id="drawerSlotId">—</div>
+            </div>
           </div>
-          <div style="margin-top:14px; display:flex; gap:10px;">
-            <button onclick="submitBooking()" style="flex:1;">Confirm Booking</button>
+
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button onclick="submitBooking()" style="flex:1;">Accept Booking</button>
             <button class="btn-outline" onclick="closeDrawer()" style="flex:1; margin-top:0;">Cancel</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── Upcoming Bookings ───────────────────────── -->
+    <!-- Upcoming Bookings -->
     <div class="card">
       <div class="card-header">
-        <h2>Upcoming Bookings</h2>
+        <h2>My Bookings</h2>
         <a href="booking-history.html" style="font-size:13px;color:var(--green);text-decoration:none;font-weight:600;">View all →</a>
       </div>
       <div class="card-body">
         <div id="upcomingList">
-          <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading…</p></div>
+          <div class="empty-state">
+            <div class="empty-icon">⏳</div>
+            <p>Loading…</p>
+          </div>
         </div>
       </div>
     </div>
@@ -114,36 +153,31 @@
   </main>
 </div>
 
-  <!-- Chatbot -->
-    <div class="show-chatbot" id="chatbot-container">
-        <div class="chat-box">
-            <div class="chat-box-header">
-                <h3>ChatBot</h3>
-            </div>
-
-            <div class="chat-box-body">   
-                
-                <div class="message sent">
-                    
-                </div>
-
-                <div class="message received">    
-                    <p>How can I assist you today?</p>
-                </div>
-            </div>  
-
-            <div class="chat-box-footer">
-                <textarea id="userInput" placeholder="Type here"></textarea>
-                <button id="sendBtn">&#10148;</button>
-            </div> 
-        </div>
-        <div class="chatbot-button" id="chatBtn">
-            <button id="chat-btn">&#x1F4AC;</button>
-        </div>
+<!-- Chatbot -->
+<div class="show-chatbot" id="chatbot-container">
+  <div class="chat-box">
+    <div class="chat-box-header">
+      <h3>ChatBot</h3>
     </div>
 
-    
+    <div class="chat-box-body">
+      <div class="message sent"></div>
 
+      <div class="message received">
+        <p>How can I assist you today?</p>
+      </div>
+    </div>
+
+    <div class="chat-box-footer">
+      <textarea id="userInput" placeholder="Type here"></textarea>
+      <button id="sendBtn">&#10148;</button>
+    </div>
+  </div>
+
+  <div class="chatbot-button" id="chatBtn">
+    <button id="chat-btn">&#x1F4AC;</button>
+  </div>
+</div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -151,17 +185,18 @@
 <script src="chatbot.js"></script>
 <script src="script.js"></script>
 <script>
-<!--  const BASE_URL = "http://localhost:8080";-->
-
-  // ── Auth guard ──────────────────────────────────────────
   const user = JSON.parse(localStorage.getItem("user"));
   const role = localStorage.getItem("role");
-  if (!user || role !== "client") window.location.href = "index.html";
 
-  document.getElementById("welcomeMsg").textContent = "Welcome back, " + user.name + "!";
-  document.getElementById("sidebarUser").textContent = user.name;
+  if (!user || role !== "client") {
+    window.location.href = "index.html";
+  }
 
-  // ── Toast helper ────────────────────────────────────────
+  const clientId = user.ID || user.id || user.user_id;
+
+  document.getElementById("welcomeMsg").textContent = "Welcome back, " + (user.name || "Client") + "!";
+  document.getElementById("sidebarUser").textContent = user.name || "Client";
+
   function showToast(msg, type = "success") {
     const t = document.getElementById("toast");
     t.textContent = msg;
@@ -169,185 +204,285 @@
     setTimeout(() => t.className = "toast", 2800);
   }
 
-  let selectedService = null;
-  let allServices = [] //[...SERVICES]; //make it empty initially
-  let consultant = null; //keep track of consultant
+  function logout() {
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
 
-  function renderServices(list) {
+  function formatDateTime(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return value;
+    return d.toLocaleString();
+  }
+
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+  let allAvailableSlots = [];
+  let selectedSlot = null;
+  let allBookings = [];
+
+  function renderSlots(list) {
     const grid = document.getElementById("servicesGrid");
+
     if (!list.length) {
-      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>No services match your search.</p></div>`;
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>No available consultant slots found.</p>
+        </div>
+      `;
       return;
     }
-    grid.innerHTML = list.map(s => `
-      <div class="service-card ${selectedService?.id === s.id ? 'selected' : ''}"
-           onclick="selectService('${s.id}')" id="sc-${s.id}">
+
+    grid.innerHTML = list.map(slot => `
+      <div class="service-card client-slot-card ${selectedSlot?.slotId === slot.slotId ? 'selected' : ''}">
         <div class="selected-check">✓</div>
-<!--        <div class="service-icon">${s.icon}</div>-->
-        <h3>${s.name}</h3>
-        <p>${s.description} <br><br>With: ${s.consultantName}</p>
-        <div id="cons_id" style="display:none">${s.consultantId}</div>
-        <div class="service-price">$${s.price}<span style="font-size:12px;font-weight:500;color:var(--text-muted)">/session</span></div>
+        <h3>${slot.serviceName}</h3>
+        <p>
+          <strong>Consultant:</strong> ${slot.consultantName}<br>
+          <strong>Start:</strong> ${formatDateTime(slot.startTime)}<br>
+          <strong>End:</strong> ${formatDateTime(slot.endTime)}
+        </p>
+        <div class="service-price">$${slot.price}<span style="font-size:12px;font-weight:500;color:var(--text-muted)"> / slot</span></div>
+
+        <div class="client-slot-footer">
+          <span class="badge badge-green">Available</span>
+          <button class="btn btn-sm client-select-btn" onclick="selectSlot('${slot.slotId}')">Select</button>
+        </div>
       </div>
     `).join("");
   }
 
-  function filterServices() {
-    const q = document.getElementById("serviceSearch").value.toLowerCase();
-    renderServices(allServices.filter(s =>
-      s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q)
-    ));
+  function filterSlots() {
+    const q = document.getElementById("serviceSearch").value.toLowerCase().trim();
+
+    const filtered = allAvailableSlots.filter(slot =>
+      slot.serviceName.toLowerCase().includes(q) ||
+      slot.consultantName.toLowerCase().includes(q)
+    );
+
+    renderSlots(filtered);
   }
 
-  function selectService(id) {
-    selectedService = allServices.find(s => s.id === id);
-    renderServices(allServices.filter(s => {
-      const q = document.getElementById("serviceSearch").value.toLowerCase();
-      return s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q);
-    }));
-    document.getElementById("drawerServiceName").textContent = selectedService.name;
-    // Set min date to today
-    const today = new Date().toISOString().slice(0,-5);
-    document.getElementById("bookingDate").min = today;
-    document.getElementById("bookingDate").value = today;
+  function selectSlot(slotId) {
+    selectedSlot = allAvailableSlots.find(slot => slot.slotId === slotId);
+
+    if (!selectedSlot) return;
+
+    filterSlots();
+
+    document.getElementById("drawerServiceName").textContent = selectedSlot.serviceName;
+    document.getElementById("drawerConsultantName").textContent = selectedSlot.consultantName;
+    document.getElementById("drawerPrice").textContent = "$" + selectedSlot.price;
+    document.getElementById("drawerStart").textContent = formatDateTime(selectedSlot.startTime);
+    document.getElementById("drawerEnd").textContent = formatDateTime(selectedSlot.endTime);
+    document.getElementById("drawerSlotId").textContent = selectedSlot.slotId;
+
     document.getElementById("bookingDrawer").classList.add("open");
     document.getElementById("bookingDrawer").scrollIntoView({ behavior: "smooth", block: "nearest" });
-    // loadConsultants(selectedService.name); //we dont need this, because each listed service corresponds to exactly one consultant
-
-    consultant = selectedService.consultantId //set current relevant consultant
-    console.log(consultant)
   }
 
   function closeDrawer() {
+    selectedSlot = null;
     document.getElementById("bookingDrawer").classList.remove("open");
-    renderServices(allServices);
-    selectedService = null;
-
+    filterSlots();
   }
 
-  async function loadConsultants(name) {
-    const sel = document.getElementById("bookingConsultant");
-    sel.innerHTML = `<option value="">Loading…</option>`;
+  async function loadAvailableSlots() {
+    const grid = document.getElementById("servicesGrid");
+
     try {
       const res = await fetch(`${BASE_URL}/consultants`);
-      const data = await res.json();
-      sel.innerHTML = `<option value="">— Select consultant —</option>` +
-        data.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
-    } catch {
-      sel.innerHTML = `<option value="">— No consultants found —</option>`;
+      if (!res.ok) throw new Error("Failed to load consultants");
+
+      const consultants = await res.json();
+      const flattened = [];
+
+      consultants.forEach(consultant => {
+        const consultantId = consultant.ID || consultant.id || consultant.user_id;
+        const consultantName = consultant.name || "Consultant";
+
+        (consultant.availabilities || []).forEach(slot => {
+          if (!slot.isBooked && slot.service) {
+            flattened.push({
+              slotId: slot.slotId,
+              consultantId: consultantId,
+              consultantName: consultantName,
+              serviceId: slot.service.id,
+              serviceName: slot.service.name || "Service",
+              price: slot.service.price ?? 0,
+              startTime: slot.startTime,
+              endTime: slot.endTime
+            });
+          }
+        });
+      });
+
+      flattened.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+      allAvailableSlots = flattened;
+
+      document.getElementById("statAvailableSlots").textContent = allAvailableSlots.length;
+      renderSlots(allAvailableSlots);
+    } catch (error) {
+      console.error(error);
+      document.getElementById("statAvailableSlots").textContent = "0";
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <p>Could not load consultant availability.</p>
+        </div>
+      `;
     }
   }
 
   async function submitBooking() {
-    const date        = document.getElementById("bookingDate").value;
-    const consultantId =  consultant //document.getElementById("cons_id").value;
-    if (!date)         { showToast("Please pick a date.", "error"); return; }
-    if (!consultantId) { showToast("Please select a consultant.", "error"); return; }
+    if (!selectedSlot) {
+      showToast("Please select a slot first.", "error");
+      return;
+    }
 
     try {
       const res = await fetch(`${BASE_URL}/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          clientId:     user.ID,
-          consultantId: consultantId,
-          serviceId:    selectedService.id,
-          slotIds:      []
+          clientId: String(clientId),
+          consultantId: String(selectedSlot.consultantId),
+          serviceId: String(selectedSlot.serviceId),
+          slotIds: [String(selectedSlot.slotId)]
         })
       });
-      if (!res.ok) throw new Error("Failed");
-      showToast("Booking confirmed! 🎉");
+
+      if (!res.ok) {
+        throw new Error("Booking failed");
+      }
+
+      showToast("Booking request submitted!");
       closeDrawer();
-      loadUpcomingBookings();
-    } catch {
+      await loadAvailableSlots();
+      await loadUpcomingBookings();
+    } catch (error) {
+      console.error(error);
       showToast("Booking failed. Try again.", "error");
     }
   }
 
-  // ── Upcoming Bookings ────────────────────────────────────
-  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  async function cancelBooking(id) {
+    if (!confirm("Cancel this booking?")) return;
+
+    try {
+      await fetch(`${BASE_URL}/bookings/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: "cancel"
+      });
+
+      showToast("Booking cancelled.");
+      await loadUpcomingBookings();
+      await loadAvailableSlots();
+    } catch (error) {
+      console.error(error);
+      showToast("Could not cancel. Try again.", "error");
+    }
+  }
+
+  function statusBadge(status) {
+    const normalized = status || "REQUESTED";
+    const map = {
+      REQUESTED: "badge-amber",
+      CONFIRMED: "badge-blue",
+      "PENDING PAYMENT": "badge-amber",
+      PAID: "badge-green",
+      COMPLETED: "badge-gray",
+      CANCELLED: "badge-red",
+      REJECTED: "badge-red"
+    };
+
+    return `<span class="badge ${map[normalized] || 'badge-gray'}">${normalized}</span>`;
+  }
 
   async function loadUpcomingBookings() {
     const list = document.getElementById("upcomingList");
+
     try {
-      const res  = await fetch(`${BASE_URL}/bookings/client/${user.ID}`);
-      const data = await res.json();
-      // Filter to this client's bookings
-      const mine = data.filter(b => b.client?.id === user.id || true); // adjust filter when API supports it
-      const upcoming = mine.filter(b => b.status !== "COMPLETED" && b.status !== "CANCELLED" && b.status !== "REJECTED").slice(0, 5);
+      const res = await fetch(`${BASE_URL}/bookings/client/${clientId}`);
+      if (!res.ok) throw new Error("Failed to load bookings");
 
-      document.getElementById("statTotal").textContent    = mine.length;
-      document.getElementById("statUpcoming").textContent = upcoming.length;
-      document.getElementById("statPending").textContent  = mine.filter(b => b.status === "PENDING").length;
+      allBookings = await res.json();
 
-      if (!upcoming.length) {
-        list.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p>No upcoming bookings. Book a service above!</p></div>`;
+      const activeBookings = allBookings.filter(b =>
+        b.status !== "COMPLETED" &&
+        b.status !== "CANCELLED" &&
+        b.status !== "REJECTED"
+      );
+
+      document.getElementById("statTotal").textContent = allBookings.length;
+      document.getElementById("statUpcoming").textContent = activeBookings.length;
+      document.getElementById("statRequested").textContent =
+        allBookings.filter(b => b.status === "REQUESTED").length;
+
+      if (!activeBookings.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <p>No bookings yet. Choose an available slot above.</p>
+          </div>
+        `;
         return;
       }
 
-      list.innerHTML = upcoming.map(b => {
-        const d   = b.bookingDate ? new Date(b.bookingDate) : new Date();
+      list.innerHTML = activeBookings.slice(0, 6).map(b => {
+        const firstSlot = b.availabilities && b.availabilities.length ? b.availabilities[0] : null;
+        const d = firstSlot?.startTime ? new Date(firstSlot.startTime) : (b.bookingDate ? new Date(b.bookingDate) : new Date());
+
         const day = d.getDate();
         const mon = MONTHS[d.getMonth()];
-        const statusClass = { CONFIRMED:"badge-green", PENDING:"badge-amber", CANCELLED:"badge-red", COMPLETED:"badge-gray" }[b.status] || "badge-gray";
+
+        const canCancel = b.status !== "CANCELLED" && b.status !== "COMPLETED" && b.status !== "REJECTED";
+
         return `
           <div class="booking-item">
             <div class="booking-date-block">
               <div class="day">${day}</div>
               <div class="mon">${mon}</div>
             </div>
+
             <div class="booking-info">
               <h4>${b.service?.name || "Service"}</h4>
-              <p>with ${b.consultant?.name || "Consultant"}</p>
+              <p>
+                with ${(b.consultant && b.consultant.name) ? b.consultant.name : "Consultant"}<br>
+                ${firstSlot ? `${formatDateTime(firstSlot.startTime)} → ${formatDateTime(firstSlot.endTime)}` : ""}
+              </p>
             </div>
+
             <div class="booking-actions">
-              <span class="badge ${statusClass}">${b.status || "PENDING"}</span>
-              <button class="btn btn-outline btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>
+              ${statusBadge(b.status)}
+              ${canCancel ? `<button class="btn btn-outline btn-sm" onclick="cancelBooking('${b.id}')">Cancel</button>` : ""}
             </div>
-          </div>`;
+          </div>
+        `;
       }).join("");
-    } catch {
-      // Fallback mock data so UI is visible without backend
-      document.getElementById("statTotal").textContent    = "0";
+    } catch (error) {
+      console.error(error);
+      document.getElementById("statTotal").textContent = "0";
       document.getElementById("statUpcoming").textContent = "0";
-      document.getElementById("statPending").textContent  = "0";
-      list.innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><p>No upcoming bookings. Book a service above!</p></div>`;
+      document.getElementById("statRequested").textContent = "0";
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <p>No bookings found.</p>
+        </div>
+      `;
     }
   }
 
-  async function cancelBooking(id) {
-    if (!confirm("Cancel this booking?")) return;
-    try {
-      await fetch(`${BASE_URL}/bookings/${id}`, { method: "POST",
-      headers: { "Content-Type": "text/plain" },
-        body: "cancel"
-        });
-      showToast("Booking cancelled.");
-      loadUpcomingBookings();
-    } catch {
-      showToast("Could not cancel. Try again.", "error");
-    }
+  async function initPage() {
+    await loadAvailableSlots();
+    await loadUpcomingBookings();
   }
 
-  function logout() {
-    localStorage.clear();
-    window.location.href = "index.html";
-  }
-
-  // ── Init ─────────────────────────────────────────────────
-
-  fetch(BASE_URL + "/services")
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      allServices = data;          // store for filtering
-      console.log(allServices);
-      renderServices(allServices);
-    })
-    .catch(function() {
-      renderServices([]);          // show empty state on error
-    });
-
-  loadUpcomingBookings();
+  initPage();
 </script>
 </body>
 </html>
