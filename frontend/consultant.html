@@ -6,7 +6,7 @@
   <title>Consultant Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="consultant-page">
   <div class="app-layout">
     <aside class="sidebar">
       <div class="sidebar-brand">
@@ -15,9 +15,24 @@
       </div>
 
       <nav class="sidebar-nav">
-        <a href="consultant.html" class="active">
+        <a href="#" class="consultant-nav-link active" data-section="dashboardSection">
           <span class="nav-icon">📊</span>
           Dashboard
+        </a>
+
+        <a href="#" class="consultant-nav-link" data-section="availabilitySection">
+          <span class="nav-icon">🗓️</span>
+          Availability
+        </a>
+
+        <a href="#" class="consultant-nav-link" data-section="offersSection">
+          <span class="nav-icon">💼</span>
+          Offers
+        </a>
+
+        <a href="#" class="consultant-nav-link" data-section="servicesSection">
+          <span class="nav-icon">🛠️</span>
+          Services
         </a>
       </nav>
 
@@ -29,7 +44,7 @@
     <main class="main-content">
       <div class="page-header">
         <h1 id="welcomeMsg">Welcome!</h1>
-        <p>Manage your availability slots and review your bookings.</p>
+        <p>Manage your services, availability, offers, and bookings.</p>
       </div>
 
       <div class="stats-row">
@@ -46,57 +61,92 @@
         </div>
 
         <div class="stat-card amber">
-          <div class="stat-label">Booked Slots</div>
-          <div class="stat-value" id="statBookedSlots">0</div>
-          <div class="stat-sub">Already reserved</div>
+          <div class="stat-label">Offers</div>
+          <div class="stat-value" id="statOffers">0</div>
+          <div class="stat-sub">Waiting for your action</div>
         </div>
 
         <div class="stat-card">
           <div class="stat-label">Bookings</div>
           <div class="stat-value" id="statBookings">0</div>
-          <div class="stat-sub">Consultant bookings</div>
+          <div class="stat-sub">Accepted or active bookings</div>
         </div>
       </div>
 
-      <div class="consultant-grid">
-        <section class="card">
-          <div class="card-header">
-            <div>
-              <h2>Availability Slots</h2>
-              <p class="consultant-section-note">These are the slots clients will eventually book from the client side.</p>
-            </div>
+      <!-- DASHBOARD -->
+      <section id="dashboardSection" class="page-section active">
+        <div class="consultant-grid">
+          <section class="card">
+            <div class="card-header">
+              <div>
+                <h2>Availability Slots</h2>
+                <p class="consultant-section-note">These are your current time slots.</p>
+              </div>
 
-            <div class="filters-bar consultant-toolbar">
-              <select id="slotFilter">
-                <option value="all">All Slots</option>
-                <option value="available">Available Only</option>
-                <option value="booked">Booked Only</option>
-              </select>
-              <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadConsultantData()">Refresh</button>
-            </div>
-          </div>
-
-          <div class="card-body">
-            <div class="consultant-items-grid" id="availabilityList">
-              <div class="empty-state">
-                <div class="empty-icon">⏳</div>
-                <p>Loading availability slots...</p>
+              <div class="filters-bar consultant-toolbar">
+                <select id="slotFilter">
+                  <option value="all">All Slots</option>
+                  <option value="available">Available Only</option>
+                  <option value="booked">Booked Only</option>
+                </select>
+                <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadConsultantData()">Refresh</button>
               </div>
             </div>
-          </div>
-        </section>
 
+            <div class="card-body">
+              <div class="consultant-items-grid" id="availabilityList">
+                <div class="empty-state">
+                  <div class="empty-icon">⏳</div>
+                  <p>Loading availability slots...</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <div>
+                <h2>Bookings</h2>
+                <p class="consultant-section-note">Accepted or active bookings.</p>
+              </div>
+
+              <div class="filters-bar consultant-toolbar">
+                <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadBookings()">Refresh Bookings</button>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="consultant-items-grid" id="bookingList">
+                <div class="empty-state">
+                  <div class="empty-icon">📘</div>
+                  <p>Loading bookings...</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- AVAILABILITY -->
+      <section id="availabilitySection" class="page-section">
         <section class="card">
           <div class="card-header">
             <div>
               <h2>Add Availability Slot</h2>
-              <p class="consultant-section-note">Create open time slots for future bookings.</p>
+              <p class="consultant-section-note">Choose a service and the time when you want to offer it.</p>
             </div>
           </div>
 
           <div class="card-body">
             <form id="availabilityForm" class="consultant-form">
               <div class="consultant-form-grid">
+                <div class="consultant-form-group">
+                  <label for="availabilityService">Service</label>
+                  <select id="availabilityService" required>
+                    <option value="">Select a service</option>
+                  </select>
+                </div>
+
                 <div class="consultant-form-group">
                   <label for="startTime">Start Time</label>
                   <input type="datetime-local" id="startTime" required />
@@ -115,29 +165,52 @@
             </form>
           </div>
         </section>
+      </section>
 
+      <!-- OFFERS -->
+      <section id="offersSection" class="page-section">
         <section class="card">
           <div class="card-header">
             <div>
-              <h2>Bookings</h2>
-              <p class="consultant-section-note">This section is ready for consultant bookings and future client-side integration.</p>
+              <h2>Offers</h2>
+              <p class="consultant-section-note">Accept or reject pending client offers here.</p>
             </div>
 
             <div class="filters-bar consultant-toolbar">
-              <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadBookings()">Refresh Bookings</button>
+              <button class="btn btn-sm consultant-action-btn" type="button" onclick="loadBookings()">Refresh Offers</button>
             </div>
           </div>
 
           <div class="card-body">
-            <div class="consultant-items-grid" id="bookingList">
+            <div class="consultant-items-grid" id="offersPageList">
               <div class="empty-state">
-                <div class="empty-icon">📘</div>
-                <p>Loading bookings...</p>
+                <div class="empty-icon">💼</div>
+                <p>Loading offers...</p>
               </div>
             </div>
           </div>
         </section>
-      </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section id="servicesSection" class="page-section">
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h2>Select Your Services</h2>
+              <p class="consultant-section-note">Choose which fixed services you offer.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div id="serviceSelectionList" class="service-selection-grid"></div>
+
+            <div class="consultant-form-actions consultant-services-actions">
+              <button type="button" class="btn consultant-action-btn" onclick="saveSelectedServices()">Save Services</button>
+            </div>
+          </div>
+        </section>
+      </section>
     </main>
   </div>
 
@@ -156,6 +229,15 @@
 
     let allSlots = [];
     let allBookings = [];
+    let consultantServices = [];
+
+    const FIXED_SERVICES = [
+      { name: "Service 1", price: 50 },
+      { name: "Service 2", price: 100 },
+      { name: "Service 3", price: 150 },
+      { name: "Service 4", price: 75 },
+      { name: "Service 5", price: 120 }
+    ];
 
     document.getElementById("welcomeMsg").textContent = `Welcome, ${user.name || "Consultant"}!`;
     document.getElementById("sidebarUser").textContent = user.name || "Consultant";
@@ -181,16 +263,51 @@
       return d.toLocaleString();
     }
 
+    function formatPrice(price) {
+      if (price === undefined || price === null || price === "") return "N/A";
+      return `$${price}`;
+    }
+
+    function showSection(sectionId) {
+      document.querySelectorAll(".page-section").forEach(section => {
+        section.classList.remove("active");
+      });
+
+      document.getElementById(sectionId).classList.add("active");
+
+      document.querySelectorAll(".consultant-nav-link").forEach(link => {
+        link.classList.remove("active");
+        if (link.dataset.section === sectionId) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    function getOfferBookings() {
+      return allBookings.filter(booking =>
+        booking.status === "REQUESTED" ||
+        booking.status === "PAID" ||
+        booking.status === "PENDING PAYMENT"
+      );
+    }
+
+    function getConfirmedBookings() {
+      return allBookings.filter(booking =>
+        booking.status === "CONFIRMED" ||
+        booking.status === "COMPLETED"
+      );
+    }
+
     function updateStats() {
       const totalSlots = allSlots.length;
       const availableSlots = allSlots.filter(slot => !slot.isBooked).length;
-      const bookedSlots = allSlots.filter(slot => slot.isBooked).length;
-      const totalBookings = allBookings.length;
+      const totalOffers = getOfferBookings().length;
+      const totalConfirmed = getConfirmedBookings().length;
 
       document.getElementById("statTotalSlots").textContent = totalSlots;
       document.getElementById("statAvailableSlots").textContent = availableSlots;
-      document.getElementById("statBookedSlots").textContent = bookedSlots;
-      document.getElementById("statBookings").textContent = totalBookings;
+      document.getElementById("statOffers").textContent = totalOffers;
+      document.getElementById("statBookings").textContent = totalConfirmed;
     }
 
     function getFilteredSlots() {
@@ -225,6 +342,8 @@
         <div class="consultant-item-card">
           <h3>${slot.isBooked ? "Booked Slot" : "Available Slot"}</h3>
           <p><strong>Slot ID:</strong> ${slot.slotId || "N/A"}</p>
+          <p><strong>Service:</strong> ${slot.service?.name || "N/A"}</p>
+          <p><strong>Rate:</strong> ${formatPrice(slot.service?.price)}</p>
           <p><strong>Start:</strong> ${formatDateTime(slot.startTime)}</p>
           <p><strong>End:</strong> ${formatDateTime(slot.endTime)}</p>
           <span class="consultant-status-badge ${slot.isBooked ? "consultant-status-booked" : "consultant-status-available"}">
@@ -236,24 +355,25 @@
 
     function renderBookings() {
       const container = document.getElementById("bookingList");
+      const bookings = getConfirmedBookings();
 
-      if (!allBookings.length) {
+      if (!bookings.length) {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">📘</div>
-            <p>No bookings found yet.</p>
+            <p>No accepted bookings found yet.</p>
           </div>
         `;
         return;
       }
 
-      container.innerHTML = allBookings.map(booking => `
+      container.innerHTML = bookings.map(booking => `
         <div class="consultant-item-card">
           <h3>${booking.service?.name || "Service Booking"}</h3>
           <p><strong>Status:</strong> ${booking.status || "N/A"}</p>
           <p><strong>Booking Date:</strong> ${booking.bookingDate || "N/A"}</p>
-          <p><strong>Price:</strong> ${booking.service?.price ?? booking.price ?? "N/A"}</p>
-          <p><strong>Service Description:</strong> ${booking.service?.description || "N/A"}</p>
+          <p><strong>Price:</strong> ${formatPrice(booking.service?.price ?? booking.price)}</p>
+          <p><strong>Client:</strong> ${booking.client?.name || "N/A"}</p>
 
           <span class="consultant-status-badge consultant-status-generic">
             ${booking.status || "Booking"}
@@ -265,7 +385,10 @@
               booking.availabilities && booking.availabilities.length
                 ? `<ul class="consultant-booking-slot-list">
                     ${booking.availabilities.map(slot => `
-                      <li>${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}</li>
+                      <li>
+                        ${slot.service?.name ? `${slot.service.name} - ` : ""}
+                        ${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}
+                      </li>
                     `).join("")}
                   </ul>`
                 : `<p class="text-muted mt-4">No slot details available.</p>`
@@ -273,6 +396,96 @@
           </div>
         </div>
       `).join("");
+    }
+
+    function renderOffers() {
+      const container = document.getElementById("offersPageList");
+      const offers = getOfferBookings();
+
+      if (!offers.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">💼</div>
+            <p>No offers waiting for action.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = offers.map(booking => `
+        <div class="consultant-item-card">
+          <h3>${booking.service?.name || "Booking Offer"}</h3>
+          <p><strong>Status:</strong> ${booking.status || "N/A"}</p>
+          <p><strong>Booking Date:</strong> ${booking.bookingDate || "N/A"}</p>
+          <p><strong>Price:</strong> ${formatPrice(booking.service?.price ?? booking.price)}</p>
+          <p><strong>Client:</strong> ${booking.client?.name || "N/A"}</p>
+
+          <div class="consultant-booking-slots">
+            <strong>Requested Slots:</strong>
+            ${
+              booking.availabilities && booking.availabilities.length
+                ? `<ul class="consultant-booking-slot-list">
+                    ${booking.availabilities.map(slot => `
+                      <li>
+                        ${slot.service?.name ? `${slot.service.name} - ` : ""}
+                        ${formatDateTime(slot.startTime)} - ${formatDateTime(slot.endTime)}
+                      </li>
+                    `).join("")}
+                  </ul>`
+                : `<p class="text-muted mt-4">No slot details available.</p>`
+            }
+          </div>
+
+          <span class="consultant-status-badge consultant-status-offer">
+            Waiting for Decision
+          </span>
+
+          <div class="consultant-offer-actions">
+            <button class="btn consultant-action-btn" type="button" onclick="acceptOffer('${booking.id}')">Accept</button>
+            <button class="btn-danger consultant-action-btn" type="button" onclick="rejectOffer('${booking.id}')">Reject</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderServiceSelection() {
+      const container = document.getElementById("serviceSelectionList");
+      const selectedNames = new Set(consultantServices.map(service => service.name));
+
+      container.innerHTML = FIXED_SERVICES.map(service => `
+        <div class="service-option-card">
+          <label>
+            <input
+              type="checkbox"
+              class="service-checkbox"
+              value="${service.name}"
+              ${selectedNames.has(service.name) ? "checked" : ""}
+            />
+            <div>
+              <div class="service-option-title">${service.name}</div>
+              <div class="service-option-price">$${service.price}</div>
+            </div>
+          </label>
+        </div>
+      `).join("");
+    }
+
+    function renderAvailabilityServiceOptions() {
+      const select = document.getElementById("availabilityService");
+
+      if (!consultantServices.length) {
+        select.innerHTML = `<option value="">No services selected yet</option>`;
+        return;
+      }
+
+      select.innerHTML = `
+        <option value="">Select a service</option>
+        ${consultantServices.map(service => `
+          <option value="${service.id}">
+            ${service.name} - $${service.price}
+          </option>
+        `).join("")}
+      `;
     }
 
     async function loadConsultantData() {
@@ -284,9 +497,12 @@
 
         const consultant = await response.json();
         allSlots = consultant.availabilities || [];
+        consultantServices = consultant.services || [];
 
         updateStats();
         renderAvailability();
+        renderServiceSelection();
+        renderAvailabilityServiceOptions();
       } catch (error) {
         console.error(error);
         document.getElementById("availabilityList").innerHTML = `
@@ -306,6 +522,7 @@
         if (!response.ok) {
           allBookings = [];
           updateStats();
+          renderOffers();
           renderBookings();
           return;
         }
@@ -314,20 +531,55 @@
         allBookings = bookings || [];
 
         updateStats();
+        renderOffers();
         renderBookings();
       } catch (error) {
         console.error(error);
         allBookings = [];
         updateStats();
+        renderOffers();
         renderBookings();
+      }
+    }
+
+    async function saveSelectedServices() {
+      const selected = Array.from(document.querySelectorAll(".service-checkbox:checked"))
+        .map(checkbox => checkbox.value);
+
+      try {
+        const response = await fetch(`${BASE_URL}/consultants/${consultantId}/services`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(selected)
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save services");
+        }
+
+        consultantServices = await response.json();
+        renderServiceSelection();
+        renderAvailabilityServiceOptions();
+        showToast("Services updated successfully.");
+      } catch (error) {
+        console.error(error);
+        showToast("Failed to save services.", "error");
       }
     }
 
     async function createAvailabilitySlot(event) {
       event.preventDefault();
 
+      const serviceId = document.getElementById("availabilityService").value;
       const startTime = document.getElementById("startTime").value;
       const endTime = document.getElementById("endTime").value;
+
+      if (!serviceId) {
+        showToast("Please select a service first.", "error");
+        return;
+      }
 
       if (!startTime || !endTime) {
         showToast("Please fill in both start and end time.", "error");
@@ -340,6 +592,7 @@
       }
 
       const payload = {
+        serviceId: serviceId,
         startTime: startTime,
         endTime: endTime,
         isBooked: false
@@ -361,11 +614,66 @@
         document.getElementById("availabilityForm").reset();
         showToast("Availability slot added.");
         await loadConsultantData();
+        showSection("dashboardSection");
       } catch (error) {
         console.error(error);
-        showToast("Could not add availability slot. We may need to align this with the backend endpoint.", "error");
+        showToast("Could not add availability slot.", "error");
       }
     }
+
+    async function acceptOffer(bookingId) {
+      try {
+        const response = await fetch(`${BASE_URL}/bookings/${bookingId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: "confirm"
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to accept offer");
+        }
+
+        showToast("Offer accepted.");
+        await loadConsultantData();
+        await loadBookings();
+        showSection("dashboardSection");
+      } catch (error) {
+        console.error(error);
+        showToast("Could not accept offer.", "error");
+      }
+    }
+
+    async function rejectOffer(bookingId) {
+      try {
+        const response = await fetch(`${BASE_URL}/bookings/${bookingId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: "reject"
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to reject offer");
+        }
+
+        showToast("Offer rejected.");
+        await loadConsultantData();
+        await loadBookings();
+      } catch (error) {
+        console.error(error);
+        showToast("Could not reject offer.", "error");
+      }
+    }
+
+    document.querySelectorAll(".consultant-nav-link").forEach(link => {
+      link.addEventListener("click", function(event) {
+        event.preventDefault();
+        showSection(this.dataset.section);
+      });
+    });
 
     document.getElementById("slotFilter").addEventListener("change", renderAvailability);
     document.getElementById("availabilityForm").addEventListener("submit", createAvailabilitySlot);

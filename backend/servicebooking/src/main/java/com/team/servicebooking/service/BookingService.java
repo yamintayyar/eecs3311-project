@@ -17,7 +17,6 @@ import jakarta.transaction.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -51,10 +50,6 @@ public class BookingService {
 
     public Booking createBooking(BookingRequestDTO request) {
 
-        System.out.println("client is " + request.getClientId());
-        System.out.println("cons is " + request.getConsultantId());
-        System.out.println("ser is " + request.getServiceId());
-
         Client client = clientService.getClientById(UUID.fromString(request.getClientId()))
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
@@ -66,35 +61,23 @@ public class BookingService {
 
         List<Availability> slots = availabilityRepository.findAllById(
                 request.getSlotIds().stream().map(UUID::fromString).toList());
-        // .orElseThrow(() -> new RuntimeException("Invalid availability slot not found;
-        // please try again."));; //TODO: perhaps it is better to use an iterative
-        // approach instead, to facilitate error handling
-
-        // int minNotice = configService.getConfiguration().getMinNotice();
 
         for (Availability slot : slots) {
             if (slot.isBooked()) {
                 throw new RuntimeException("Slot already booked");
             }
-
-            // long hours = Math.abs(Duration.between(LocalDateTime.now(),
-            // slot.getStartTime()).toHours());
-            //
-            // if (hours < minNotice) { //TODO: something to be made aware of: minNotice was
-            // meant to reflect cancellation deadlines; we can do this too, although it is
-            // not a requirement
-            // throw new RuntimeException("Booking must be made " + minNotice + " hours in
-            // advance");
-            // }
-
-            slot.markBooked(); // TODO: maybe we should mark the availability booked only after the booking has
-                               // been accepted?
         }
 
+        // Booking stays REQUESTED here. Do NOT mark slot booked yet.
         Booking booking = new Booking(client, consultant, service, slots);
 
-        notificationService.notify(client,
-                "Your booking with consultant " + consultant.getName() + " is confirmed.");
+        notificationService.notify(
+                consultant,
+                "You have a new booking request from " + client.getName());
+
+        notificationService.notify(
+                client,
+                "Your booking request has been sent to consultant " + consultant.getName());
 
         return bookingRepository.save(booking);
     }
@@ -129,7 +112,16 @@ public class BookingService {
     }
 
     public List<Booking> getBookingsByConsultant(UUID consultantId) {
-        return null;// TODO
+        Consultant consultant = consultantRepository.findById(consultantId)
+                .orElseThrow(() -> new RuntimeException("Consultant not found"));
+
+        return bookingRepository.findAllByConsultant(consultant).stream()
+                .filter(booking -> "CONFIRMED".equalsIgnoreCase(booking.getStatus())
+                        || "REQUESTED".equalsIgnoreCase(booking.getStatus())
+                        || "PENDING PAYMENT".equalsIgnoreCase(booking.getStatus())
+                        || "PAID".equalsIgnoreCase(booking.getStatus())
+                        || "COMPLETED".equalsIgnoreCase(booking.getStatus()))
+                .toList();
     }
 
     public void cancelBooking(UUID bookingId) {
@@ -156,7 +148,6 @@ public class BookingService {
             throw new RuntimeException(message);
         }
 
-        // Refund logic
         if (booking.getPayment() != null &&
                 booking.getState().isRefundable() &&
                 config.getRefundPolicy()) {
@@ -167,6 +158,8 @@ public class BookingService {
                     booking.getClient(),
                     "Payment refunded for booking " + bookingId);
         }
+
+        booking.getAvailabilities().forEach(Availability::markAvailable);
 
         booking.cancel();
 
@@ -180,7 +173,6 @@ public class BookingService {
     public void reject(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
 
-        // Non-optional notification, as per guidelines
         notificationService.notify(booking.getClient(),
                 "Booking " + bookingId + " has been rejected by consultant " + booking.getConsultant().getName());
 
@@ -188,9 +180,29 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
+    @Transactional
     public void confirm(UUID bookingId) {
         Booking booking = getBookingById(bookingId);
+
+        for (Availability slot : booking.getAvailabilities()) {
+            if (slot.isBooked()) {
+                throw new RuntimeException("One or more selected slots are already booked");
+            }
+            slot.markBooked();
+        }
+
         booking.confirm();
+
+        notificationService.notify(
+                booking.getClient(),
+                "Your booking with consultant " + booking.getConsultant().getName() + " has been confirmed."
+        );
+
+        notificationService.notify(
+                booking.getConsultant(),
+                "You accepted booking " + bookingId
+        );
+
         bookingRepository.save(booking);
     }
 

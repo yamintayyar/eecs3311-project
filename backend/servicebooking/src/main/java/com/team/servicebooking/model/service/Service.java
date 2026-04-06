@@ -15,12 +15,9 @@ public class Service {
     private UUID id;
 
     private String name;
-
     private double price;
-
     private String description;
-
-    private int durationHours; //TODO: implement??; currently not set or accounted for by price
+    private int durationHours;
 
     @ManyToOne
     @JoinColumn(name = "consultant_id")
@@ -30,11 +27,15 @@ public class Service {
     protected Service() {
     }
 
-    public Service(String name, double price, String description, Consultant consultant) { //can we pass an entire object, instead of just an ID?
+    public Service(String name, double price, String description, Consultant consultant) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.consultant = consultant;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getName() {
@@ -53,13 +54,19 @@ public class Service {
         return durationHours;
     }
 
-    public UUID getId() {return id;}
+    public Consultant getConsultant() {
+        return consultant;
+    }
+
+    public void setConsultant(Consultant consultant) {
+        this.consultant = consultant;
+    }
 
     public String getConsultantName() {
-        return consultant.getName();
+        return consultant != null ? consultant.getName() : null;
     }
 
     public UUID getConsultantId() {
-        return consultant.getUser_id();
+        return consultant != null ? consultant.getUser_id() : null;
     }
 }

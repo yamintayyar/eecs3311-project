@@ -19,13 +19,6 @@ public class Consultant extends User {
     @JsonManagedReference
     private List<Service> services = new ArrayList<>();
 
-    /*
-     * @OneToMany(mappedBy = "consultant")
-     * 
-     * @JsonManagedReference
-     * private List<Booking> bookings = new ArrayList<>();
-     */
-
     @OneToMany(mappedBy = "consultant", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Availability> availabilities = new ArrayList<>();
@@ -51,7 +44,11 @@ public class Consultant extends User {
     }
 
     public void addService(Service service) {
-
+        service.setConsultant(this);
         services.add(service);
+    }
+
+    public void clearServices() {
+        services.clear();
     }
 }

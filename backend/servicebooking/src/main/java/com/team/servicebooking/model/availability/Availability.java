@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.team.servicebooking.model.booking.Booking;
+import com.team.servicebooking.model.service.Service;
 import com.team.servicebooking.model.user.Consultant;
 
 import jakarta.persistence.*;
@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "availabilities")
 public class Availability {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID slot_id;
@@ -20,20 +21,16 @@ public class Availability {
     private LocalDateTime endTime;
     private boolean isBooked = false;
 
-    /*
-     * @ManyToOne
-     * 
-     * @JoinColumn(name = "booking_id")
-     * private Booking booking;
-     */
-
     @ManyToOne
     @JoinColumn(name = "consultant_id")
     @JsonBackReference
     private Consultant consultant;
 
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    private Service service;
+
     public Availability() {
-        // JPA requires empty constructor
     }
 
     public Availability(LocalDateTime startTime, LocalDateTime endTime) {
@@ -73,4 +70,11 @@ public class Availability {
         this.consultant = consultant;
     }
 
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
 }

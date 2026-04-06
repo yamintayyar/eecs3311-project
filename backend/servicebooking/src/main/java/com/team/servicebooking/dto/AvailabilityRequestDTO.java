@@ -7,6 +7,7 @@ public class AvailabilityRequestDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isBooked;
+    private String serviceId;
 
     public AvailabilityRequestDTO() {
     }
@@ -33,5 +34,13 @@ public class AvailabilityRequestDTO {
 
     public void setBooked(boolean booked) {
         isBooked = booked;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 }
