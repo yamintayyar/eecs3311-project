@@ -1,0 +1,24 @@
+# Maven/Gradle build output
+target/
+build/
+
+# Logs
+*.log
+
+# OS / IDE files
+.DS_Store
+.idea/
+.vscode/
+
+# Git files
+.git
+.gitignore
+
+# Environment files
+.env
+.env.properties
+application.properties
+application-*.properties
+
+# Docker files you don't need inside image
+docker-compose.yml

@@ -1,0 +1,63 @@
+services:
+
+  db:
+    image: postgres:14
+    container_name: servicebooking-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"   
+    volumes:
+      - db_data:/var/lib/postgresql/data  
+    networks:
+      - servicebooking-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d servicebooking"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend/servicebooking
+      dockerfile: Dockerfile
+    container_name: servicebooking-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_DRIVER: org.postgresql.Driver  
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      GEMINI_API_KEY: ${GEMINI_API_KEY} 
+    ports:
+      - "8080:8080"   
+    networks:
+      - servicebooking-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: servicebooking-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"   
+    networks:
+      - servicebooking-network
+
+volumes:
+  db_data:   
+
+networks:
+  servicebooking-network:
+    driver: bridge
