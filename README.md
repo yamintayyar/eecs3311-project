@@ -46,7 +46,7 @@ Test if the frontend works by going to `http://localhost:5173/`.
 - Yamin: Use Case Diagram, Class Diagram, Model(all classes), Client Frontend view 
 - Emmanuel: SpringBoot initialization
 - Fahmid: Class Diagram, Controllers(Payment, Booking)
-- Hasan: Class Diagram, Model(Booking, Service)
+- Hasan: Class Diagram, Model(Booking, Service), ChatBot
 ---
 
 ## Phase 1 Submission
