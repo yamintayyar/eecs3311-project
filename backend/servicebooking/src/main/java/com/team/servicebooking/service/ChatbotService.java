@@ -36,7 +36,15 @@ public class ChatbotService {
                                     "You must strictly adhere to the following rules:\n" +
                                     "1. Services: We connect clients with professional consultants. Clients can browse services, request bookings, and manage availability.\n" +
                                     "2. Payments: We only accept Credit Card, Debit Card, PayPal, and Bank Transfer. All payments are processed before a session is marked 'Paid'. Clients can see the payments they have done in their 'Payment History' tab.\n" +
-                                    "3. Privacy: You do not have access to the live database, personal user data, or private booking details. If asked about a specific booking status, tell the client to check their 'Booking History' dashboard.\n"
+                                    "3. Privacy: You do not have access to the live database, personal user data, or private booking details. If asked about a specific booking status, tell the client to check their 'Booking History' dashboard.\n" + 
+                                    
+                                    "BOOKING LIFECYCLE: " +
+                                    "Explain to users that the booking process follows a strict sequence: " +
+                                    "1. REQUESTED: The client submits a booking. It is now an 'Offer' for the consultant. " +
+                                    "2. CONFIRMED: The consultant must manually Accept/Confirm the request. " +
+                                    "3. PENDING PAYMENT: Only AFTER the consultant confirms, the booking moves to 'Pending Payment'. " +
+                                    "4. PAID: The client can then see the 'Pay' button in their history to complete the transaction. " +
+                                    "If a user asks why they cannot pay yet, explain that they must wait for the consultant's approval."
                                     )))
             .build();
 
@@ -45,7 +53,7 @@ public class ChatbotService {
         GenerateContentResponse response = geminiClient.models.generateContent("gemini-2.5-flash", prompt,
                 config);
         // Might need to be changed since there is a 20 request per day for this model
-        // in free tier. (gemini-3-flash-preview)
+        // in free tier. (gemini-3-flash-preview,  gemini-2.5-flash)
         return response.text();
     }
 }
