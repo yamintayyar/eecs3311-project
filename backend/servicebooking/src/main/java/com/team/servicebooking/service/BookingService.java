@@ -117,6 +117,7 @@ public class BookingService {
 
         return bookingRepository.findAllByConsultant(consultant).stream()
                 .filter(booking -> "CONFIRMED".equalsIgnoreCase(booking.getStatus())
+                        || "REQUESTED".equalsIgnoreCase(booking.getStatus())
                         || "PENDING PAYMENT".equalsIgnoreCase(booking.getStatus())
                         || "PAID".equalsIgnoreCase(booking.getStatus())
                         || "COMPLETED".equalsIgnoreCase(booking.getStatus()))
